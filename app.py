@@ -14,15 +14,16 @@ import torch
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from model_arch import NeuralNet
+from faster_whisper import WhisperModel
+import tempfile
 
 app = Flask(__name__)
 CORS(app)
 
 Ruta_Modelo_Pytorch = "data/model.pth"
 Ruta_Intents = "data/intents.json"
-Ruta_Productos_Automaticos = "data/products.json"
 Ruta_Productos_Scrapeados = "data/products_scraped.json"
-Fuentes_De_Catalogo_Validas = {"auto", "scraped"}
+Fuentes_De_Catalogo_Validas = {"scraped"}
 Umbral_De_Confianza = 0.75
 Umbral_De_Margen_Base = 0.08
 Umbral_De_Margen_Por_Tag = {
@@ -43,6 +44,8 @@ Dispositivo = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 Modelo_IA = None
 Todas_Las_Palabras = []
 Etiquetas_De_Intencion = []
+
+Modelo_Voz = WhisperModel("tiny", device="cuda" if torch.cuda.is_available() else "cpu", compute_type="int8")
 
 # Cargar modelo PyTorch
 if os.path.exists(Ruta_Modelo_Pytorch):
@@ -100,37 +103,21 @@ def Cargar_Lista_De_Productos_Desde_Archivo(Ruta_Archivo):
 
 
 def Normalizar_Fuente_De_Catalogo(Fuente_Solicitada):
-    Fuente_En_Minusculas = str(Fuente_Solicitada or "auto").strip().lower()
-    if Fuente_En_Minusculas in {"scraped", "scrapeado", "scraping", "catalogo_scrapeado"}:
-        return "scraped"
-    return "auto"
+    return "scraped"
 
 
 # Cargar catalogos de productos
 Catalogos_De_Productos = {
-    "auto": Cargar_Lista_De_Productos_Desde_Archivo(Ruta_Productos_Automaticos),
     "scraped": Cargar_Lista_De_Productos_Desde_Archivo(Ruta_Productos_Scrapeados),
 }
-
-if Catalogos_De_Productos["auto"]:
-    print(f"[OK] Inventario auto: {len(Catalogos_De_Productos['auto'])} productos cargados.")
-else:
-    print("[WARN] No se encontro products.json. Generando inventario temporal...")
-    try:
-        from generate_products import Generar_Productos
-
-        Catalogos_De_Productos["auto"] = Generar_Productos()
-        print(f"[OK] Inventario temporal auto generado: {len(Catalogos_De_Productos['auto'])} productos.")
-    except Exception as exc:
-        print(f"[ERROR] No se pudo generar inventario temporal: {exc}")
 
 if Catalogos_De_Productos["scraped"]:
     print(f"[OK] Inventario scrapeado: {len(Catalogos_De_Productos['scraped'])} productos cargados.")
 else:
-    print("[INFO] Aun no existe data/products_scraped.json. El switch web usara catalogo auto como fallback.")
+    print("[WARN] Aun no existe data/products_scraped.json.")
 
-Fuente_Activa_De_Catalogo = "auto"
-Datos_De_Productos = Catalogos_De_Productos["auto"]
+Fuente_Activa_De_Catalogo = "scraped"
+Datos_De_Productos = Catalogos_De_Productos["scraped"]
 
 
 def Cambiar_Fuente_De_Catalogo(Fuente_Solicitada):
@@ -138,13 +125,7 @@ def Cambiar_Fuente_De_Catalogo(Fuente_Solicitada):
     global Fuente_Activa_De_Catalogo
 
     Fuente_Normalizada = Normalizar_Fuente_De_Catalogo(Fuente_Solicitada)
-    if Fuente_Normalizada not in Fuentes_De_Catalogo_Validas:
-        Fuente_Normalizada = "auto"
-
     Lista_De_Productos = Catalogos_De_Productos.get(Fuente_Normalizada, [])
-    if not Lista_De_Productos:
-        Fuente_Normalizada = "auto"
-        Lista_De_Productos = Catalogos_De_Productos.get("auto", [])
 
     Cambio_De_Fuente = Fuente_Activa_De_Catalogo != Fuente_Normalizada
     Datos_De_Productos = Lista_De_Productos
@@ -793,6 +774,10 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             if Etiqueta_Detectada:
                 break
 
+        # Improved AI Fallback: if we still don't have a label and the prediction is ambiguous, set to a generic tag to avoid failing or returning weird responses.
+        if Etiqueta_Detectada is None:
+            Etiqueta_Detectada = "fuera_de_dominio"
+
     if Es_Consulta_De_Seguimiento and Etiqueta_Detectada in {None, "pedidos", "fuera_de_dominio"}:
         Etiqueta_Detectada = "pedidos"
 
@@ -1171,6 +1156,20 @@ def Productos_Endpoint():
         "count": len(Datos_De_Productos),
         "source": Fuente_Usada,
     })
+
+@app.route('/transcribe', methods=['POST'])
+def Transcribir_Voz():
+    if 'audio' not in request.files:
+        return jsonify({"error": "No audio file provided"}), 400
+
+    Archivo_Audio = request.files['audio']
+    with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as Archivo_Temporal:
+        Archivo_Audio.save(Archivo_Temporal.name)
+        Segmentos, _ = Modelo_Voz.transcribe(Archivo_Temporal.name, beam_size=5)
+        Texto_Transcrito = " ".join([segmento.text for segmento in Segmentos])
+
+    os.remove(Archivo_Temporal.name)
+    return jsonify({"text": Texto_Transcrito.strip()})
 
 @app.route('/search', methods=['POST'])
 def Buscar_Endpoint():
