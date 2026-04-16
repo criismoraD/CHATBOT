@@ -33,6 +33,9 @@
 
 - [2026-04-16] Actualización de dependencias.
 - `requirements.txt`: Agregado `faster-whisper`.
+- [2026-04-16] Consolidación de archivos de entrenamiento.
+- model_arch.py y utils_texto.py combinados en train_pytorch.py.
+- app.py modificado para importar tokenizar y NeuralNet directamente desde train_pytorch.py
 
 - [2026-04-16] Mejora de salud del código: Refactorización de Imprimir_Resumen.
 - Creado `utils_inventario.py` para centralizar utilidades de inventario y restaurar constantes perdidas por la eliminación de `generate_products.py`.

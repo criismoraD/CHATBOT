@@ -4,7 +4,8 @@ from collections import Counter
 from copy import deepcopy
 from pathlib import Path
 
-from utils_texto import tokenizar as Tokenizar_Texto
+import re
+import unicodedata
 
 import numpy as np
 import torch
@@ -15,7 +16,41 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score, f1_score
 from sklearn.utils.class_weight import compute_class_weight
 
-from model_arch import NeuralNet
+# --- DE utils_texto.py ---
+def _stem_es(p):
+    if p.endswith('es') and len(p) > 4: return p[:-2]
+    if p.endswith('s') and len(p) > 3: return p[:-1]
+    return p
+
+STOP = {'el','la','los','las','de','del','un','una','y','o'}
+
+def tokenizar(texto: str) -> list[str]:
+    texto = unicodedata.normalize('NFD', texto.lower())
+    texto = ''.join(c for c in texto if unicodedata.category(c)!= 'Mn')
+    texto = re.sub(r'[^a-z0-9ñü\s]', ' ', texto)
+    tokens = [t for t in re.sub(r'\s+', ' ', texto).strip().split() if t not in STOP and len(t)>1]
+    tokens = [_stem_es(t) for t in tokens]
+    bigramas = [f"{tokens[i]}_{tokens[i+1]}" for i in range(len(tokens)-1)]
+    return tokens + bigramas
+
+# --- DE model_arch.py ---
+class NeuralNet(nn.Module):
+    def __init__(self, input_size, hidden_size, num_classes):
+        super().__init__()
+        self.l1 = nn.Linear(input_size, hidden_size) # 128
+        self.bn1 = nn.BatchNorm1d(hidden_size)
+        self.l2 = nn.Linear(hidden_size, hidden_size // 2) # 64
+        self.bn2 = nn.BatchNorm1d(hidden_size // 2)
+        self.l3 = nn.Linear(hidden_size // 2, num_classes)
+        self.relu = nn.ReLU()
+        self.dropout = nn.Dropout(0.5)
+
+    def forward(self, x):
+        out = self.dropout(self.relu(self.bn1(self.l1(x))))
+        out = self.dropout(self.relu(self.bn2(self.l2(out))))
+        out = self.l3(out)
+        return out
+
 
 # --- CONFIGURACION ---
 Ruta_Intents = Path("data/intents.json")
@@ -62,7 +97,7 @@ def Preparar_Datos(datos_intents):
         tag = intent['tag']
         etiquetas.append(tag)
         for patron in intent['patterns']:
-            palabras = Tokenizar_Texto(patron)
+            palabras = tokenizar(patron)
             contador_vocabulario.update(palabras)
             pares.append((palabras, tag))
 
