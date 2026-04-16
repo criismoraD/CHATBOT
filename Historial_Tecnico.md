@@ -1,140 +1,32 @@
 ## Tareas Completadas
 
-- [2026-04-14] Auditoria y refactor integral de generate_products.py.
-- Estructura mejorada con validacion de configuracion y funciones auxiliares.
-- Variables y funciones renombradas en espanol para mayor claridad.
-- Eliminado el manejo de images en categorias y eliminado el campo image en cada producto.
-- Vocabulario ajustado a uso peruano (por ejemplo, se reemplazo "Tenis Casual" por "Zapatillas Casuales" y se agrego "Chimpunes de Futbol").
-- Compatibilidad mantenida con aliases de funciones antiguas (generate_products, save_json, save_js, print_summary).
-- Verificacion de sintaxis sin errores y ejecucion real completada (250 productos generados).
-- [2026-04-14] Auditoria integral de backend/frontend (Python + JavaScript).
-- app.py: validacion de payload JSON, saneamiento de limit/max_price, eliminacion de duplicidad en extract_filters, configuracion de debug por variables de entorno y fallback de inventario temporal cuando falta products.json.
-- app.py: ajuste de terminos locales (chimpunes, zapas, bividi) en CATEGORY_MAP.
-- train_pytorch.py: reestructura completa a flujo modular con semilla reproducible y funciones de entrenamiento/guardado claras.
-- model_arch.py: limpieza compatible (sin romper state_dict existente).
-- js/main.js: robustez de renderizado con PRODUCT_DATA seguro, API_BASE_URL configurable, control de errores HTTP, guardas DOM y correccion de scroll a seccion inexistente.
-- Verificacion final: sin errores en app.py, generate_products.py, train_pytorch.py, model_arch.py y js/main.js.
-- [2026-04-14] Segunda pasada de consistencia de nombres en app.py.
-- Renombrados a espanol de funciones y mapas solicitados por el usuario (por ejemplo, CATEGORY_MAP/ extract_filters -> Mapa_De_Categorias/Extraer_Filtros), mas ajuste adicional de estado del modelo y memoria conversacional.
-- Validacion posterior: app.py compila y el backend carga inventario temporal de 250 productos sin errores.
-- [2026-04-14] Tercera pasada de normalizacion de nombres en app.py.
-- Se eliminaron los ultimos identificadores de backend que seguian en ingles en funciones clave de respuesta y contexto.
-- Validacion posterior: py_compile e import de app.py exitosos, prediccion y carga de inventario temporal operativas.
-- [2026-04-14] Normalizacion de nombres en js/main.js.
-- Renombrado semantico de estado, elementos DOM y funciones principales de frontend a espanol sin alterar el comportamiento.
-- Validacion posterior: js/main.js sin errores en el panel de diagnostico del editor.
-- [2026-04-14] Ajustes funcionales solicitados para catalogo y generador.
-- generate_products.py ahora genera solo data/products.json (sin salida js/products.js).
-- El nombre de producto reemplazo el sufijo S-XX por formato Serie XXX.
-- Cada producto ahora contiene multiples colores en el campo colores (manteniendo color principal por compatibilidad).
-- app.py y js/main.js actualizados para filtrar/mostrar colores multiples correctamente.
-- UI de tallas reforzada visualmente con bloque destacado en tarjetas y dots de color multiples.
-- index.html actualizado para quitar dependencia de js/products.js y usar carga JSON desde main.js.
-- [2026-04-14] Ajuste final de requisitos (segunda iteracion de catalogo).
-- Eliminada la funcion residual de salida JS en generate_products.py y mantenido flujo exclusivo a data/products.json.
-- Catalogo reducido a 200 productos (40 por categoria).
-- Nombre de producto actualizado sin "Serie XXX" (ejemplo actual: "Zapatillas para Correr Pro Hombre").
-- Se agrego campo genero (Mujer/Hombre/Unisex) en generacion y filtros.
-- app.py actualizado con soporte de genero en extractor, buscador y respuestas, incluyendo endpoint /products para fallback del frontend.
-- data/intents.json actualizado con nuevo intent filtrar_genero y patrones asociados.
-- main.js actualizado para fallback de carga (data/products.json o API /products) y para aplicar filtro de genero desde chat.
-- [2026-04-14] Correccion de duplicidad de nombres y visualizacion de stock.
-- generate_products.py ahora genera nombres unicos por combinacion (tipo+adjetivo+genero) y evita repetidos en todo el catalogo.
-- Se corrigio la variacion de adjetivos para evitar patrones fijos repetitivos (ejemplo Crossfit ya no queda siempre en Aero).
-- Se agrego campo stock por producto y se muestra en tarjetas del frontend.
-- Verificacion de calidad: 200 productos, 200 nombres unicos, duplicados = 0.
-- [2026-04-14] Implementacion de filtro de precios en HTML.
-- Se agregaron controles de precio maximo (aplicar/limpiar) en el panel de filtros.
-- main.js actualizado para aplicar Precio_Maximo_Actual en render, filtro manual y filtro proveniente del chat.
-- Estilos de controles de precio incorporados en css/style.css.
-- app.py ajustado en la rama filtrar_genero para preservar y devolver max_price/category/color/talla dentro de filter_action.
-- [2026-04-14] Slider de precio en tiempo real + dependencias.
-- El filtro de precio quedo finalmente en un solo slider de precio maximo en tiempo real (sin boton aplicar).
-- main.js sincroniza valores de slider con filtros del chat y boton limpiar.
-- Creado requirements.txt con dependencias base del proyecto (Flask, Flask-CORS, NumPy, Torch).
-- [2026-04-14] Ajuste final del slider de precios a rango minimo-maximo unificado.
-- Se completo la migracion en main.js para usar un unico control visual con dos handles (minimo y maximo) en tiempo real.
-- El filtrado ahora evalua precio entre ambos limites y actualiza barra resaltada, etiquetas y estados al limpiar o recibir filtros del chat.
-- index.html/css/style.css y main.js quedan alineados con los ids/classes del rango dual (price-min-slider, price-max-slider, price-range-highlight).
-- [2026-04-14] Correccion de memoria conversacional por nombre de producto escrito.
-- app.py ahora detecta productos mencionados en texto libre (coincidencia exacta, codigo historico S-XX y coincidencia por tokens).
-- Se actualiza selected_product_id automaticamente sin depender del boton del robot, y se prioriza consultar_stock_item/consultar_precio_item segun palabras clave y ultimo contexto.
-- Validacion funcional realizada: al escribir "del <nombre_producto>" y luego pedir tallas, responde tallas del producto correcto sin desviar a listado generico de precios.
-- [2026-04-14] Correccion de respuesta de colores en contexto.
-- Se ajusto la inferencia contextual para no arrastrar consultar_stock_item cuando el usuario pregunta por colores.
-- Si hay producto seleccionado en memoria y el tag es colores, ahora responde los colores del producto contextual en lugar de devolver tallas o lista generica.
-- [2026-04-14] Ampliacion de detalle contextual (talla, genero y stock).
-- En consultas de stock/disponibilidad del producto en contexto, app.py ahora incluye tallas, genero y stock numerico en la misma respuesta.
-- Validacion funcional: luego de fijar producto por nombre, responde tallas + genero + stock y mantiene consulta de colores del mismo producto.
-- [2026-04-14] Mejora de entidades y filtro de genero visible en UI.
-- app.py: prioridad correcta para consultas de colores sobre producto en contexto, evitando que derive a busqueda generica.
-- app.py: busqueda por palabras clave parciales (entidades) integrada en Buscar_Productos y aplicada en rutas de chat/search; incluye sinonimos de dominio (tomatodo/termo -> botella).
-- app.py: cuando no hay coincidencias para entidad especifica (ej. tomatodo para mujer), devuelve mensaje de no encontrado en lugar de listado irrelevante.
-- index.html + css/style.css + js/main.js: agregado filtro manual de genero (Todos, Mujer, Hombre, Unisex) con sincronizacion total al estado de render y filter_action del chat.
-- [2026-04-14] Ajuste final de precision de resultados por entidad.
-- app.py: filter_action ahora propaga keywords detectadas para que el frontend filtre tambien por texto y no solo por genero/categoria.
-- app.py: sinonimos de dominio refinados (tomatodo/botella/termo -> tomatodo) y correccion de singular/plural en respuestas de cantidad.
-- js/main.js: Aplicar_Filtro_Desde_Chat sincroniza el campo de busqueda con keywords recibidas y resetea categoria a Todo cuando no llega category.
-- [2026-04-14] Correccion de filtro visual para tallas y limpieza de copy en chat.
-- app.py: se excluyeron tokens de talla (talla, xl, xxl, etc.) del extractor de keywords para evitar que se inyecten en el buscador del frontend y oculten resultados validos del catalogo.
-- app.py: se eliminaron respuestas con "Por ejemplo..." y se reemplazaron por mensajes orientados a seleccionar desde el catalogo ("indicame cual te interesa").
-- [2026-04-15] Implementacion de scraping separado + switch de catalogo auto/scraped.
-- Creado scrape_products.py independiente de generate_products.py para scrapear nombre/categoria/imagen con selectores CSS configurables y generar data/products_scraped.json.
-- scrape_products.py asigna color y talla de forma aleatoria (manteniendo el esquema del proyecto) y opcionalmente descarga imagenes locales en data/product_images_scraped.
-- app.py actualizado para manejar dos fuentes de catalogo (auto y scraped) con cambio de fuente en /products, /chat y /search, incluyendo persistencia de catalog_source por sesion.
-- index.html incorpora switch visual de catalogo (Automatico/Scrapeado).
-- js/main.js ahora recarga datos segun fuente seleccionada, envia catalog_source al backend y renderiza imagen de producto cuando existe el campo image.
-- css/style.css actualizado con estilos del switch y contenedor de imagen en tarjetas (responsive).
-- requirements.txt ampliado con dependencias de scraping: requests y beautifulsoup4.
-- Validacion: get_errors sin errores en app.py, scrape_products.py, js/main.js, css/style.css e index.html.
-- [2026-04-15] Ajuste de compatibilidad de selectores para irun.pe.
-- scrape_products.py: agregado fallback automatico de selector de tarjeta a .cart-product (y otros alternos) cuando el selector indicado no coincide.
-- scrape_products.py: agregado fallback de selector de nombre de producto (.card-product-title, .product-item-link, etc.) y categoria por titulo de pagina cuando no hay categoria por tarjeta.
-- Prueba real validada en https://irun.pe/catalogo/textil/ y https://irun.pe/catalogo/hombre/: generacion exitosa de data/products_scraped.json sin RuntimeError.
-- [2026-04-15] Ajuste de genero y cupo por URL en scraping de irun.pe.
-- scrape_products.py: el genero ya no se asigna aleatoriamente; ahora se infiere desde el titulo del producto (si contiene "Hombre" => Hombre, si contiene "Mujer" => Mujer, si no aparece ninguno => Unisex).
-- scrape_products.py: agregado argumento --limite-por-url (default=5) para extraer solo 5 articulos por enlace.
-- scrape_products.py: --url dejo de ser obligatorio; si no se envian URLs, el script usa por defecto el listado completo de enlaces de Mujer, Hombre, Juvenil, Ninos, Textil y Accesorios indicado por el usuario.
-- Validacion: diagnostico del editor sin errores en scrape_products.py.
-- [2026-04-15] Ajuste de categorias y UX de tarjetas para fuente scrapeada.
-- generate_products.py: eliminada la categoria MEDIAS y renombrada ACCESORIOS a OTROS en la configuracion de categorias.
-- scrape_products.py: mapeo de keywords de categoria actualizado para clasificar en OTROS (incluyendo aliases legacy de medias/accesorios) y fallback de categoria alineado a OTROS.
-- app.py y js/main.js: agregada normalizacion retrocompatible para convertir categorias legacy MEDIAS/ACCESORIOS a OTROS al cargar catalogos.
-- index.html: filtros de categoria actualizados (se quita Medias y se muestra Otros).
-- css/style.css + js/main.js: cuando la fuente activa es scrapeado, las imagenes de producto se renderizan mas grandes.
-- css/style.css: las tallas quedan ocultas por defecto y se muestran al hacer hover sobre la tarjeta (en moviles/touch se mantienen visibles para usabilidad).
-- Validacion: get_errors sin errores en app.py, generate_products.py, scrape_products.py, js/main.js, css/style.css e index.html.
-- [2026-04-15] Mejora de entrenamiento de intents en train_pytorch.py.
-- Alineada la representacion de entrada de entrenamiento con inferencia real (bolsa binaria de palabras) para evitar desajuste entre train y app.py.
-- Filtrado de n-gramas raros en el vocabulario (se redujo de 956 a 496 palabras) para disminuir ruido y sobreajuste.
-- Early stopping ahora selecciona mejor checkpoint por macro-F1 (con desempate por val loss) y el reporte final se calcula sobre ese mejor estado.
-- Entrenamiento balanceado por clase usando WeightedRandomSampler (ademas de class weights) para estabilizar clases minoritarias.
-- Resultado validado ejecutando entrenamiento completo: accuracy 0.739 -> 0.790, macro-F1 0.738 -> 0.770, weighted-F1 0.738 -> 0.789.
-- [2026-04-15] Segunda pasada de mejora: ajuste dirigido de intents + reentrenamiento.
-- data/intents.json: reforzados patrones en colores, consultar_stock_item, promociones e informacion_tienda; agregado soporte explicito de categoria OTROS en filtrar_categoria.
-- data/intents.json: reducido solape de pedidos con informacion_tienda reemplazando frases ambiguas de pago por frases de cierre de compra.
-- Reentrenamiento validado: accuracy 0.790 -> 0.811, macro-F1 0.770 -> 0.799, weighted-F1 0.789 -> 0.814.
-- Mejoras clave por clase: colores F1 0.500 -> 0.857, consultar_stock_item F1 0.667 -> 0.800, promociones F1 0.600 -> 0.800, informacion_tienda F1 0.750 -> 0.900.
-- [2026-04-15] Prueba de tercera pasada fina y rollback controlado.
-- Se probo una tercera variante de intents enfocada en separar despedida/agradecimiento y endurecer fuera_de_dominio.
-- Resultado de prueba: degradacion global (accuracy 0.769, macro-F1 0.774), por lo que se descarto la variante.
-- Se revirtio data/intents.json al estado de la segunda pasada y se reentreno para restaurar el modelo estable.
-- Estado final confirmado en data/model.pth: accuracy 0.811, macro-F1 0.799, weighted-F1 0.814.
-- [2026-04-15] Calibracion de inferencia en app.py (confianza + margen top1-top2).
-- app.py: Predecir_Tag ahora devuelve etiqueta, confianza y margen de separacion entre primera y segunda clase.
-- app.py: agregados Umbral_De_Margen_Base y Umbral_De_Margen_Por_Tag para endurecer tags mas ambiguos (buscar_producto, colores, consultar_stock_item, fuera_de_dominio).
-- app.py: la logica de fallback por patrones ahora se activa por prediccion ambigua (baja confianza o bajo margen), no solo por confianza.
-- Validacion ejecutada: import de app.py exitoso y pruebas rapidas de inferencia devolviendo formato (tag, confianza, margen) sin errores.
-- [2026-04-15] Correccion de fallos de chat reportados en pruebas visuales.
-- app.py: mejorada la deteccion de producto por texto parcial con fallback ponderado por rareza de tokens y soporte de empates de variantes cuando hay codigo/token fuerte.
-- app.py: agregado manejo explicito de seguimiento de pedido (rastreo/estado/donde esta mi pedido) para evitar respuestas de compra cuando el usuario consulta tracking.
-- app.py: consulta_precio ahora prioriza precio exacto si ya existe producto en contexto detectado por mensaje.
-- app.py: cuando no hay tag claro pero si palabras clave (ej. nimbus), ahora activa busqueda textual y responde con filter_action en lugar de "No entiendo".
-- Validacion ejecutada en catalogo scrapeado: "rastrear pedido", "donde esta mi pedido", "precio del nimbus 474f7" y "cuantas quedan del nimbus 474f7" responden correctamente.
-- [2026-04-15] Correccion de persistencia de filtros y memoria conversacional.
-- app.py: mejorada extraccion de precio para frases naturales como "tengo 50 soles" (sin requerir palabras tipo "hasta" o "menos de").
-- app.py: herencia contextual de filtros entre mensajes cortos para mantener category/color/genero/talla/max_price en conversaciones por pasos.
-- app.py: filter_action ahora se devuelve incluso cuando no hay resultados, para que el frontend aplique visualmente el rango de precio y filtros activos.
-- app.py: memoria del chat persistente en disco con shelve (data/chat_memory*) y guardado en cada actualizacion de contexto.
-- app.py: limpieza de keywords de ruido de presupuesto (tengo/soles/precio/presupuesto) para evitar que bloqueen resultados por texto.
-- Validacion: flujo "tengo 50 soles -> mujer -> verde" mantiene max_price=50 en todos los turnos; memoria recuperada en nueva ejecucion para la misma session_id.
+- Historial técnico comprimido para optimizar tokens.
+- Se implementaron filtros y mejoras de UX en el frontend (categoría, género, precio, tallas ocultas).
+- Se entrenó el modelo NLP con intents balanceados usando PyTorch (accuracy 0.811, macro-F1 0.799).
+- Se crearon y ajustaron scripts de scraping (`scrape_products.py`) para generar inventario automático.
+- Se incorporaron opciones de memoria persistente en el backend (`app.py`) usando `shelve`.
+
+- [2026-04-15] Calibración de inferencia en app.py (confianza + margen top1-top2).
+- `app.py`: Predecir_Tag ahora devuelve etiqueta, confianza y margen de separación entre primera y segunda clase.
+- `app.py`: agregados `Umbral_De_Margen_Base` y `Umbral_De_Margen_Por_Tag` para endurecer tags más ambiguos.
+- `app.py`: la lógica de fallback por patrones ahora se activa por predicción ambigua, no solo por confianza.
+
+- [2026-04-15] Corrección de fallos de chat reportados en pruebas visuales.
+- `app.py`: mejorada la detección de producto por texto parcial con fallback ponderado por rareza de tokens.
+- `app.py`: agregado manejo explícito de seguimiento de pedido.
+- `app.py`: consulta de precio ahora prioriza precio exacto si ya existe producto en contexto.
+
+- [2026-04-15] Corrección de persistencia de filtros y memoria conversacional.
+- `app.py`: mejorada extracción de precio para frases naturales como "tengo 50 soles".
+- `app.py`: herencia contextual de filtros entre mensajes cortos para mantener filtros en pasos.
+- `app.py`: `filter_action` se devuelve incluso cuando no hay resultados.
+- `app.py`: memoria del chat persistente en disco con `shelve`.
+- `app.py`: limpieza de keywords de ruido de presupuesto.
+
+- [2026-04-16] Limpieza de generación automática e implementación de voz.
+- Eliminados `generate_products.py` y `data/products.json` del proyecto.
+- Frontend (`index.html`, `js/main.js`) actualizado para remover los botones de selección de fuente de catálogo (auto/scraped) y utilizar por defecto los datos scrapeados.
+- Backend (`app.py`) limpiado de variables (`Ruta_Productos_Automaticos`, `Fuentes_De_Catalogo_Validas`) y fallback asociado a generación automática.
+- Integrado `faster-whisper` en `app.py` mediante un nuevo endpoint `/transcribe` para reconocimiento de voz usando el modelo "tiny".
+- Implementado soporte de micrófono nativo en `js/main.js` usando `MediaRecorder` y envío del audio como WebM al backend para su transcripción y posterior inyección en el flujo del chat.
+- Mejorada la inteligencia del bot para lidiar con el fuera de dominio, mediante el ajuste de `intents.json` e iteración sobre el fallback natural del bot.

@@ -14,10 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let Texto_De_Busqueda = '';
     let Cantidad_A_Mostrar = 12;
     let Carrito_Actual = JSON.parse(localStorage.getItem('senati_cart')) || [];
-    let Fuente_De_Catalogo_Actual = localStorage.getItem('senati_catalog_source') || 'auto';
-    if (!['auto', 'scraped'].includes(Fuente_De_Catalogo_Actual)) {
-        Fuente_De_Catalogo_Actual = 'auto';
-    }
 
     // Elements
     const Lista_De_Productos = document.getElementById('product-list');
@@ -39,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const Lista_Items_Carrito = document.getElementById('cart-items-list');
     const Monto_Total_Carrito = document.getElementById('cart-total-amount');
     const Insignia_Cantidad_Carrito = document.querySelector('.cart-count');
-    const Botones_De_Fuente_De_Catalogo = document.querySelectorAll('.catalog-source-btn');
 
     if (!Lista_De_Productos || !Texto_Conteo_Productos || !Boton_Cargar_Mas || !Panel_Carrito || !Overlay_Carrito || !Lista_Items_Carrito || !Monto_Total_Carrito || !Insignia_Cantidad_Carrito) {
         console.error('Faltan elementos clave del DOM para iniciar el dashboard.');
@@ -68,11 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Initialization
-    async function Cargar_Productos_Desde_Json(Fuente_De_Catalogo = 'auto') {
-        const Fuente_Normalizada = Fuente_De_Catalogo === 'scraped' ? 'scraped' : 'auto';
-        const Rutas_De_Carga = Fuente_Normalizada === 'scraped'
-            ? ['data/products_scraped.json', `${URL_Base_API}/products?source=scraped`]
-            : ['data/products.json', `${URL_Base_API}/products?source=auto`];
+    async function Cargar_Productos_Desde_Json() {
+        const Rutas_De_Carga = ['data/products_scraped.json', `${URL_Base_API}/products?source=scraped`];
 
         for (const Ruta of Rutas_De_Carga) {
             try {
@@ -95,14 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         return [];
-    }
-
-    function Actualizar_Botones_De_Fuente_De_Catalogo() {
-        if (!Botones_De_Fuente_De_Catalogo || !Botones_De_Fuente_De_Catalogo.length) return;
-
-        Botones_De_Fuente_De_Catalogo.forEach(Boton => {
-            Boton.classList.toggle('active', Boton.dataset.source === Fuente_De_Catalogo_Actual);
-        });
     }
 
     function Restablecer_Filtros_Visuales_Y_Estado() {
@@ -128,28 +112,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function Recargar_Catalogo_Activo() {
-        const Productos_Cargados = await Cargar_Productos_Desde_Json(Fuente_De_Catalogo_Actual);
-        if (Productos_Cargados.length || Fuente_De_Catalogo_Actual === 'scraped') {
+        const Productos_Cargados = await Cargar_Productos_Desde_Json();
+        if (Productos_Cargados.length) {
             Datos_De_Productos = Productos_Cargados;
         } else {
             Datos_De_Productos = Array.isArray(window.PRODUCT_DATA) ? window.PRODUCT_DATA : Productos_Cargados;
         }
         Configurar_Rango_De_Precio_Inicial();
         Actualizar_Botones_De_Genero();
-        Actualizar_Botones_De_Fuente_De_Catalogo();
         Restablecer_Filtros_Visuales_Y_Estado();
         Renderizar_Productos();
     }
 
     async function Inicializar_Dashboard() {
-        const Productos_Cargados = await Cargar_Productos_Desde_Json(Fuente_De_Catalogo_Actual);
-        if (Productos_Cargados.length || Fuente_De_Catalogo_Actual === 'scraped' || !Datos_De_Productos.length) {
+        const Productos_Cargados = await Cargar_Productos_Desde_Json();
+        if (Productos_Cargados.length || !Datos_De_Productos.length) {
             Datos_De_Productos = Productos_Cargados;
         }
 
         Configurar_Rango_De_Precio_Inicial();
         Actualizar_Botones_De_Genero();
-        Actualizar_Botones_De_Fuente_De_Catalogo();
 
         Renderizar_Productos();
         Actualizar_UI_Carrito();
@@ -216,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // PRODUCT RENDERING (Con soporte para filtro por color)
     // ============================================================
     function Renderizar_Productos() {
-        Lista_De_Productos.classList.toggle('source-scraped', Fuente_De_Catalogo_Actual === 'scraped');
+        Lista_De_Productos.classList.toggle('source-scraped', true);
 
         const Texto_Busqueda_En_Minusculas = Texto_De_Busqueda.toLowerCase();
         const Productos_Filtrados = Datos_De_Productos.filter(Producto => {
@@ -249,11 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Lista_De_Productos.innerHTML = '';
 
         if (!Datos_De_Productos.length) {
-            if (Fuente_De_Catalogo_Actual === 'scraped') {
-                Lista_De_Productos.innerHTML = '<p class="empty-msg">No hay catalogo scrapeado todavia. Ejecuta scrape_products.py para generarlo.</p>';
-            } else {
-                Lista_De_Productos.innerHTML = '<p class="empty-msg">No hay productos disponibles en el catalogo automatico.</p>';
-            }
+            Lista_De_Productos.innerHTML = '<p class="empty-msg">No hay catalogo scrapeado todavia. Ejecuta scrape_products.py para generarlo.</p>';
         } else if (Productos_Mostrados.length === 0) {
             Lista_De_Productos.innerHTML = '<p class="empty-msg">No se encontraron productos con ese filtro.</p>';
         } else {
@@ -265,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update count
         let filterText = '';
-        filterText += ` | Fuente: ${Fuente_De_Catalogo_Actual === 'scraped' ? 'Scrapeado' : 'Automatico'}`;
         if (Color_Actual) filterText += ` | Color: ${Color_Actual}`;
         if (Talla_Actual) filterText += ` | Talla: ${Talla_Actual}`;
         if (Genero_Actual) filterText += ` | Genero: ${Genero_Actual}`;
@@ -617,21 +594,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        if (Botones_De_Fuente_De_Catalogo && Botones_De_Fuente_De_Catalogo.length) {
-            Botones_De_Fuente_De_Catalogo.forEach(Boton => {
-                Boton.addEventListener('click', async () => {
-                    const Fuente_Nueva = Boton.dataset.source === 'scraped' ? 'scraped' : 'auto';
-                    if (Fuente_Nueva === Fuente_De_Catalogo_Actual) {
-                        return;
-                    }
-
-                    Fuente_De_Catalogo_Actual = Fuente_Nueva;
-                    localStorage.setItem('senati_catalog_source', Fuente_De_Catalogo_Actual);
-                    await Recargar_Catalogo_Activo();
-                });
-            });
-        }
-
         // Color circles listener
         const colorCircles = document.querySelectorAll('.color-circle');
         colorCircles.forEach(circle => {
@@ -700,7 +662,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const Carga_Util = {
             message: Mensaje_Usuario,
             session_id: 'user_local',
-            catalog_source: Fuente_De_Catalogo_Actual,
+            catalog_source: 'scraped',
         };
         
         if (Id_Producto_En_Contexto !== null) {
@@ -746,12 +708,59 @@ document.addEventListener('DOMContentLoaded', () => {
         Mensajes_Chat.scrollTop = Mensajes_Chat.scrollHeight;
     }
 
-    // Botón de micrófono (placeholder para WhisperX)
+    // Voice recording logic
+    let Grabadora_De_Medios = null;
+    let Segmentos_De_Audio = [];
+
     if (Boton_Microfono) {
-        Boton_Microfono.addEventListener('click', () => {
-            Agregar_Mensaje_Chat('[Reconocimiento de voz se implementara con WhisperX]', 'bot');
-            Boton_Microfono.classList.toggle('recording');
-            setTimeout(() => Boton_Microfono.classList.remove('recording'), 2000);
+        Boton_Microfono.addEventListener('click', async () => {
+            if (Grabadora_De_Medios && Grabadora_De_Medios.state === 'recording') {
+                Grabadora_De_Medios.stop();
+                Boton_Microfono.classList.remove('recording');
+                return;
+            }
+
+            try {
+                const Flujo_De_Audio = await navigator.mediaDevices.getUserMedia({ audio: true });
+                Grabadora_De_Medios = new MediaRecorder(Flujo_De_Audio);
+                Segmentos_De_Audio = [];
+
+                Grabadora_De_Medios.ondataavailable = e => {
+                    Segmentos_De_Audio.push(e.data);
+                };
+
+                Grabadora_De_Medios.onstop = async () => {
+                    const Blob_De_Audio = new Blob(Segmentos_De_Audio, { type: 'audio/webm' });
+                    const Datos_De_Formulario = new FormData();
+                    Datos_De_Formulario.append('audio', Blob_De_Audio, 'voice.webm');
+
+                    try {
+                        const Respuesta_De_Transcripcion = await fetch(`${URL_Base_API}/transcribe`, {
+                            method: 'POST',
+                            body: Datos_De_Formulario
+                        });
+
+                        const Datos_Transcritos = await Respuesta_De_Transcripcion.json();
+                        if (Datos_Transcritos.text) {
+                            Entrada_Chat.value = Datos_Transcritos.text;
+                            Enviar_Mensaje();
+                        } else if (Datos_Transcritos.error) {
+                            Agregar_Mensaje_Chat('Error de voz: ' + Datos_Transcritos.error, 'bot');
+                        }
+                    } catch (Error_De_Voz) {
+                        console.error('Error al transcribir:', Error_De_Voz);
+                        Agregar_Mensaje_Chat('No pude procesar tu voz en este momento.', 'bot');
+                    }
+
+                    Flujo_De_Audio.getTracks().forEach(track => track.stop());
+                };
+
+                Grabadora_De_Medios.start();
+                Boton_Microfono.classList.add('recording');
+            } catch (Error_De_Microfono) {
+                console.error('Error accediendo al microfono:', Error_De_Microfono);
+                Agregar_Mensaje_Chat('No se pudo acceder al microfono.', 'bot');
+            }
         });
     }
 

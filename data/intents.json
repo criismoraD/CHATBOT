@@ -695,11 +695,20 @@
         "dime un dato curioso",
         "estás ahí",
         "sigues funcionando",
-        "hablemos de otra cosa ya"
+        "hablemos de otra cosa ya",
+        "xyzxyz",
+        "asdasdasd",
+        "no entiendo nada",
+        "ayuda por favor",
+        "que me recomiendas",
+        "estoy perdido",
+        "como funciona esto",
+        "no se que buscar"
       ],
       "responses": [
-        "Soy el asistente virtual de SENATI SPORTS, especializado en productos deportivos.",
-        "Mi función es ayudarte con calzado, ropa y accesorios. ¿Qué buscas?"
+        "Soy el asistente virtual de SENATI SPORTS, especializado en productos deportivos. Por favor, intenta usar otras palabras relacionadas a nuestra tienda.",
+        "Mi función es ayudarte con calzado, ropa y accesorios. Si no encuentras lo que buscas, prueba usando los botones de filtro de la izquierda.",
+        "No logré entender tu consulta. Recuerda que puedo ayudarte a buscar zapatillas, polos y accesorios si me das algunos detalles."
       ]
     },
     {
