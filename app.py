@@ -5,7 +5,7 @@ import re
 import unicodedata
 import shelve
 
-from utils_texto import tokenizar as Tokenizar_Texto
+from train_pytorch import tokenizar as Tokenizar_Texto
 
 
 
@@ -13,7 +13,7 @@ import numpy as np
 import torch
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from model_arch import NeuralNet
+from train_pytorch import NeuralNet
 from faster_whisper import WhisperModel
 import tempfile
 
