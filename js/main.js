@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return Normalizar_Lista_De_Productos(Datos.products);
                 }
             } catch (Error_De_Carga) {
-                console.error(`No se pudo cargar productos desde ${Ruta}:`, Error_De_Carga);
+                console.error(`[FRONTEND] Error fetch en ${Ruta}:`, Error_De_Carga.message);
             }
         }
 

@@ -1,5 +1,0 @@
-
-# Instalar faster-whisper para reconocimiento de voz en app.py
-pip install faster-whisper
-python train_pytorch.py
-# update comandos

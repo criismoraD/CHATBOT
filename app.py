@@ -19,21 +19,8 @@ import tempfile
 
 app = Flask(__name__)
 
-# Configuración de CORS: Restringir orígenes permitidos por seguridad.
-Entorno_Origenes = os.getenv('SENATI_ALLOWED_ORIGINS')
-if Entorno_Origenes:
-    Origenes_Permitidos = [Origen.strip() for Origen in Entorno_Origenes.split(',')]
-else:
-    # Por defecto permitimos localhost y el puerto configurado
-    Puerto_Servidor = os.getenv('SENATI_PORT', '5000')
-    Origenes_Permitidos = [
-        "http://localhost",
-        f"http://localhost:{Puerto_Servidor}",
-        "http://127.0.0.1",
-        f"http://127.0.0.1:{Puerto_Servidor}"
-    ]
-
-CORS(app, origins=Origenes_Permitidos)
+# Configuración de CORS: Permitir cualquier origen para desarrollo local.
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 Ruta_Modelo_Pytorch = "data/model.pth"
 Ruta_Intents = "data/intents.json"

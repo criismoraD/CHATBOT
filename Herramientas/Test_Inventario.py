@@ -9,6 +9,9 @@ mock_modules = [
 for mod in mock_modules:
     sys.modules[mod] = MagicMock()
 
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 # Now we can import the function to test
 from app import Obtener_Detalle_De_Inventario
 

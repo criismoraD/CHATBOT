@@ -25,7 +25,7 @@ from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 
-from utils_inventario import (
+from Utils_Inventario import (
     Calificacion_Maxima,
     Calificacion_Minima,
     Categorias_De_Producto,
