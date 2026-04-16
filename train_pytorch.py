@@ -43,7 +43,7 @@ class NeuralNet(nn.Module):
         self.bn2 = nn.BatchNorm1d(hidden_size // 2)
         self.l3 = nn.Linear(hidden_size // 2, num_classes)
         self.relu = nn.ReLU()
-        self.dropout = nn.Dropout(0.5)
+        self.dropout = nn.Dropout(0.3)
 
     def forward(self, x):
         out = self.dropout(self.relu(self.bn1(self.l1(x))))
@@ -55,14 +55,14 @@ class NeuralNet(nn.Module):
 # --- CONFIGURACION ---
 Ruta_Intents = Path("data/intents.json")
 Ruta_Modelo = Path("data/model.pth")
-Semilla_Global = 42
+Semilla_Global = 100
 
 Tamano_Lote = 32
-Tamano_Capa_Oculta = 128
-Tasa_Aprendizaje = 0.001
-Numero_De_Epocas = 300
-Paciencia_EarlyStopping = 12
-Weight_Decay = 5e-4
+Tamano_Capa_Oculta = 512
+Tasa_Aprendizaje = 0.002
+Numero_De_Epocas = 400
+Paciencia_EarlyStopping = 30
+Weight_Decay = 1e-3
 Frecuencia_Minima_Unigrama = 1
 Frecuencia_Minima_NGrama = 2
 Delta_Minima_Mejora = 1e-4
@@ -243,7 +243,7 @@ def main():
         replacement=True,
     )
 
-    train_loader = DataLoader(Dataset_De_Chat(X_train, y_train), batch_size=Tamano_Lote, sampler=sampler_balanceado)
+    train_loader = DataLoader(Dataset_De_Chat(X_train, y_train), batch_size=Tamano_Lote, sampler=sampler_balanceado, drop_last=True)
     val_loader = DataLoader(Dataset_De_Chat(X_val, y_val), batch_size=Tamano_Lote)
     
     modelo, y_true, y_pred = Entrenar_Modelo(train_loader, val_loader, len(vocab), len(tags), pesos)
