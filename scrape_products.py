@@ -25,13 +25,14 @@ from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 
-from generate_products import (
+from utils_inventario import (
     Calificacion_Maxima,
     Calificacion_Minima,
     Categorias_De_Producto,
     Colores_Disponibles,
     Elegir_Colores_Disponibles,
     Elegir_Tallas_Disponibles,
+    Imprimir_Resumen,
     Stock_Maximo,
     Stock_Minimo,
 )
@@ -312,8 +313,8 @@ def Construir_Producto_Estandar(
     Color_Principal = Colores_Del_Producto[0]
     Tallas_Disponibles = Elegir_Tallas_Disponibles(Configuracion["tallas"])
 
-    Precio_Minimo, Precio_Maximo = Configuracion["price_range"]
-    Precio_Actual = round(random.uniform(Precio_Minimo, Precio_Maximo), 2)
+    # Se usa un precio base por defecto ya que el rango se elimino de las utilidades
+    Precio_Actual = round(random.uniform(50.0, 200.0), 2)
 
     Genero_Del_Producto = Inferir_Genero_Desde_Nombre(Nombre_Producto)
     Stock_Actual = random.randint(Stock_Minimo, Stock_Maximo)
@@ -460,16 +461,6 @@ def Guardar_Productos_Json(Lista_De_Productos, Ruta_Salida):
     print(f"[OK] Archivo generado: {Ruta_Salida.as_posix()} ({len(Lista_De_Productos)} productos)")
 
 
-def Imprimir_Resumen(Lista_De_Productos):
-    Conteo_Por_Categoria = {}
-    for Producto in Lista_De_Productos:
-        Categoria = Producto.get("category", "SIN_CATEGORIA")
-        Conteo_Por_Categoria[Categoria] = Conteo_Por_Categoria.get(Categoria, 0) + 1
-
-    print("\n--- RESUMEN SCRAPING ---")
-    for Categoria, Cantidad in sorted(Conteo_Por_Categoria.items()):
-        print(f"  {Categoria}: {Cantidad}")
-    print(f"Total: {len(Lista_De_Productos)}")
 
 
 def Parsear_Argumentos():
