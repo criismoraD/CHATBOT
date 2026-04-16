@@ -42,6 +42,6 @@
 - `scrape_products.py`: Migrada la función `Imprimir_Resumen` a `utils_inventario.py` y actualizados los imports.
 # Mejoras al modelo de intención (NLP)
 
-- Se incrementaron los patrones de entrenamiento en data/intents.json (de ~600 a ~2000) para evitar sobreajuste y perfeccionar scores irreales.
-- Se afinó train_pytorch.py (ajuste de learning rate, weight decay, tamaño oculto y control de BatchNorm) logrando estabilizar las validaciones por encima del umbral requerido de 0.8 de F1-score sin tocar el 1.0 artificial.
+- Se incrementaron los patrones de entrenamiento masivamente en data/intents.json (de ~600 a ~1700) para evitar sobreajuste y perfeccionar scores irreales.
+- Se afinó train_pytorch.py (ajuste de learning rate, weight decay, tamaño oculto y control de BatchNorm) logrando estabilizar las validaciones por encima del umbral requerido de 0.8 de F1-score sin tocar el 1.0 artificial globalmente.
 - Se actualizó el archivo de pruebas test_inventory.py para contemplar dependencias de Torch en los mocks.
