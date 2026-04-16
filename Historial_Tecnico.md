@@ -33,3 +33,7 @@
 
 - [2026-04-16] Actualización de dependencias.
 - `requirements.txt`: Agregado `faster-whisper`.
+
+- [2026-04-16] Mejora de salud del código: Refactorización de Imprimir_Resumen.
+- Creado `utils_inventario.py` para centralizar utilidades de inventario y restaurar constantes perdidas por la eliminación de `generate_products.py`.
+- `scrape_products.py`: Migrada la función `Imprimir_Resumen` a `utils_inventario.py` y actualizados los imports.
