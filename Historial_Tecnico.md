@@ -30,3 +30,6 @@
 - Integrado `faster-whisper` en `app.py` mediante un nuevo endpoint `/transcribe` para reconocimiento de voz usando el modelo "tiny".
 - Implementado soporte de micrófono nativo en `js/main.js` usando `MediaRecorder` y envío del audio como WebM al backend para su transcripción y posterior inyección en el flujo del chat.
 - Mejorada la inteligencia del bot para lidiar con el fuera de dominio, mediante el ajuste de `intents.json` e iteración sobre el fallback natural del bot.
+
+- [2026-04-16] Actualización de dependencias.
+- `requirements.txt`: Agregado `faster-whisper`.
