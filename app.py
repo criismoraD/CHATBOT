@@ -5,12 +5,13 @@ import re
 import unicodedata
 import shelve
 
-from train_pytorch import tokenizar as Tokenizar_Texto
-
-
+from utils_nlp import tokenizar_y_lematizar as Tokenizar_Texto
+from utils_nlp import limpiar_texto as Normalizar_Texto_Base_NLP
 
 import numpy as np
 import torch
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from train_pytorch import NeuralNet
@@ -53,11 +54,16 @@ Modelo_Voz = WhisperModel("tiny", device="cuda" if torch.cuda.is_available() els
 if os.path.exists(Ruta_Modelo_Pytorch):
     try:
         data_model = torch.load(Ruta_Modelo_Pytorch, map_location=Dispositivo, weights_only=False)
-        Modelo_IA = NeuralNet(data_model["input_size"], data_model["hidden_size"], data_model["output_size"]).to(Dispositivo)
+        Modelo_IA = NeuralNet(
+            data_model["input_size"],
+            data_model["hidden_size"],
+            data_model["output_size"]
+        ).to(Dispositivo)
         Modelo_IA.load_state_dict(data_model["model_state"])
         Modelo_IA.eval()
         Todas_Las_Palabras = data_model["all_words"]
         Etiquetas_De_Intencion = data_model["tags"]
+        Longitud_Maxima_Secuencia = data_model.get("max_length", 10)
         print("[OK] Modelo PyTorch cargado.")
     except Exception as e:
         print(f"[ERROR] Modelo .pth: {e}")
@@ -142,21 +148,29 @@ def Cambiar_Fuente_De_Catalogo(Fuente_Solicitada):
 # 2. FUNCIONES DE IA
 # ============================================================
 
-def Construir_Bolsa_De_Palabras(Palabras_Tokenizadas, Vocabulario_Total):
-    Bolsa_De_Palabras = np.zeros(len(Vocabulario_Total), dtype=np.float32)
-    for Indice, Palabra in enumerate(Vocabulario_Total):
-        if Palabra in Palabras_Tokenizadas:
-            Bolsa_De_Palabras[Indice] = 1.0
-    return Bolsa_De_Palabras
+def Construir_Secuencia(Palabras_Tokenizadas, Vocabulario_Total, Longitud_Maxima):
+    Indice_Vocabulario = {palabra: indice for indice, palabra in enumerate(Vocabulario_Total)}
+    Secuencia = []
+    for Palabra in Palabras_Tokenizadas:
+        indice = Indice_Vocabulario.get(Palabra)
+        if indice is not None:
+            Secuencia.append(indice)
+
+    if len(Secuencia) < Longitud_Maxima:
+        Secuencia.extend([0] * (Longitud_Maxima - len(Secuencia)))
+    else:
+        Secuencia = Secuencia[:Longitud_Maxima]
+
+    return np.array(Secuencia, dtype=np.int64)
 
 
 def Predecir_Tag(Texto_Consulta):
-    """Usa el modelo PyTorch para predecir el tag de una oración."""
+    """Usa el modelo PyTorch LSTM para predecir el tag de una oración."""
     if not Modelo_IA:
         return None, 0.0, 0.0
 
     Palabras = Tokenizar_Texto(Texto_Consulta)
-    Vector_Entrada = Construir_Bolsa_De_Palabras(Palabras, Todas_Las_Palabras)
+    Vector_Entrada = Construir_Secuencia(Palabras, Todas_Las_Palabras, Longitud_Maxima_Secuencia)
     Vector_Entrada = Vector_Entrada.reshape(1, Vector_Entrada.shape[0])
     Vector_Entrada = torch.from_numpy(Vector_Entrada).to(Dispositivo)
 
@@ -175,30 +189,26 @@ def Predecir_Tag(Texto_Consulta):
 # ============================================================
 # 3. BÚSQUEDA INTELIGENTE DE PRODUCTOS
 # ============================================================
-Mapa_De_Colores = {
-    "negro": "Negro", "negra": "Negro", "negros": "Negro", "negras": "Negro",
-    "blanco": "Blanco", "blanca": "Blanco", "blancos": "Blanco", "blancas": "Blanco",
-    "rojo": "Rojo", "roja": "Rojo", "rojos": "Rojo", "rojas": "Rojo",
-    "azul": "Azul", "azules": "Azul",
-    "gris": "Gris", "grises": "Gris",
-    "verde": "Verde", "verdes": "Verde"
-}
+from thefuzz import process
 
-Mapa_De_Categorias = {
-    "zapatillas": "CALZADO", "zapatilla": "CALZADO", "zapas": "CALZADO",
-    "zapa": "CALZADO", "zapatos": "CALZADO",
-    "zapato": "CALZADO", "botines": "CALZADO", "botin": "CALZADO",
-    "chimpunes": "CALZADO", "chimpun": "CALZADO", "calzado": "CALZADO", "botas": "CALZADO",
-    "polos": "POLOS", "polo": "POLOS", "camiseta": "POLOS",
-    "camisetas": "POLOS", "jersey": "POLOS", "top": "POLOS", "bividi": "POLOS",
-    "pantalones": "PANTALONES", "pantalon": "PANTALONES", "short": "PANTALONES",
-    "shorts": "PANTALONES", "leggings": "PANTALONES", "buzo": "PANTALONES",
-    "medias": "OTROS", "calcetines": "OTROS", "tobilleras": "OTROS",
-    "accesorios": "OTROS", "accesorio": "OTROS", "otros": "OTROS", "otro": "OTROS",
-    "gorra": "OTROS", "gorras": "OTROS", "mochila": "OTROS", "mochilas": "OTROS",
-    "reloj": "OTROS", "guantes": "OTROS", "botella": "OTROS", "botellas": "OTROS",
-    "termo": "OTROS", "termos": "OTROS"
-}
+# Variables dinamicas
+Colores_Dinamicos = set()
+Categorias_Dinamicas = set()
+
+def Extraer_Entidades_Dinamicas():
+    global Colores_Dinamicos, Categorias_Dinamicas
+    Colores_Dinamicos.clear()
+    Categorias_Dinamicas.clear()
+
+    for prod in Datos_De_Productos:
+        cat = prod.get("category")
+        if cat:
+            Categorias_Dinamicas.add(cat)
+
+        colores = Obtener_Colores_De_Producto(prod)
+        for col in colores:
+            if col:
+                Colores_Dinamicos.add(col)
 
 Mapa_De_Genero = {
     "mujer": "Mujer", "mujeres": "Mujer", "dama": "Mujer", "damas": "Mujer",
@@ -253,7 +263,7 @@ def Es_Consulta_De_Seguimiento_De_Pedido(Mensaje_Usuario):
     return any(re.search(Patron, Texto_Normalizado) for Patron in Patrones_De_Seguimiento)
 
 def Extraer_Filtros(Mensaje_Usuario):
-    """Extrae categoría, color, precio y talla del mensaje del usuario."""
+    """Extrae categoría, color, precio y talla del mensaje del usuario usando thefuzz."""
     Mensaje_En_Minusculas = Mensaje_Usuario.lower()
     Palabras_Separadas = Mensaje_En_Minusculas.split()
     
@@ -264,12 +274,56 @@ def Extraer_Filtros(Mensaje_Usuario):
     Talla_Detectada = None
     
     for Palabra in Palabras_Separadas:
-        if Palabra in Mapa_De_Colores and not Color_Detectado:
-            Color_Detectado = Mapa_De_Colores[Palabra]
-        if Palabra in Mapa_De_Categorias and not Categoria_Detectada:
-            Categoria_Detectada = Mapa_De_Categorias[Palabra]
+        # Extraer genero (se mantiene en diccionario por ser pocos y fijos)
         if Palabra in Mapa_De_Genero and not Genero_Detectado:
             Genero_Detectado = Mapa_De_Genero[Palabra]
+
+    # Variables de apoyo adicionales para sinónimos comunes que TheFuzz podría no conectar a la categoría
+    Sinonimos_De_Categorias = {
+        "zapatillas": "CALZADO", "zapatilla": "CALZADO", "zapas": "CALZADO", "zapatos": "CALZADO", "zapato": "CALZADO",
+        "botines": "CALZADO", "botin": "CALZADO", "chimpunes": "CALZADO", "botas": "CALZADO",
+        "polo": "POLOS", "camiseta": "POLOS", "camisetas": "POLOS", "jersey": "POLOS", "bividi": "POLOS",
+        "pantalon": "PANTALONES", "short": "PANTALONES", "shorts": "PANTALONES", "leggings": "PANTALONES", "buzo": "PANTALONES",
+        "medias": "OTROS", "calcetines": "OTROS", "tobilleras": "OTROS", "accesorios": "OTROS", "accesorio": "OTROS",
+        "gorra": "OTROS", "gorras": "OTROS", "mochila": "OTROS", "mochilas": "OTROS", "reloj": "OTROS", "guantes": "OTROS",
+        "botella": "OTROS", "termo": "OTROS"
+    }
+
+    Sinonimos_De_Colores = {
+        "negra": "Negro", "negros": "Negro", "negras": "Negro",
+        "blanca": "Blanco", "blancos": "Blanco", "blancas": "Blanco",
+        "roja": "Rojo", "rojos": "Rojo", "rojas": "Rojo",
+        "azules": "Azul",
+        "grises": "Gris",
+        "verdes": "Verde"
+    }
+
+    # Extraer Categoria usando TheFuzz iterando palabras
+    # Ampliamos la busqueda thefuzz contra los sinonimos tambien
+    Opciones_Categorias = list(Categorias_Dinamicas) + list(Sinonimos_De_Categorias.keys())
+    if Opciones_Categorias:
+        for Palabra in Palabras_Separadas:
+            if not Categoria_Detectada:
+                Match_Cat = process.extractOne(Palabra, Opciones_Categorias)
+                if Match_Cat and Match_Cat[1] >= 80:
+                    if Match_Cat[0] in Sinonimos_De_Categorias:
+                        Categoria_Detectada = Sinonimos_De_Categorias[Match_Cat[0]]
+                    else:
+                        Categoria_Detectada = Match_Cat[0]
+                    break
+
+    # Extraer Color usando TheFuzz iterando palabras
+    Opciones_Colores = list(Colores_Dinamicos) + list(Sinonimos_De_Colores.keys())
+    if Opciones_Colores:
+        for Palabra in Palabras_Separadas:
+            if not Color_Detectado:
+                Match_Color = process.extractOne(Palabra, Opciones_Colores)
+                if Match_Color and Match_Color[1] >= 80:
+                    if Match_Color[0] in Sinonimos_De_Colores:
+                        Color_Detectado = Sinonimos_De_Colores[Match_Color[0]]
+                    else:
+                        Color_Detectado = Match_Color[0]
+                    break
 
     Coincidencia_De_Talla = Patron_De_Talla.search(Mensaje_En_Minusculas)
     if Coincidencia_De_Talla:
@@ -298,7 +352,7 @@ def Extraer_Palabras_Clave_De_Mensaje(Mensaje_Usuario):
         Es_Sinonimo_Dominio = Token != Token_Original
         if Token in Palabras_Vacias_De_Busqueda:
             continue
-        if (not Es_Sinonimo_Dominio) and (Token in Mapa_De_Categorias or Token in Mapa_De_Colores or Token in Mapa_De_Genero):
+        if (not Es_Sinonimo_Dominio) and (Token in Mapa_De_Genero):
             continue
         if Token in {"talla", "tallas", "xs", "s", "m", "l", "xl", "xxl"}:
             continue
@@ -394,24 +448,12 @@ def Heredar_Filtros_De_Contexto(
 
 
 def Buscar_Productos(Categoria=None, Color=None, Precio_Maximo=None, Talla=None, Genero=None, Palabras_Clave=None, Limite=5):
-    """Busca productos filtrados por categoría, color, precio y/o talla."""
-    Resultados = Datos_De_Productos
+    """Busca productos usando similitud del coseno (TF-IDF) y filtros estrictos."""
     
-    if Categoria:
-        Resultados = [p for p in Resultados if p['category'] == Categoria]
-    if Color:
-        Resultados = [
-            p
-            for p in Resultados
-            if Color in Obtener_Colores_De_Producto(p)
-        ]
-    if Precio_Maximo is not None:
-        Resultados = [p for p in Resultados if p['price'] <= Precio_Maximo]
-    if Talla:
-        # Algunos productos pueden no tener tallas definidas.
-        Resultados = [p for p in Resultados if 'tallas' in p and Talla in p['tallas']]
-    if Genero:
-        Resultados = [p for p in Resultados if p.get('genero') == Genero]
+    try:
+        Limite_Seguro = max(1, int(Limite))
+    except (TypeError, ValueError):
+        Limite_Seguro = 5
 
     Lista_De_Palabras_Clave = []
     if isinstance(Palabras_Clave, str) and Palabras_Clave.strip():
@@ -419,32 +461,46 @@ def Buscar_Productos(Categoria=None, Color=None, Precio_Maximo=None, Talla=None,
     elif isinstance(Palabras_Clave, list):
         Lista_De_Palabras_Clave = [str(Palabra).lower() for Palabra in Palabras_Clave if str(Palabra).strip()]
 
-    if Lista_De_Palabras_Clave:
-        Resultados_Textuales = []
-        for Producto in Resultados:
-            Texto_De_Producto = " ".join([
-                str(Producto.get('name', '')),
-                str(Producto.get('description', '')),
-                str(Producto.get('category', '')),
-                str(Producto.get('genero', '')),
-                " ".join(Obtener_Colores_De_Producto(Producto)),
-                " ".join(Producto.get('tallas', [])) if isinstance(Producto.get('tallas'), list) else ''
-            ])
-            Texto_De_Producto_Normalizado = Normalizar_Texto_Base(Texto_De_Producto)
-            if any(Palabra_Clave in Texto_De_Producto_Normalizado for Palabra_Clave in Lista_De_Palabras_Clave):
-                Resultados_Textuales.append(Producto)
-        Resultados = Resultados_Textuales
-    
-    if not Resultados:
-        return []
-    
-    try:
-        Limite_Seguro = max(1, int(Limite))
-    except (TypeError, ValueError):
-        Limite_Seguro = 5
+    Indices_Filtrados = list(range(len(Datos_De_Productos)))
 
-    # Devolver hasta 'limit' productos al azar
-    return random.sample(Resultados, min(Limite_Seguro, len(Resultados)))
+    # Aplicamos filtros estrictos si los hay
+    if Categoria:
+        Indices_Filtrados = [i for i in Indices_Filtrados if Datos_De_Productos[i]['category'] == Categoria]
+    if Color:
+        Indices_Filtrados = [i for i in Indices_Filtrados if Color in Obtener_Colores_De_Producto(Datos_De_Productos[i])]
+    if Precio_Maximo is not None:
+        Indices_Filtrados = [i for i in Indices_Filtrados if Datos_De_Productos[i]['price'] <= Precio_Maximo]
+    if Talla:
+        Indices_Filtrados = [i for i in Indices_Filtrados if 'tallas' in Datos_De_Productos[i] and Talla in Datos_De_Productos[i]['tallas']]
+    if Genero:
+        Indices_Filtrados = [i for i in Indices_Filtrados if Datos_De_Productos[i].get('genero') == Genero]
+
+    if not Indices_Filtrados:
+        return []
+
+    # Si hay palabras clave de búsqueda libre, aplicamos TF-IDF semántico
+    if Lista_De_Palabras_Clave and Vectorizador_TFIDF is not None:
+        Query_Texto = " ".join(Lista_De_Palabras_Clave)
+        Vector_Query = Vectorizador_TFIDF.transform([Query_Texto])
+
+        # Calcular similitud solo para los productos que pasaron los filtros
+        Similitudes = cosine_similarity(Vector_Query, Matriz_TFIDF_Productos[Indices_Filtrados]).flatten()
+
+        # Ordenar por similitud (mayor a menor)
+        Indices_Ordenados_Por_Similitud = np.argsort(Similitudes)[::-1]
+
+        Resultados_Ordenados = []
+        for idx in Indices_Ordenados_Por_Similitud:
+            if Similitudes[idx] > 0.1: # Umbral mínimo de similitud
+                Resultados_Ordenados.append(Datos_De_Productos[Indices_Filtrados[idx]])
+
+        Resultados = Resultados_Ordenados
+    else:
+        # Si no hay texto libre, devolver aleatorios que cumplan los filtros
+        Resultados = [Datos_De_Productos[i] for i in Indices_Filtrados]
+        random.shuffle(Resultados)
+
+    return Resultados[:Limite_Seguro]
 
 
 def Obtener_Colores_De_Producto(Producto):
@@ -457,11 +513,7 @@ def Obtener_Colores_De_Producto(Producto):
 
 
 def Normalizar_Texto_Base(Texto_Entrada):
-    Texto_En_Minusculas = (Texto_Entrada or '').lower().strip()
-    Texto_Sin_Tildes = unicodedata.normalize('NFKD', Texto_En_Minusculas)
-    Texto_Sin_Tildes = ''.join(Caracter for Caracter in Texto_Sin_Tildes if not unicodedata.combining(Caracter))
-    Texto_Limpio = re.sub(r'[^a-z0-9\s-]', ' ', Texto_Sin_Tildes)
-    return re.sub(r'\s+', ' ', Texto_Limpio).strip()
+    return Normalizar_Texto_Base_NLP(Texto_Entrada or '')
 
 
 def Reconstruir_Indice_De_Nombres_De_Producto():
@@ -634,7 +686,31 @@ def Obtener_Detalle_De_Inventario(Producto):
     return Texto_De_Tallas, Texto_De_Genero, Texto_De_Stock, Stock_Entero
 
 
+# Variables del buscador semantico
+Vectorizador_TFIDF = None
+Matriz_TFIDF_Productos = None
+Lista_Textos_Productos = []
+
+def Inicializar_Motor_Semantico():
+    global Vectorizador_TFIDF, Matriz_TFIDF_Productos, Lista_Textos_Productos
+
+    if not Datos_De_Productos:
+        return
+
+    Lista_Textos_Productos = []
+    for prod in Datos_De_Productos:
+        texto = f"{prod.get('name', '')} {prod.get('description', '')} {prod.get('category', '')} {prod.get('genero', '')}"
+        colores = " ".join(Obtener_Colores_De_Producto(prod))
+        tallas = " ".join(prod.get('tallas', [])) if isinstance(prod.get('tallas'), list) else ''
+        texto_completo = f"{texto} {colores} {tallas}"
+        Lista_Textos_Productos.append(Normalizar_Texto_Base(texto_completo))
+
+    Vectorizador_TFIDF = TfidfVectorizer()
+    Matriz_TFIDF_Productos = Vectorizador_TFIDF.fit_transform(Lista_Textos_Productos)
+
 Cambiar_Fuente_De_Catalogo(Fuente_Activa_De_Catalogo)
+Extraer_Entidades_Dinamicas()
+Inicializar_Motor_Semantico()
 
 # ============================================================
 # 4. MEMORIA DEL CHAT
@@ -751,10 +827,10 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
 
     # Si encontramos un color, precio o categoria específicos pero el modelo dice otra cosa genérica
     # forzamos a que actue como busqueda (Prioridad a la búsqueda real)
-    if (Color_Filtro or Precio_Maximo_Filtro or Genero_Filtro) and Etiqueta_Detectada == "saludo":
+    if (Color_Filtro or Precio_Maximo_Filtro or Genero_Filtro or Categoria_Filtro or Talla_Filtro) and Etiqueta_Detectada in {"saludo", "pedidos", "fuera_de_dominio"}:
         Etiqueta_Detectada = "buscar_producto"
 
-    if Etiqueta_Detectada == "colores" and (Precio_Maximo_Filtro or Genero_Filtro) and not Hay_Producto_En_Contexto:
+    if Etiqueta_Detectada == "colores" and (Precio_Maximo_Filtro or Genero_Filtro or Categoria_Filtro or not Hay_Producto_En_Contexto):
         Etiqueta_Detectada = "buscar_producto"
 
     if Es_Consulta_De_Seguimiento and Etiqueta_Detectada in {None, "pedidos", "fuera_de_dominio"}:
@@ -780,6 +856,10 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
         if Etiqueta_Detectada is None:
             Etiqueta_Detectada = "fuera_de_dominio"
 
+    # Si detectamos atributos pero el modelo falla o se confunde, asumimos buscar_producto.
+    if Prediccion_Ambigua and (Categoria_Filtro or Color_Filtro or Precio_Maximo_Filtro or Talla_Filtro or Genero_Filtro):
+        Etiqueta_Detectada = "buscar_producto"
+
     if Es_Consulta_De_Seguimiento and Etiqueta_Detectada in {None, "pedidos", "fuera_de_dominio"}:
         Etiqueta_Detectada = "pedidos"
 
@@ -788,6 +868,9 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
     
     # --- LÓGICA POR TAG ---
     if Etiqueta_Detectada == "buscar_producto":
+        # State Machine / Slot Filling Logic
+        # Require some critical slots to perform a meaningful search if keywords are absent
+        # We have enough slots or text to search
         Productos_Encontrados = Buscar_Productos(
             Categoria=Categoria_Filtro,
             Color=Color_Filtro,
@@ -796,13 +879,32 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             Genero=Genero_Filtro,
             Palabras_Clave=Palabras_Clave_Detectadas,
         )
-        if Productos_Encontrados:
+
+        if not Productos_Encontrados and not Palabras_Clave_Detectadas and not Categoria_Filtro and Color_Filtro:
+            # Only color provided and nothing found
+            Respuesta_Final = f"Me parece genial el color {Color_Filtro.lower()}, pero ¿qué buscas exactamente? ¿Zapatillas, polos, pantalones o algo más?"
+            Accion_De_Filtro = {
+                "color": Color_Filtro,
+                "max_price": Precio_Maximo_Filtro,
+                "talla": Talla_Filtro,
+                "genero": Genero_Filtro,
+            }
+        elif not Productos_Encontrados and not Palabras_Clave_Detectadas and not Categoria_Filtro and Talla_Filtro:
+            # Only size provided and nothing found
+            Respuesta_Final = f"Talla {Talla_Filtro}, perfecto. ¿Pero de qué producto? ¿Buscas calzado o alguna prenda en particular?"
+            Accion_De_Filtro = {
+                "color": Color_Filtro,
+                "max_price": Precio_Maximo_Filtro,
+                "talla": Talla_Filtro,
+                "genero": Genero_Filtro,
+            }
+        elif Productos_Encontrados:
             Texto_De_Filtro = ""
             if Color_Filtro: Texto_De_Filtro += f" en color {Color_Filtro}"
-            if Categoria_Filtro: Texto_De_Filtro += f" de {Categoria_Filtro}"
+            if Categoria_Filtro: Texto_De_Filtro += f" de {Categoria_Filtro.lower()}"
             if Talla_Filtro: Texto_De_Filtro += f" talla {Talla_Filtro}"
             if Genero_Filtro: Texto_De_Filtro += f" para {Genero_Filtro.lower()}"
-            Respuesta_Final = f"Encontre {len(Productos_Encontrados)} productos{Texto_De_Filtro}. Ya te los muestro en el catalogo, indicame cual te interesa."
+            Respuesta_Final = f"Encontré {len(Productos_Encontrados)} productos{Texto_De_Filtro}. Ya te los muestro en el catálogo, indícame cuál te interesa."
             Accion_De_Filtro = {
                 "category": Categoria_Filtro,
                 "color": Color_Filtro,
@@ -812,7 +914,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 "keywords": Palabras_Clave_Detectadas,
             }
         else:
-            Respuesta_Final = "Lo siento, no encontre productos con esas caracteristicas. Prueba con otro color o categoria."
+            Respuesta_Final = "Lo siento, no encontré productos con esas características exactas. Intenta ampliar tu búsqueda."
             Accion_De_Filtro = {
                 "category": Categoria_Filtro,
                 "color": Color_Filtro,
@@ -1031,10 +1133,10 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             else:
                 Respuesta_Final = "Actualmente no sé por qué producto estás preguntando. ¿Me indicas cuál?"
     
-    elif Etiqueta_Detectada:
+    elif Etiqueta_Detectada and Etiqueta_Detectada != "fuera_de_dominio":
         Respuesta_Final = Obtener_Respuesta_Aleatoria_De_Intent(Etiqueta_Detectada) or "No entiendo tu consulta. puedes repetirla?."
     else:
-        # Si no se detecto ningun tag, intentar buscar por filtros
+        # Si no se detecto ningun tag, intentar buscar por filtros (fallback con slot filling)
         if Categoria_Filtro or Color_Filtro or Genero_Filtro or Palabras_Clave_Detectadas:
             Productos_Encontrados = Buscar_Productos(
                 Categoria=Categoria_Filtro,
@@ -1043,7 +1145,24 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 Genero=Genero_Filtro,
                 Palabras_Clave=Palabras_Clave_Detectadas,
             )
-            if Productos_Encontrados:
+
+            if not Productos_Encontrados and not Palabras_Clave_Detectadas and not Categoria_Filtro and Color_Filtro:
+                Respuesta_Final = f"Me parece genial el color {Color_Filtro.lower()}, pero ¿qué buscas exactamente? ¿Zapatillas, polos, pantalones o algo más?"
+                Accion_De_Filtro = {
+                    "color": Color_Filtro,
+                    "max_price": Precio_Maximo_Filtro,
+                    "talla": Talla_Filtro,
+                    "genero": Genero_Filtro,
+                }
+            elif not Productos_Encontrados and not Palabras_Clave_Detectadas and not Categoria_Filtro and Talla_Filtro:
+                Respuesta_Final = f"Talla {Talla_Filtro}, perfecto. ¿Pero de qué producto? ¿Buscas calzado o alguna prenda en particular?"
+                Accion_De_Filtro = {
+                    "color": Color_Filtro,
+                    "max_price": Precio_Maximo_Filtro,
+                    "talla": Talla_Filtro,
+                    "genero": Genero_Filtro,
+                }
+            elif Productos_Encontrados:
                 Respuesta_Final = "Encontre productos con esos filtros. Ya te los muestro en el catalogo, indicame cual te interesa."
                 Accion_De_Filtro = {
                     "category": Categoria_Filtro,

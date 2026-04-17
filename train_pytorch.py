@@ -16,39 +16,32 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score, f1_score
 from sklearn.utils.class_weight import compute_class_weight
 
-# --- DE utils_texto.py ---
-def _stem_es(p):
-    if p.endswith('es') and len(p) > 4: return p[:-2]
-    if p.endswith('s') and len(p) > 3: return p[:-1]
-    return p
-
-STOP = {'el','la','los','las','de','del','un','una','y','o'}
-
-def tokenizar(texto: str) -> list[str]:
-    texto = unicodedata.normalize('NFD', texto.lower())
-    texto = ''.join(c for c in texto if unicodedata.category(c)!= 'Mn')
-    texto = re.sub(r'[^a-z0-9ñü\s]', ' ', texto)
-    tokens = [t for t in re.sub(r'\s+', ' ', texto).strip().split() if t not in STOP and len(t)>1]
-    tokens = [_stem_es(t) for t in tokens]
-    bigramas = [f"{tokens[i]}_{tokens[i+1]}" for i in range(len(tokens)-1)]
-    return tokens + bigramas
+from utils_nlp import tokenizar_y_lematizar as tokenizar
 
 # --- DE model_arch.py ---
 class NeuralNet(nn.Module):
-    def __init__(self, input_size, hidden_size, num_classes):
+    def __init__(self, vocab_size, hidden_size, num_classes, padding_idx=0):
         super().__init__()
-        self.l1 = nn.Linear(input_size, hidden_size) # 128
-        self.bn1 = nn.BatchNorm1d(hidden_size)
-        self.l2 = nn.Linear(hidden_size, hidden_size // 2) # 64
-        self.bn2 = nn.BatchNorm1d(hidden_size // 2)
-        self.l3 = nn.Linear(hidden_size // 2, num_classes)
-        self.relu = nn.ReLU()
-        self.dropout = nn.Dropout(0.3)
+        embedding_dim = 128
+        self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=padding_idx)
+        self.lstm = nn.LSTM(embedding_dim, hidden_size // 2, batch_first=True, bidirectional=True, num_layers=1)
+        self.dropout = nn.Dropout(0.4)
+        self.fc = nn.Linear(hidden_size, num_classes)
 
     def forward(self, x):
-        out = self.dropout(self.relu(self.bn1(self.l1(x))))
-        out = self.dropout(self.relu(self.bn2(self.l2(out))))
-        out = self.l3(out)
+        # x shape: (batch_size, sequence_length)
+        out = self.embedding(x)
+        # out shape: (batch_size, sequence_length, embedding_dim)
+
+        # Pasar por LSTM
+        out, (hn, cn) = self.lstm(out)
+
+        # hn shape: (num_layers * num_directions, batch_size, hidden_size // 2)
+        # Al ser 1 capa bidireccional, concatenamos las dos direcciones
+        hidden = torch.cat((hn[0,:,:], hn[1,:,:]), dim=1)
+
+        out = self.dropout(hidden)
+        out = self.fc(out)
         return out
 
 
@@ -58,9 +51,9 @@ Ruta_Modelo = Path("data/model.pth")
 Semilla_Global = 100
 
 Tamano_Lote = 32
-Tamano_Capa_Oculta = 512
-Tasa_Aprendizaje = 0.002
-Numero_De_Epocas = 400
+Tamano_Capa_Oculta = 128
+Tasa_Aprendizaje = 0.005
+Numero_De_Epocas = 40
 Paciencia_EarlyStopping = 30
 Weight_Decay = 1e-3
 Frecuencia_Minima_Unigrama = 1
@@ -80,14 +73,20 @@ def Cargar_Intents():
     with Ruta_Intents.open('r', encoding='utf-8') as f:
         return json.load(f)
 
-def Crear_Bolsa_De_Palabras(oracion_tokenizada, indice_vocabulario, tamano_vocabulario):
-    # Se usa presencia binaria para quedar alineado con la inferencia en app.py.
-    bolsa = np.zeros(tamano_vocabulario, dtype=np.float32)
-    for palabra in set(oracion_tokenizada):
+def Crear_Secuencia(oracion_tokenizada, indice_vocabulario, longitud_maxima):
+    secuencia = []
+    for palabra in oracion_tokenizada:
         indice = indice_vocabulario.get(palabra)
         if indice is not None:
-            bolsa[indice] = 1.0
-    return bolsa
+            secuencia.append(indice)
+
+    # Padding con 0 al final si es más corto, truncar si es más largo
+    if len(secuencia) < longitud_maxima:
+        secuencia.extend([0] * (longitud_maxima - len(secuencia)))
+    else:
+        secuencia = secuencia[:longitud_maxima]
+
+    return np.array(secuencia, dtype=np.int64)
 
 def Preparar_Datos(datos_intents):
     contador_vocabulario = Counter()
@@ -101,7 +100,7 @@ def Preparar_Datos(datos_intents):
             contador_vocabulario.update(palabras)
             pares.append((palabras, tag))
 
-    vocabulario_filtrado = []
+    vocabulario_filtrado = ["<PAD>"]  # Índice 0 para padding
     for termino, frecuencia in contador_vocabulario.items():
         if termino in {'?', '!', '.', ','}:
             continue
@@ -110,8 +109,12 @@ def Preparar_Datos(datos_intents):
         if frecuencia >= frecuencia_minima:
             vocabulario_filtrado.append(termino)
 
-    vocabulario = sorted(set(vocabulario_filtrado))
+    # Ordenamos el vocabulario excepto el PAD que debe quedar en el índice 0
+    vocabulario = ["<PAD>"] + sorted(set(vocabulario_filtrado[1:]))
     indice_vocabulario = {palabra: indice for indice, palabra in enumerate(vocabulario)}
+
+    # Calcular longitud máxima de secuencia para el padding
+    longitud_maxima = max(len(palabras) for palabras, _ in pares) if pares else 10
 
     if not vocabulario:
         raise ValueError('El vocabulario quedo vacio tras el filtrado.')
@@ -121,14 +124,14 @@ def Preparar_Datos(datos_intents):
     X = []
     y = []
     for palabras, tag in pares:
-        X.append(Crear_Bolsa_De_Palabras(palabras, indice_vocabulario, len(vocabulario)))
+        X.append(Crear_Secuencia(palabras, indice_vocabulario, longitud_maxima))
         y.append(etiquetas.index(tag))
 
-    return np.array(X), np.array(y), vocabulario, etiquetas
+    return np.array(X), np.array(y), vocabulario, etiquetas, longitud_maxima
 
 class Dataset_De_Chat(Dataset):
     def __init__(self, X, y):
-        self.X = torch.from_numpy(X).float()
+        self.X = torch.from_numpy(X).long()  # Ahora es long para Embedding
         self.y = torch.from_numpy(y).long()
     def __len__(self): return len(self.X)
     def __getitem__(self, i): return self.X[i], self.y[i]
@@ -224,11 +227,12 @@ def Entrenar_Modelo(train_loader, val_loader, input_size, output_size, pesos_cla
 def main():
     Fijar_Semilla_Global()
     intents = Cargar_Intents()
-    X, y, vocab, tags = Preparar_Datos(intents)
+    X, y, vocab, tags, longitud_maxima = Preparar_Datos(intents)
     
     print(f"{len(X)} patrones totales")
     print(f"{len(tags)} intents: {tags}")
     print(f"{len(vocab)} palabras únicas")
+    print(f"Longitud máxima de secuencia: {longitud_maxima}")
     
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=Semilla_Global, stratify=y)
     
@@ -259,7 +263,8 @@ def main():
         "hidden_size": Tamano_Capa_Oculta,
         "output_size": len(tags),
         "all_words": vocab,
-        "tags": tags
+        "tags": tags,
+        "max_length": longitud_maxima
     }, Ruta_Modelo)
     print(f"\n✓ Modelo guardado en {Ruta_Modelo}")
 

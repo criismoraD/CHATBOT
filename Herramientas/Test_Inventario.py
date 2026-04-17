@@ -4,7 +4,7 @@ import sys
 
 # Mocking missing dependencies before importing app.py
 mock_modules = [
-    "numpy", "torch", "torch.nn", "torch.utils", "torch.utils.data", "sklearn", "sklearn.model_selection", "sklearn.metrics", "sklearn.utils", "sklearn.utils.class_weight", "torch.nn", "torch.utils", "torch.utils.data", "sklearn", "sklearn.model_selection", "sklearn.metrics", "sklearn.utils", "sklearn.utils.class_weight", "flask", "flask_cors", "model_arch", "faster_whisper"
+    "numpy", "torch", "torch.nn", "torch.utils", "torch.utils.data", "sklearn", "sklearn.model_selection", "sklearn.metrics", "sklearn.utils", "sklearn.utils.class_weight", "torch.nn", "torch.utils", "torch.utils.data", "sklearn", "sklearn.model_selection", "sklearn.metrics", "sklearn.utils", "sklearn.utils.class_weight", "flask", "flask_cors", "model_arch", "faster_whisper", "sklearn.feature_extraction.text", "sklearn.metrics.pairwise", "spacy", "thefuzz"
 ]
 for mod in mock_modules:
     sys.modules[mod] = MagicMock()
