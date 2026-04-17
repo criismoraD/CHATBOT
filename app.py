@@ -75,7 +75,39 @@ with open(Ruta_Intents, 'r', encoding='utf-8') as f:
     Datos_De_Intents = json.load(f)
 
 
-def Normalizar_Categoria_Producto(Categoria_Original):
+def Normalizar_Texto_Base_De_Categoria(Texto_Entrada):
+    Texto_En_Minusculas = str(Texto_Entrada or '').strip().lower()
+    Texto_Sin_Acentos = ''.join(
+        Caracter for Caracter in unicodedata.normalize('NFD', Texto_En_Minusculas)
+        if unicodedata.category(Caracter) != 'Mn'
+    )
+    return re.sub(r'\s+', ' ', Texto_Sin_Acentos).strip()
+
+
+def Inferir_Categoria_Desde_Nombre(Nombre_De_Producto):
+    Nombre_Normalizado = Normalizar_Texto_Base_De_Categoria(Nombre_De_Producto)
+    if not Nombre_Normalizado:
+        return None
+
+    Reglas_De_Categoria = (
+        ('CALZADO', ('zapatilla', 'zapatillas', 'zapato', 'zapatos', 'botin', 'botines', 'chimpun', 'chimpunes', 'tenis')),
+        ('PANTALONES', ('pantalon', 'pantalones', 'short', 'shorts', 'legging', 'leggings', 'jogger', 'joggers', 'buzo', 'buzos', 'falda', 'faldas', 'vestido', 'vestidos')),
+        ('POLOS', ('polo', 'polos', 'camiseta', 'camisetas', 'jersey', 'bividi', 'top')),
+        ('OTROS', ('mochila', 'mochilas', 'maletin', 'maletines', 'gorra', 'gorras', 'media', 'medias', 'calcetin', 'calcetines', 'botella', 'botellas', 'termo', 'termos', 'accesorio', 'accesorios')),
+    )
+
+    for Categoria_De_Regla, Palabras_Clave in Reglas_De_Categoria:
+        if any(Palabra_Clave in Nombre_Normalizado for Palabra_Clave in Palabras_Clave):
+            return Categoria_De_Regla
+
+    return None
+
+
+def Normalizar_Categoria_Producto(Categoria_Original, Nombre_De_Producto=None):
+    Categoria_Detectada_Por_Nombre = Inferir_Categoria_Desde_Nombre(Nombre_De_Producto)
+    if Categoria_Detectada_Por_Nombre:
+        return Categoria_Detectada_Por_Nombre
+
     Categoria_Normalizada = str(Categoria_Original or '').strip().upper()
     if Categoria_Normalizada in {'MEDIAS', 'ACCESORIOS'}:
         return 'OTROS'
@@ -87,7 +119,10 @@ def Normalizar_Producto_Cargado(Producto_Original):
         return None
 
     Producto_Normalizado = dict(Producto_Original)
-    Producto_Normalizado['category'] = Normalizar_Categoria_Producto(Producto_Normalizado.get('category'))
+    Producto_Normalizado['category'] = Normalizar_Categoria_Producto(
+        Producto_Normalizado.get('category'),
+        Producto_Normalizado.get('name'),
+    )
     return Producto_Normalizado
 
 def Cargar_Lista_De_Productos_Desde_Archivo(Ruta_Archivo):
@@ -226,7 +261,8 @@ Palabras_Vacias_De_Busqueda = {
     "quiero", "quisiera", "busco", "mostrar", "muestrame", "muestrame", "dame", "tienes", "tiene", "hay", "del",
     "de", "la", "el", "los", "las", "para", "con", "en", "por", "un", "una", "unos", "unas", "este", "esta",
     "producto", "productos", "me", "porfavor", "porfa", "por", "tengo", "soles", "sol", "precio", "presupuesto",
-    "ver", "comprar", "saber", "conseguir", "alguna", "algun", "estan"
+    "ver", "comprar", "saber", "conseguir", "alguna", "algun", "estan", "hola", "buenas", "buenos", "dias", "tardes", "noches",
+    "todo", "todos", "toda", "todas"
 }
 Mapa_De_Sinonimos_De_Palabras_Clave = {
     "tomatodos": "tomatodo",
@@ -263,6 +299,19 @@ def Es_Consulta_De_Seguimiento_De_Pedido(Mensaje_Usuario):
     ]
     return any(re.search(Patron, Texto_Normalizado) for Patron in Patrones_De_Seguimiento)
 
+
+def Es_Solicitud_De_Reinicio_De_Filtros(Mensaje_Usuario):
+    Texto_Normalizado = Normalizar_Texto_Base(Mensaje_Usuario)
+    if not Texto_Normalizado:
+        return False
+
+    Patrones_De_Reinicio = [
+        r'\b(muestrame|mostrar|ensename|dame|quiero|ver)\s+(todo|todos|toda|todas)\b',
+        r'\b(todo|todos|toda|todas)\s+los?\s+(productos|articulos|catalogo)\b',
+        r'\b(reiniciar|limpiar|quitar)\s+filtros?\b',
+    ]
+    return any(re.search(Patron, Texto_Normalizado) for Patron in Patrones_De_Reinicio)
+
 def Extraer_Filtros(Mensaje_Usuario):
     """Extrae categoría, color, precio y talla del mensaje del usuario usando thefuzz."""
     Mensaje_En_Minusculas = Mensaje_Usuario.lower()
@@ -285,6 +334,7 @@ def Extraer_Filtros(Mensaje_Usuario):
         "botines": "CALZADO", "botin": "CALZADO", "chimpunes": "CALZADO", "botas": "CALZADO",
         "polo": "POLOS", "camiseta": "POLOS", "camisetas": "POLOS", "jersey": "POLOS", "bividi": "POLOS",
         "pantalon": "PANTALONES", "short": "PANTALONES", "shorts": "PANTALONES", "leggings": "PANTALONES", "buzo": "PANTALONES",
+        "falda": "PANTALONES", "faldas": "PANTALONES", "vestido": "PANTALONES", "vestidos": "PANTALONES",
         "medias": "OTROS", "calcetines": "OTROS", "tobilleras": "OTROS", "accesorios": "OTROS", "accesorio": "OTROS",
         "gorra": "OTROS", "gorras": "OTROS", "mochila": "OTROS", "mochilas": "OTROS", "reloj": "OTROS", "guantes": "OTROS",
         "botella": "OTROS", "termo": "OTROS"
@@ -468,7 +518,7 @@ def Buscar_Productos(Categoria=None, Color=None, Precio_Maximo=None, Talla=None,
     if Categoria:
         Indices_Filtrados = [i for i in Indices_Filtrados if Datos_De_Productos[i]['category'] == Categoria]
     if Color:
-        Indices_Filtrados = [i for i in Indices_Filtrados if Color in Obtener_Colores_De_Producto(Datos_De_Productos[i])]
+        Indices_Filtrados = [i for i in Indices_Filtrados if Color in Obtener_Colores_Filtrables_De_Producto(Datos_De_Productos[i])]
     if Precio_Maximo is not None:
         Indices_Filtrados = [i for i in Indices_Filtrados if Datos_De_Productos[i]['price'] <= Precio_Maximo]
     if Talla:
@@ -515,6 +565,19 @@ def Obtener_Colores_De_Producto(Producto):
 
     Color_Unico = Producto.get('color')
     return [Color_Unico] if Color_Unico else []
+
+
+def Obtener_Colores_Filtrables_De_Producto(Producto):
+    Color_Principal = str(Producto.get('color') or '').strip()
+    if Color_Principal:
+        return [Color_Principal]
+
+    Colores_Registrados = Producto.get('colores')
+    if isinstance(Colores_Registrados, list) and Colores_Registrados:
+        Primer_Color = str(Colores_Registrados[0]).strip()
+        return [Primer_Color] if Primer_Color else []
+
+    return []
 
 
 def Normalizar_Texto_Base(Texto_Entrada):
@@ -814,6 +877,19 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
     # Extraer filtros del mensaje antes
     Categoria_Filtro, Color_Filtro, Precio_Maximo_Filtro, Talla_Filtro, Genero_Filtro = Extraer_Filtros(Mensaje_Usuario)
     Palabras_Clave_Detectadas = Extraer_Palabras_Clave_De_Mensaje(Mensaje_Usuario)
+
+    if Es_Solicitud_De_Reinicio_De_Filtros(Mensaje_Usuario):
+        Accion_De_Filtro = {
+            "category": None,
+            "color": None,
+            "max_price": None,
+            "talla": None,
+            "genero": None,
+            "keywords": [],
+        }
+        Respuesta_Final = "Listo, reinicie todos los filtros y ya te muestro el catalogo completo."
+        Actualizar_Contexto(Id_De_Sesion, "buscar_producto", Accion_De_Filtro)
+        return Respuesta_Final, "buscar_producto", Accion_De_Filtro
 
     if Debe_Heredar_Filtros_De_Contexto(
         Contexto_Actual,

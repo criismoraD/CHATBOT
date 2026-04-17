@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const Texto_Precio_Maximo = document.getElementById('price-max-value');
     const Barra_Rango_De_Precio = document.getElementById('price-range-highlight');
     const Boton_Limpiar_Precio = document.getElementById('clear-price-filter');
+    const Boton_Reiniciar_Filtros = document.getElementById('reset-all-filters');
     const Boton_Carrito = document.getElementById('cart-btn');
     const Panel_Carrito = document.getElementById('cart-sidebar');
     const Boton_Cerrar_Carrito = document.getElementById('close-cart');
@@ -41,7 +42,42 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    function Normalizar_Categoria_Producto(Categoria_Original) {
+    function Normalizar_Texto_Para_Categoria(Texto_Original) {
+        return String(Texto_Original || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .trim();
+    }
+
+    function Inferir_Categoria_Desde_Nombre_Producto(Nombre_Del_Producto) {
+        const Nombre_Normalizado = Normalizar_Texto_Para_Categoria(Nombre_Del_Producto);
+        if (!Nombre_Normalizado) {
+            return null;
+        }
+
+        const Reglas_De_Categoria = [
+            { Categoria: 'CALZADO', Palabras_Clave: ['zapatilla', 'zapatillas', 'zapato', 'zapatos', 'botin', 'botines', 'chimpun', 'chimpunes', 'tenis'] },
+            { Categoria: 'PANTALONES', Palabras_Clave: ['pantalon', 'pantalones', 'short', 'shorts', 'legging', 'leggings', 'jogger', 'joggers', 'buzo', 'buzos', 'falda', 'faldas', 'vestido', 'vestidos'] },
+            { Categoria: 'POLOS', Palabras_Clave: ['polo', 'polos', 'camiseta', 'camisetas', 'jersey', 'bividi', 'top'] },
+            { Categoria: 'OTROS', Palabras_Clave: ['mochila', 'mochilas', 'maletin', 'maletines', 'gorra', 'gorras', 'media', 'medias', 'calcetin', 'calcetines', 'botella', 'botellas', 'termo', 'termos', 'accesorio', 'accesorios'] },
+        ];
+
+        for (const Regla_Actual of Reglas_De_Categoria) {
+            if (Regla_Actual.Palabras_Clave.some(Palabra_Clave => Nombre_Normalizado.includes(Palabra_Clave))) {
+                return Regla_Actual.Categoria;
+            }
+        }
+
+        return null;
+    }
+
+    function Normalizar_Categoria_Producto(Categoria_Original, Nombre_Del_Producto = '') {
+        const Categoria_Detectada_Por_Nombre = Inferir_Categoria_Desde_Nombre_Producto(Nombre_Del_Producto);
+        if (Categoria_Detectada_Por_Nombre) {
+            return Categoria_Detectada_Por_Nombre;
+        }
+
         const Categoria_En_Mayusculas = String(Categoria_Original || '').trim().toUpperCase();
         if (Categoria_En_Mayusculas === 'MEDIAS' || Categoria_En_Mayusculas === 'ACCESORIOS') {
             return 'OTROS';
@@ -58,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .filter(Producto => Producto && typeof Producto === 'object')
             .map(Producto => ({
                 ...Producto,
-                category: Normalizar_Categoria_Producto(Producto.category),
+                category: Normalizar_Categoria_Producto(Producto.category, Producto.name),
             }));
     }
 
@@ -95,9 +131,13 @@ document.addEventListener('DOMContentLoaded', () => {
         Talla_Actual = null;
         Genero_Actual = null;
         Texto_De_Busqueda = '';
+        Precio_Minimo_Actual = Precio_Minimo_Base;
+        Precio_Maximo_Actual = Precio_Maximo_Base;
         Cantidad_A_Mostrar = 12;
 
         if (Entrada_Busqueda) Entrada_Busqueda.value = '';
+        if (Slider_Precio_Minimo) Slider_Precio_Minimo.value = String(Precio_Minimo_Base);
+        if (Slider_Precio_Maximo) Slider_Precio_Maximo.value = String(Precio_Maximo_Base);
 
         Tarjetas_De_Categoria.forEach(Boton => {
             Boton.classList.toggle('active', Boton.dataset.category === 'all');
@@ -109,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         Actualizar_Botones_De_Genero();
+        Actualizar_Textos_Rango_De_Precio();
     }
 
     async function Recargar_Catalogo_Activo() {
@@ -194,29 +235,91 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function Normalizar_Texto_Para_Busqueda(Texto_Original) {
+        return String(Texto_Original || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .trim();
+    }
+
+    function Expandir_Variantes_De_Token(Token_Original) {
+        const Variantes = new Set([Token_Original]);
+
+        if (Token_Original.length > 4 && Token_Original.endsWith('es')) {
+            Variantes.add(Token_Original.slice(0, -2));
+        }
+        if (Token_Original.length > 3 && Token_Original.endsWith('s')) {
+            Variantes.add(Token_Original.slice(0, -1));
+        }
+
+        if (Token_Original.length > 3 && Token_Original.endsWith('as')) {
+            Variantes.add(`${Token_Original.slice(0, -2)}a`);
+            Variantes.add(`${Token_Original.slice(0, -2)}o`);
+        } else if (Token_Original.length > 3 && Token_Original.endsWith('a')) {
+            Variantes.add(`${Token_Original.slice(0, -1)}o`);
+        }
+
+        if (Token_Original.length > 3 && Token_Original.endsWith('os')) {
+            Variantes.add(`${Token_Original.slice(0, -2)}o`);
+            Variantes.add(`${Token_Original.slice(0, -2)}a`);
+        } else if (Token_Original.length > 3 && Token_Original.endsWith('o')) {
+            Variantes.add(`${Token_Original.slice(0, -1)}a`);
+        }
+
+        const Sinonimos_Por_Token = {
+            zapatilla: ['calzado', 'zapato', 'tenis'],
+            zapatillas: ['calzado', 'zapato', 'tenis'],
+            zapato: ['calzado', 'zapatilla', 'tenis'],
+            zapatos: ['calzado', 'zapatilla', 'tenis'],
+            tenis: ['calzado', 'zapatilla'],
+            calzado: ['zapatilla', 'zapato', 'tenis'],
+        };
+
+        const Lista_De_Sinonimos = Sinonimos_Por_Token[Token_Original] || [];
+        Lista_De_Sinonimos.forEach(Sinonimo => Variantes.add(Sinonimo));
+
+        return Array.from(Variantes);
+    }
+
+    function Coincide_Texto_De_Busqueda(Producto, Colores_Disponibles, Texto_De_Busqueda_Actual) {
+        const Texto_Busqueda_Normalizado = Normalizar_Texto_Para_Busqueda(Texto_De_Busqueda_Actual);
+        if (!Texto_Busqueda_Normalizado) {
+            return true;
+        }
+
+        const Tokens_De_Busqueda = Texto_Busqueda_Normalizado.split(/\s+/).filter(Boolean);
+        const Texto_Indexable_Del_Producto = Normalizar_Texto_Para_Busqueda([
+            Producto.name,
+            Producto.description,
+            Producto.category,
+            Producto.genero,
+            Colores_Disponibles.join(' '),
+        ].join(' '));
+
+        return Tokens_De_Busqueda.every(Token => {
+            const Variantes_Del_Token = Expandir_Variantes_De_Token(Token);
+            return Variantes_Del_Token.some(Variante => Texto_Indexable_Del_Producto.includes(Variante));
+        });
+    }
+
     // ============================================================
     // PRODUCT RENDERING (Con soporte para filtro por color)
     // ============================================================
     function Renderizar_Productos() {
         Lista_De_Productos.classList.toggle('source-scraped', true);
 
-        const Texto_Busqueda_En_Minusculas = Texto_De_Busqueda.toLowerCase();
         const Productos_Filtrados = Datos_De_Productos.filter(Producto => {
-            const Texto_Nombre = (Producto.name || '').toLowerCase();
-            const Texto_Descripcion = (Producto.description || '').toLowerCase();
             const Colores_Disponibles = Obtener_Colores_Producto(Producto);
-            const Texto_Colores = Colores_Disponibles.join(' ').toLowerCase();
+            const Colores_Filtrables = Obtener_Colores_Filtrables(Producto, Colores_Disponibles);
 
             const Coincide_Categoria = Categoria_Actual === 'all' || Producto.category === Categoria_Actual;
-            const Coincide_Color = !Color_Actual || Colores_Disponibles.includes(Color_Actual);
+            const Coincide_Color = !Color_Actual || Colores_Filtrables.includes(Color_Actual);
             const Coincide_Talla = !Talla_Actual || (Producto.tallas && Producto.tallas.includes(Talla_Actual));
             const Coincide_Genero = !Genero_Actual || Producto.genero === Genero_Actual;
             const Coincide_Precio_Minimo = Precio_Minimo_Actual === null || Producto.price >= Precio_Minimo_Actual;
             const Coincide_Precio_Maximo = Precio_Maximo_Actual === null || Producto.price <= Precio_Maximo_Actual;
-            const Coincide_Busqueda =
-                Texto_Nombre.includes(Texto_Busqueda_En_Minusculas)
-                || Texto_Descripcion.includes(Texto_Busqueda_En_Minusculas)
-                || Texto_Colores.includes(Texto_Busqueda_En_Minusculas);
+            const Coincide_Busqueda = Coincide_Texto_De_Busqueda(Producto, Colores_Filtrables, Texto_De_Busqueda);
 
             return Coincide_Categoria
                 && Coincide_Color
@@ -349,6 +452,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return Producto.color ? [Producto.color] : [];
     }
 
+    function Obtener_Colores_Filtrables(Producto, Colores_Disponibles = null) {
+        const Color_Principal = typeof Producto.color === 'string' ? Producto.color.trim() : '';
+        if (Color_Principal) {
+            return [Color_Principal];
+        }
+
+        const Lista_De_Colores = Array.isArray(Colores_Disponibles) ? Colores_Disponibles : Obtener_Colores_Producto(Producto);
+        if (Lista_De_Colores.length) {
+            return [Lista_De_Colores[0]];
+        }
+
+        return [];
+    }
+
     function Consultar_Producto(product) {
         // Enviar un mensaje visual distinto al chat
         const infoMsg = `[Consulta iniciada para: ${product.name}]`;
@@ -395,13 +512,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         Actualizar_Botones_De_Genero();
 
+        // El bot no escribe en el buscador visual, pero si puede filtrar internamente por keywords.
         if (Array.isArray(Accion_De_Filtro.keywords) && Accion_De_Filtro.keywords.length) {
             Texto_De_Busqueda = Accion_De_Filtro.keywords.join(' ').trim();
         } else {
             Texto_De_Busqueda = '';
-        }
-        if (Entrada_Busqueda) {
-            Entrada_Busqueda.value = Texto_De_Busqueda;
         }
 
         if (typeof Accion_De_Filtro.max_price === 'number') {
@@ -569,6 +684,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (Slider_Precio_Maximo) Slider_Precio_Maximo.value = String(Precio_Maximo_Base);
                 Actualizar_Textos_Rango_De_Precio();
                 Cantidad_A_Mostrar = 12;
+                Renderizar_Productos();
+            });
+        }
+
+        if (Boton_Reiniciar_Filtros) {
+            Boton_Reiniciar_Filtros.addEventListener('click', () => {
+                Restablecer_Filtros_Visuales_Y_Estado();
                 Renderizar_Productos();
             });
         }

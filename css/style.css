@@ -6,7 +6,7 @@
     --primary-light: #0056D6; /* Azul Senati Claro para hover/glow */
     --primary-dark: #001B5E; /* Azul Senati Oscuro */
     --secondary: #FFFFFF; /* Blanco para contrastar */
-    --dark: #050505; /* Fondo más profundo */
+    --dark: #ffffff; /* Fondo más profundo */
     --dark-grey: #0F1218; /* Gris oscuro con tono azulado */
     --light-grey: #F5F5F5;
     --text-main: #FFFFFF;
@@ -97,9 +97,14 @@ button { font-family: inherit; }
 .header-search input {
     background: transparent;
     border: none;
-    color: white;
+    color: #000000;
+    caret-color: #000000;
     outline: none;
     width: 250px;
+}
+
+.header-search input::placeholder {
+    color: #6B7280;
 }
 
 /* -------------------- BOTON CARRITO -------------------- */
@@ -278,6 +283,7 @@ button { font-family: inherit; }
 .price-filter-controls.horizontal-price {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 1rem;
     align-items: center;
     min-width: 200px;
@@ -378,6 +384,7 @@ button { font-family: inherit; }
     padding: 0.45rem 0.8rem;
     cursor: pointer;
     font-weight: 600;
+    white-space: nowrap;
     transition: var(--transition);
     align-self: flex-start;
 }
@@ -726,8 +733,13 @@ button { font-family: inherit; }
     border: 1px solid var(--glass-border);
     border-radius: 20px;
     padding: 0 1rem;
-    color: white;
+    color: #000000;
+    caret-color: #000000;
     outline: none;
+}
+
+.chat-input-area input::placeholder {
+    color: #6B7280;
 }
 
 .chat-input-area input:focus {
