@@ -108,6 +108,7 @@ def Es_Solicitud_De_Reinicio_De_Filtros(Mensaje_Usuario):
         r'\b(muestrame|mostrar|ensename|dame|quiero|ver)\s+(todo|todos|toda|todas)\b',
         r'\b(todo|todos|toda|todas)\s+los?\s+(productos|articulos|catalogo)\b',
         r'\b(reiniciar|limpiar|quitar)\s+filtros?\b',
+        r'\b(busquemos|buscar|muestrame)\s+otra\s+cosa\b',
     ]
     return any(re.search(Patron, Texto_Normalizado) for Patron in Patrones_De_Reinicio)
 
@@ -149,6 +150,8 @@ def Extraer_Filtros(Mensaje_Usuario, Categorias_Dinamicas, Colores_Dinamicos):
     Opciones_Categorias = list(Categorias_Dinamicas) + list(Sinonimos_De_Categorias.keys())
     if Opciones_Categorias:
         for Palabra in Palabras_Separadas:
+            if len(Palabra) <= 2 or Palabra in Palabras_Vacias_De_Busqueda:
+                continue
             if not Categoria_Detectada:
                 Match_Cat = process.extractOne(Palabra, Opciones_Categorias)
                 if Match_Cat and Match_Cat[1] >= 80:
@@ -161,6 +164,8 @@ def Extraer_Filtros(Mensaje_Usuario, Categorias_Dinamicas, Colores_Dinamicos):
     Opciones_Colores = list(Colores_Dinamicos) + list(Sinonimos_De_Colores.keys())
     if Opciones_Colores:
         for Palabra in Palabras_Separadas:
+            if len(Palabra) <= 2 or Palabra in Palabras_Vacias_De_Busqueda:
+                continue
             if not Color_Detectado:
                 Match_Color = process.extractOne(Palabra, Opciones_Colores)
                 if Match_Color and Match_Color[1] >= 80:
