@@ -39,20 +39,31 @@
             </div>
 
             <!-- Filtros Superiores (Categorías + Colores) -->
-            <div class="dashboard-filters">
+            <div class="dashboard-filters horizontal-bar">
                 <div class="filter-group">
-                    <span class="filter-label">Categorías:</span>
                     <div class="filter-buttons" id="category-filter-container">
-                        <button class="filter-btn active" data-category="all" title="Todo">✨ Todo</button>
-                        <button class="filter-btn" data-category="CALZADO" title="Calzado">👟 Calzado</button>
-                        <button class="filter-btn" data-category="POLOS" title="Polos">👕 Polos</button>
-                        <button class="filter-btn" data-category="PANTALONES" title="Pantalones">👖 Pantalones</button>
-                        <button class="filter-btn" data-category="OTROS" title="Otros">🎒 Otros</button>
+                        <button class="filter-btn active" data-category="all" title="Todo">Todo</button>
+                        <button class="filter-btn" data-category="CALZADO" title="Calzado">Calzado</button>
+                        <button class="filter-btn" data-category="POLOS" title="Polos">Polos</button>
+                        <button class="filter-btn" data-category="PANTALONES" title="Pantalones">Pantalones</button>
+                        <button class="filter-btn" data-category="OTROS" title="Otros">Otros</button>
                     </div>
                 </div>
 
+                <div class="filter-divider"></div>
+
                 <div class="filter-group">
-                    <span class="filter-label">Colores:</span>
+                    <div class="gender-filter-buttons" id="gender-filter-container">
+                        <button class="gender-btn active" data-gender="all" title="Todos">Todos</button>
+                        <button class="gender-btn" data-gender="Mujer" title="Mujer">Mujer</button>
+                        <button class="gender-btn" data-gender="Hombre" title="Hombre">Hombre</button>
+                        <button class="gender-btn" data-gender="Unisex" title="Unisex">Unisex</button>
+                    </div>
+                </div>
+
+                <div class="filter-divider"></div>
+
+                <div class="filter-group compact-colors">
                     <div class="color-filter-circles" id="color-filter-container">
                         <div class="color-circle all-colors active" data-color="all" title="Todos"></div>
                         <div class="color-circle" data-color="Negro" style="background-color: #1a1a1a;" title="Negro"></div>
@@ -64,22 +75,14 @@
                     </div>
                 </div>
 
-                <div class="filter-group">
-                    <span class="filter-label">Genero:</span>
-                    <div class="gender-filter-buttons" id="gender-filter-container">
-                        <button class="gender-btn active" data-gender="all" title="Todos">Todos</button>
-                        <button class="gender-btn" data-gender="Mujer" title="Mujer">Mujer</button>
-                        <button class="gender-btn" data-gender="Hombre" title="Hombre">Hombre</button>
-                        <button class="gender-btn" data-gender="Unisex" title="Unisex">Unisex</button>
-                    </div>
-                </div>
+                <div class="filter-divider"></div>
 
-                <div class="filter-group">
-                    <span class="filter-label">Precio:</span>
-                    <div class="price-filter-controls">
+                <div class="filter-group price-group">
+                    <div class="price-filter-controls horizontal-price">
                         <div class="price-range-single">
                             <div class="price-range-values">
                                 <span id="price-min-value">S/ 0</span>
+                                <span>-</span>
                                 <span id="price-max-value">S/ 500</span>
                             </div>
                             <div class="price-range-track-wrapper">
@@ -89,10 +92,9 @@
                                 <input type="range" id="price-max-slider" class="price-range-slider thumb-max" min="0" max="500" step="1" value="500">
                             </div>
                         </div>
-                        <button id="clear-price-filter" class="price-filter-btn secondary">Limpiar</button>
+                        <button id="clear-price-filter" class="price-filter-btn secondary" title="Limpiar precio"><i class="fa-solid fa-rotate-left"></i></button>
                     </div>
                 </div>
-
             </div>
 
             <div class="catalog-controls">
