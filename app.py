@@ -225,7 +225,8 @@ Palabras_Vacias_Entidad_Producto = {
 Palabras_Vacias_De_Busqueda = {
     "quiero", "quisiera", "busco", "mostrar", "muestrame", "muestrame", "dame", "tienes", "tiene", "hay", "del",
     "de", "la", "el", "los", "las", "para", "con", "en", "por", "un", "una", "unos", "unas", "este", "esta",
-    "producto", "productos", "me", "porfavor", "porfa", "por", "tengo", "soles", "sol", "precio", "presupuesto"
+    "producto", "productos", "me", "porfavor", "porfa", "por", "tengo", "soles", "sol", "precio", "presupuesto",
+    "ver", "comprar", "saber", "conseguir", "alguna", "algun", "estan"
 }
 Mapa_De_Sinonimos_De_Palabras_Clave = {
     "tomatodos": "tomatodo",
@@ -481,7 +482,10 @@ def Buscar_Productos(Categoria=None, Color=None, Precio_Maximo=None, Talla=None,
     # Si hay palabras clave de búsqueda libre, aplicamos TF-IDF semántico
     if Lista_De_Palabras_Clave and Vectorizador_TFIDF is not None:
         Query_Texto = " ".join(Lista_De_Palabras_Clave)
-        Vector_Query = Vectorizador_TFIDF.transform([Query_Texto])
+
+        # CAMBIO CLAVE: Lematizar la consulta del usuario también
+        Query_Lemas = Tokenizar_Texto(Query_Texto)
+        Vector_Query = Vectorizador_TFIDF.transform([" ".join(Query_Lemas)])
 
         # Calcular similitud solo para los productos que pasaron los filtros
         Similitudes = cosine_similarity(Vector_Query, Matriz_TFIDF_Productos[Indices_Filtrados]).flatten()
@@ -491,7 +495,8 @@ def Buscar_Productos(Categoria=None, Color=None, Precio_Maximo=None, Talla=None,
 
         Resultados_Ordenados = []
         for idx in Indices_Ordenados_Por_Similitud:
-            if Similitudes[idx] > 0.1: # Umbral mínimo de similitud
+            # Bajamos un poco el umbral, ya que TF-IDF diluye el score en descripciones largas
+            if Similitudes[idx] > 0.05:
                 Resultados_Ordenados.append(Datos_De_Productos[Indices_Filtrados[idx]])
 
         Resultados = Resultados_Ordenados
@@ -703,7 +708,10 @@ def Inicializar_Motor_Semantico():
         colores = " ".join(Obtener_Colores_De_Producto(prod))
         tallas = " ".join(prod.get('tallas', [])) if isinstance(prod.get('tallas'), list) else ''
         texto_completo = f"{texto} {colores} {tallas}"
-        Lista_Textos_Productos.append(Normalizar_Texto_Base(texto_completo))
+
+        # CAMBIO CLAVE: Usar spaCy para extraer lemas en lugar de solo normalizar
+        lemas = Tokenizar_Texto(texto_completo)
+        Lista_Textos_Productos.append(" ".join(lemas))
 
     Vectorizador_TFIDF = TfidfVectorizer()
     Matriz_TFIDF_Productos = Vectorizador_TFIDF.fit_transform(Lista_Textos_Productos)
@@ -770,6 +778,24 @@ def Obtener_Respuesta_Aleatoria_De_Intent(Etiqueta_Intent):
         if intent['tag'] == Etiqueta_Intent and intent['responses']:
             return random.choice(intent['responses'])
     return None
+
+def Generar_Respuesta_Busqueda(cantidad, texto_filtro, exito=True):
+    if exito:
+        plantillas = [
+            f"¡Genial! Encontré {cantidad} opciones{texto_filtro}. Te las dejé en el catálogo, dime qué te parecen.",
+            f"¡Bingo! Tengo {cantidad} productos{texto_filtro} listos para ti. Échales un vistazo arriba.",
+            f"He filtrado el catálogo y encontré {cantidad} artículos{texto_filtro}. ¿Alguno te llama la atención?",
+            f"¡Listo! Aquí tienes {cantidad} resultados{texto_filtro}. Desliza por el catálogo para verlos."
+        ]
+        return random.choice(plantillas)
+    else:
+        plantillas = [
+            "Uy, lo siento mucho. No encontré nada con esas características exactas en este momento. ¿Probamos con otro color o modelo?",
+            "Revisé el inventario pero no di con lo que buscas. ¿Te gustaría intentar una búsqueda un poco más general?",
+            "Lamentablemente no tengo productos que coincidan al 100% con eso ahora mismo. ¡Pero sigo actualizando mi stock a diario!"
+        ]
+        return random.choice(plantillas)
+
 
 # ============================================================
 # 5. LÓGICA DE RESPUESTA PRINCIPAL
@@ -1089,7 +1115,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             else:
                 Respuesta_Final = "No encuentro el precio de ese producto en específico."
         else:
-            Respuesta_Final = "De acuerdo, pero primero dímelo, ¿De qué producto quieres saber el precio?"
+            Respuesta_Final = "¡Claro que sí! Solo ayúdame indicando el nombre del producto que te interesa para darte el precio exacto."
 
     # Manejo de contexto para consultar stock de UN producto especifico
     elif Etiqueta_Detectada == "consultar_stock_item":
@@ -1131,7 +1157,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 else:
                     Respuesta_Final = f"Actualmente no me queda stock en la base de datos para la talla {Talla_Filtro}."
             else:
-                Respuesta_Final = "Actualmente no sé por qué producto estás preguntando. ¿Me indicas cuál?"
+                Respuesta_Final = "¡Con gusto lo reviso! ¿Me podrías decir qué modelo de zapatilla o prenda estás buscando específicamente?"
     
     elif Etiqueta_Detectada and Etiqueta_Detectada != "fuera_de_dominio":
         Respuesta_Final = Obtener_Respuesta_Aleatoria_De_Intent(Etiqueta_Detectada) or "No entiendo tu consulta. puedes repetirla?."
@@ -1163,7 +1189,12 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                     "genero": Genero_Filtro,
                 }
             elif Productos_Encontrados:
-                Respuesta_Final = "Encontre productos con esos filtros. Ya te los muestro en el catalogo, indicame cual te interesa."
+                Texto_De_Filtro = ""
+                if Color_Filtro: Texto_De_Filtro += f" en color {Color_Filtro.lower()}"
+                if Categoria_Filtro: Texto_De_Filtro += f" de la categoría {Categoria_Filtro.capitalize()}"
+                if Talla_Filtro: Texto_De_Filtro += f" talla {Talla_Filtro}"
+
+                Respuesta_Final = Generar_Respuesta_Busqueda(len(Productos_Encontrados), Texto_De_Filtro, exito=True)
                 Accion_De_Filtro = {
                     "category": Categoria_Filtro,
                     "color": Color_Filtro,
@@ -1172,7 +1203,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 }
                 Etiqueta_Detectada = "buscar_producto"
             else:
-                Respuesta_Final = "No encontre productos con esas caracteristicas."
+                Respuesta_Final = Generar_Respuesta_Busqueda(0, "", exito=False)
         elif Id_De_Producto_Detectado is not None:
             Producto_Detectado = Obtener_Producto_Por_Id(Id_De_Producto_Detectado)
             if Producto_Detectado:
