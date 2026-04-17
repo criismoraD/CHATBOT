@@ -13,7 +13,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Now we can import the function to test
-from app import Obtener_Detalle_De_Inventario
+from catalogo import Obtener_Detalle_De_Inventario
 
 class TestInventory(unittest.TestCase):
 
