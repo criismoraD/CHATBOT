@@ -2,18 +2,20 @@
 /* DASHBOARD APP STYLES (NO MORE SCROLLING WEBPAGE)          */
 /* ============================================================ */
 :root {
-    --primary: #00F0FF;
-    --primary-dark: #00B8C4;
-    --secondary: #FF2E63;
-    --dark: #0A0A0A;
-    --dark-grey: #1A1A1A;
+    --primary: #0032A0; /* Azul Senati Principal */
+    --primary-light: #0056D6; /* Azul Senati Claro para hover/glow */
+    --primary-dark: #001B5E; /* Azul Senati Oscuro */
+    --secondary: #FFFFFF; /* Blanco para contrastar */
+    --dark: #050505; /* Fondo más profundo */
+    --dark-grey: #0F1218; /* Gris oscuro con tono azulado */
     --light-grey: #F5F5F5;
     --text-main: #FFFFFF;
     --text-muted: #A0A0A0;
-    --glass: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --glass: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --glow-primary: 0 0 15px rgba(0, 86, 214, 0.6), 0 0 30px rgba(0, 86, 214, 0.3);
 }
 
 * {
@@ -24,7 +26,8 @@
 }
 
 body {
-    background-color: var(--dark-grey);
+    /* Fondo viñetado general negro profundo y elegante */
+    background: radial-gradient(circle at top, #0A0F1A 0%, #000000 100%);
     color: var(--text-main);
     overflow: hidden; /* No scroll en el body principal */
 }
@@ -37,7 +40,7 @@ button { font-family: inherit; }
     display: flex;
     height: 100vh;
     width: 100vw;
-    background: var(--dark-grey);
+    background: transparent; /* Permite ver el fondo radial del body */
 }
 
 /* Left Panel (Catalog) */
@@ -52,10 +55,12 @@ button { font-family: inherit; }
 .dashboard-right {
     flex: 3;
     height: 100%;
-    border-left: 1px solid var(--glass-border);
+    border-left: 1px solid rgba(255, 255, 255, 0.02); /* Borde sutil */
     display: flex;
     flex-direction: column;
-    background: var(--dark);
+    background: rgba(2, 3, 5, 0.6); /* Negro ultra profundo semi-transparente */
+    backdrop-filter: blur(15px);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5); /* Sombra hacia la izquierda */
 }
 
 /* -------------------- HEADER -------------------- */
@@ -71,7 +76,7 @@ button { font-family: inherit; }
     font-weight: 800;
     letter-spacing: -1px;
 }
-.logo span { color: var(--primary); }
+.logo span { color: var(--primary-light); } /* Cambiado a primary-light para mejor visibilidad */
 
 .header-right {
     display: flex;
@@ -126,30 +131,50 @@ button { font-family: inherit; }
     align-items: center;
 }
 
-/* -------------------- FILTROS (PILLS) -------------------- */
-.dashboard-filters {
+/* -------------------- FILTROS (PILLS) - HORIZONTALES -------------------- */
+.dashboard-filters.horizontal-bar {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.2rem;
     margin-bottom: 2rem;
-    background: var(--dark);
-    padding: 1.5rem;
-    border-radius: 12px;
+    background: rgba(10, 10, 15, 0.7);
+    backdrop-filter: blur(8px);
+    padding: 1rem 1.5rem;
+    border-radius: 16px;
     border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    overflow-x: auto; /* Permite scroll si no cabe */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.dashboard-filters.horizontal-bar::-webkit-scrollbar {
+    height: 4px;
+}
+.dashboard-filters.horizontal-bar::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 4px;
+}
+
+.filter-divider {
+    width: 1px;
+    height: 30px;
+    background: var(--glass-border);
+    flex-shrink: 0;
 }
 
 .filter-group {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
+    gap: 0.8rem;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
 }
 
 .filter-label {
-    min-width: 90px;
-    color: var(--text-muted);
-    font-weight: 600;
-    font-size: 0.9rem;
+    display: none; /* Ocultamos etiquetas para vista más limpia */
 }
 
 .filter-buttons {
@@ -182,9 +207,10 @@ button { font-family: inherit; }
 }
 
 .filter-btn:hover, .filter-btn.active {
-    background: var(--primary);
-    color: var(--dark);
-    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--text-main);
+    border-color: var(--primary-light);
+    box-shadow: var(--glow-primary);
 }
 
 .gender-btn {
@@ -199,9 +225,10 @@ button { font-family: inherit; }
 }
 
 .gender-btn:hover, .gender-btn.active {
-    background: var(--primary);
-    color: var(--dark);
-    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--text-main);
+    border-color: var(--primary-light);
+    box-shadow: var(--glow-primary);
 }
 
 .catalog-source-btn {
@@ -217,8 +244,9 @@ button { font-family: inherit; }
 
 .catalog-source-btn:hover, .catalog-source-btn.active {
     background: var(--secondary);
-    color: #fff;
+    color: var(--dark);
     border-color: var(--secondary);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
 }
 
 /* Color Circles */
@@ -247,26 +275,29 @@ button { font-family: inherit; }
     background: linear-gradient(45deg, #f0f0f0, #1a1a1a, #e74c3c, #3498db);
 }
 
-.price-filter-controls {
+.price-filter-controls.horizontal-price {
     display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-    align-items: stretch;
-    min-width: 240px;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    min-width: 200px;
 }
 
 .price-range-single {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
+    flex-grow: 1;
 }
 
 .price-range-values {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 0.5rem;
     font-size: 0.8rem;
     color: var(--text-muted);
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .price-range-track-wrapper {
@@ -352,8 +383,9 @@ button { font-family: inherit; }
 }
 
 .price-filter-btn:hover {
-    border-color: var(--primary);
-    color: var(--primary);
+    border-color: var(--primary-light);
+    color: var(--primary-light);
+    box-shadow: var(--glow-primary);
 }
 
 .price-filter-btn.secondary {
@@ -374,21 +406,24 @@ button { font-family: inherit; }
 }
 
 .dashboard-card {
-    background: var(--dark);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
+    background: rgba(10, 12, 16, 0.6); /* Más oscuro, más sutil */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.02); /* Borde casi invisible */
+    border-radius: 16px;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     transition: var(--transition);
     position: relative;
     cursor: default;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Sombra base para dar profundidad */
 }
 
 .dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-    border-color: var(--primary);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8), var(--glow-primary);
+    border-color: rgba(0, 86, 214, 0.5); /* Borde sutil del color primario en hover */
+    background: rgba(15, 18, 24, 0.8);
 }
 
 /* Emoji + Dot row */
@@ -450,24 +485,28 @@ button { font-family: inherit; }
 
 /* Card Info */
 .card-cat {
-    color: var(--primary);
-    font-size: 0.7rem;
+    color: var(--primary-light);
+    font-size: 0.75rem;
     font-weight: 800;
-    letter-spacing: 1px;
-    margin-bottom: 0.3rem;
+    letter-spacing: 1.5px; /* Más espaciado, más premium */
+    margin-bottom: 0.4rem;
     text-transform: uppercase;
+    opacity: 0.9;
 }
 
 .dashboard-card h3 {
     margin: 0 0 0.8rem 0;
-    font-size: 1rem;
+    font-size: 1.15rem;
+    font-weight: 400; /* Peso más ligero para el título */
     line-height: 1.3;
     flex-grow: 1;
+    letter-spacing: 0.5px;
 }
 
 .card-meta {
     font-size: 0.82rem;
     color: var(--text-muted);
+    font-weight: 300; /* Texto secundario más delgado */
     margin-bottom: 0.5rem;
 }
 
@@ -545,9 +584,11 @@ button { font-family: inherit; }
 }
 
 .card-price {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: white;
+    font-size: 1.5rem;
+    font-weight: 600; /* Un poco menos rudo */
+    letter-spacing: -0.5px;
+    color: var(--text-main);
+    text-shadow: 0 0 10px rgba(255,255,255,0.2); /* Ligero brillo al precio */
 }
 
 .card-actions {
@@ -570,9 +611,10 @@ button { font-family: inherit; }
 }
 
 .card-btn:hover {
-    background: var(--primary);
-    color: var(--dark);
-    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--text-main);
+    border-color: var(--primary-light);
+    box-shadow: var(--glow-primary);
 }
 
 .load-more-container {
@@ -582,8 +624,8 @@ button { font-family: inherit; }
 
 .btn-simple {
     background: transparent;
-    border: 1px solid var(--primary);
-    color: var(--primary);
+    border: 1px solid var(--primary-light);
+    color: var(--primary-light);
     padding: 0.6rem 2rem;
     border-radius: 20px;
     cursor: pointer;
@@ -592,8 +634,9 @@ button { font-family: inherit; }
 }
 
 .btn-simple:hover {
-    background: var(--primary);
-    color: var(--dark);
+    background: var(--primary-light);
+    color: var(--text-main);
+    box-shadow: var(--glow-primary);
 }
 
 /* -------------------- CHATBOT PANEL -------------------- */
@@ -687,15 +730,18 @@ button { font-family: inherit; }
     outline: none;
 }
 
-.chat-input-area input:focus { border-color: var(--primary); }
+.chat-input-area input:focus {
+    border-color: var(--primary-light);
+    box-shadow: var(--glow-primary);
+}
 
 .chat-input-area button {
-    background: var(--primary);
+    background: var(--primary-light);
     border: none;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    color: var(--dark);
+    color: var(--text-main);
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -703,7 +749,10 @@ button { font-family: inherit; }
     transition: var(--transition);
 }
 
-.chat-input-area button:hover { transform: scale(1.1); }
+.chat-input-area button:hover {
+    transform: scale(1.1);
+    box-shadow: var(--glow-primary);
+}
 
 .mic-btn {
     background: transparent !important;
@@ -807,18 +856,20 @@ button { font-family: inherit; }
 
 .checkout-btn {
     width: 100%;
-    background: var(--primary);
-    color: var(--dark);
+    background: var(--primary-light);
+    color: var(--text-main);
     border: none;
     padding: 1rem;
     border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
     text-transform: uppercase;
+    transition: var(--transition);
 }
 
 .checkout-btn:hover {
-    background: var(--primary-dark);
+    background: var(--primary);
+    box-shadow: var(--glow-primary);
 }
 
 .cart-overlay {
@@ -858,6 +909,59 @@ button { font-family: inherit; }
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Nuevas animaciones avanzadas */
+@keyframes slideUpFade {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-card {
+    /* Animación de entrada inicial para las tarjetas */
+    animation: slideUpFade 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    opacity: 0;
+}
+
+/* Stagger effect para las tarjetas (hasta 12 visibles iniciales) */
+.dashboard-card:nth-child(1) { animation-delay: 0.05s; }
+.dashboard-card:nth-child(2) { animation-delay: 0.1s; }
+.dashboard-card:nth-child(3) { animation-delay: 0.15s; }
+.dashboard-card:nth-child(4) { animation-delay: 0.2s; }
+.dashboard-card:nth-child(5) { animation-delay: 0.25s; }
+.dashboard-card:nth-child(6) { animation-delay: 0.3s; }
+.dashboard-card:nth-child(7) { animation-delay: 0.35s; }
+.dashboard-card:nth-child(8) { animation-delay: 0.4s; }
+.dashboard-card:nth-child(9) { animation-delay: 0.45s; }
+.dashboard-card:nth-child(10) { animation-delay: 0.5s; }
+.dashboard-card:nth-child(11) { animation-delay: 0.55s; }
+.dashboard-card:nth-child(12) { animation-delay: 0.6s; }
+
+/* Entrada de los paneles laterales */
+.dashboard-left {
+    animation: slideUpFade 0.7s ease-out forwards;
+}
+.dashboard-right {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+/* Animación de rebote (bounce) en hover para iconos y botones clave */
+@keyframes bounceHover {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-3px); text-shadow: var(--glow-primary); }
+    100% { transform: translateY(0); }
+}
+
+.cart-btn:hover i,
+.logo span:hover {
+    display: inline-block;
+    animation: bounceHover 0.4s ease-in-out infinite;
 }
 
 /* Responsividad */
