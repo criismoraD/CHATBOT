@@ -1,3 +1,4 @@
+let Ids_Filtrados_Por_Backend = null;
 document.addEventListener('DOMContentLoaded', () => {
     // State management
     let Productos_Mostrados = [];
@@ -153,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function Restablecer_Filtros_Visuales_Y_Estado() {
+        Ids_Filtrados_Por_Backend = null;
         Categoria_Actual = 'all';
         Color_Actual = null;
         Talla_Actual = null;
@@ -348,6 +350,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const Colores_Disponibles = Obtener_Colores_Producto(Producto);
             const Colores_Filtrables = Obtener_Colores_Filtrables(Producto, Colores_Disponibles);
 
+            if (Ids_Filtrados_Por_Backend !== null && !Ids_Filtrados_Por_Backend.has(Producto.id)) {
+                return false;
+            }
             const Coincide_Categoria = Categoria_Actual === 'all' || Producto.category === Categoria_Actual;
             const Coincide_Color = !Color_Actual || Colores_Filtrables.includes(Color_Actual);
             const Coincide_Talla = !Talla_Actual || (Producto.tallas && Producto.tallas.includes(Talla_Actual));
@@ -519,6 +524,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // FILTRADO DESDE EL CHAT (filter_action)
     // ============================================================
     function Aplicar_Filtro_Desde_Chat(Accion_De_Filtro) {
+        if (Accion_De_Filtro.product_ids) {
+            Ids_Filtrados_Por_Backend = new Set(Accion_De_Filtro.product_ids);
+        } else {
+            Ids_Filtrados_Por_Backend = null;
+        }
+
         if (Accion_De_Filtro.category) {
             Categoria_Actual = Accion_De_Filtro.category;
             Tarjetas_De_Categoria.forEach(c => {
@@ -766,6 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 Tarjetas_De_Categoria.forEach(c => c.classList.remove('active'));
                 card.classList.add('active');
                 Categoria_Actual = card.dataset.category;
+                Ids_Filtrados_Por_Backend = null;
                 Cantidad_A_Mostrar = 12;
                 Renderizar_Productos();
             });
@@ -775,6 +787,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Botones_De_Genero.forEach(Boton => {
                 Boton.addEventListener('click', () => {
                     Genero_Actual = Boton.dataset.gender === 'all' ? null : Boton.dataset.gender;
+                    Ids_Filtrados_Por_Backend = null;
                     Actualizar_Botones_De_Genero();
                     Cantidad_A_Mostrar = 12;
                     Renderizar_Productos();
@@ -791,9 +804,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if(circle.dataset.color === 'all') {
                     Color_Actual = null;
+                    Ids_Filtrados_Por_Backend = null;
                 } else {
                     Color_Actual = circle.dataset.color;
                 }
+                Ids_Filtrados_Por_Backend = null;
                 Cantidad_A_Mostrar = 12;
                 Renderizar_Productos();
             });
