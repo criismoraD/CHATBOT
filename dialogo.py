@@ -186,8 +186,11 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
     if Etiqueta_Inferida:
         Etiqueta_Detectada = Etiqueta_Inferida
 
-    if (Color_Filtro or Precio_Maximo_Filtro or Genero_Filtro or Categoria_Filtro or Talla_Filtro) and Etiqueta_Detectada in {"saludo", "pedidos", "fuera_de_dominio", "agradecimiento", "informacion_tienda", "reclamos"}:
-        Etiqueta_Detectada = "buscar_producto"
+    if (Color_Filtro or Precio_Maximo_Filtro or Genero_Filtro or Categoria_Filtro or Talla_Filtro) and Etiqueta_Detectada in {"saludo", "fuera_de_dominio"}:
+        if Etiqueta_Detectada == "fuera_de_dominio" and Confianza_Modelo > 0.6:
+            pass
+        else:
+            Etiqueta_Detectada = "buscar_producto"
 
     if Etiqueta_Detectada == "colores" and (Precio_Maximo_Filtro or Genero_Filtro or Categoria_Filtro or not Hay_Producto_En_Contexto):
         Etiqueta_Detectada = "buscar_producto"
@@ -214,7 +217,8 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             Etiqueta_Detectada = "fuera_de_dominio"
 
     if Prediccion_Ambigua and (Categoria_Filtro or Color_Filtro or Precio_Maximo_Filtro or Talla_Filtro or Genero_Filtro):
-        Etiqueta_Detectada = "buscar_producto"
+        if not Etiqueta_Detectada in ['reclamos', 'informacion_tienda', 'pedidos', 'fuera_de_dominio']:
+            Etiqueta_Detectada = "buscar_producto"
 
     if Es_Consulta_De_Seguimiento and Etiqueta_Detectada in {None, "pedidos", "fuera_de_dominio"}:
         Etiqueta_Detectada = "pedidos"
@@ -314,7 +318,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                     "keywords": Palabras_Clave_Detectadas,
                 }
             else:
-                Respuesta_Final = f"No encontre productos{Texto_De_Condicion} con ese termino especifico. Prueba con otra descripcion."
+                Respuesta_Final = f"No encontré productos{Texto_De_Condicion}. Mantenemos los filtros anteriores para que puedas seguir buscando. ¿Deseas probar con otro?"
                 Accion_De_Filtro = {
                     "genero": Genero_Filtro,
                     "max_price": Precio_Maximo_Filtro,
@@ -341,7 +345,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 Respuesta_Final = f"El {Producto_Seleccionado['name']} cuesta S/ {Producto_Seleccionado['price']:.2f}."
             else:
                 Respuesta_Final = "No encuentro el precio de ese producto en específico."
-        elif Categoria_Filtro or Color_Filtro or Genero_Filtro:
+        elif Categoria_Filtro or Color_Filtro or Genero_Filtro or Palabras_Clave_Detectadas or Talla_Filtro:
             Productos_Encontrados = Buscar_Productos(
                 Categoria=Categoria_Filtro,
                 Color=Color_Filtro,
@@ -415,7 +419,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                     )
             else:
                 Respuesta_Final = "No encuentro el producto en contexto para validar disponibilidad."
-        elif Categoria_Filtro or Color_Filtro or Genero_Filtro:
+        elif Categoria_Filtro or Color_Filtro or Genero_Filtro or Palabras_Clave_Detectadas or Talla_Filtro:
             Coincidencias_De_Stock = Buscar_Productos(
                 Categoria=Categoria_Filtro,
                 Color=Color_Filtro,
@@ -482,13 +486,14 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             else:
                 Respuesta_Final = "¡Con gusto lo reviso! ¿Me podrías decir qué modelo de zapatilla o prenda estás buscando específicamente?"
 
-    if Etiqueta_Detectada and Etiqueta_Detectada != "fuera_de_dominio" and not (Etiqueta_Detectada == "buscar_producto"):
+    if Etiqueta_Detectada and Etiqueta_Detectada != "fuera_de_dominio" and not (Etiqueta_Detectada in ["buscar_producto", "filtrar_genero", "filtrar_categoria", "colores"]):
         Respuesta_Final = Obtener_Respuesta_Aleatoria_De_Intent(Etiqueta_Detectada) or "No entiendo tu consulta. puedes repetirla?."
+    elif Etiqueta_Detectada == "fuera_de_dominio":
+        Respuesta_Final = "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
     elif Etiqueta_Detectada == "buscar_producto" and not (Categoria_Filtro or Color_Filtro or Genero_Filtro or Palabras_Clave_Detectadas or Talla_Filtro):
-        # Cuando dicen "buscame otra cosa" sin filtros
         Respuesta_Final = "¡Claro! Dime qué buscas y te muestro las opciones."
     else:
-        if Categoria_Filtro or Color_Filtro or Genero_Filtro:
+        if Categoria_Filtro or Color_Filtro or Genero_Filtro or Palabras_Clave_Detectadas or Talla_Filtro:
             Productos_Encontrados = Buscar_Productos(
                 Categoria=Categoria_Filtro,
                 Color=Color_Filtro,
@@ -544,7 +549,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 }
                 Etiqueta_Detectada = "buscar_producto"
             else:
-                Respuesta_Final = Generar_Respuesta_Busqueda(0, "", exito=False)
+                Respuesta_Final = "No encontré productos con esas características. Mantenemos los filtros anteriores para que puedas modificarlos. ¿Deseas buscar otra cosa?"
                 Accion_De_Filtro = {
                     "category": Categoria_Filtro,
                     "color": Color_Filtro,
@@ -563,9 +568,9 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 )
                 Etiqueta_Detectada = "buscar_producto"
             else:
-                Respuesta_Final = "No entiendo tu consulta. Puedes preguntarme nuevamente"
+                Respuesta_Final = "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
         else:
-            Respuesta_Final = "No entiendo tu consulta. Puedes preguntarme nuevamente"
+            Respuesta_Final = "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
 
     if Etiqueta_Detectada in ["buscar_producto", "filtrar_categoria", "filtrar_genero", "colores"]:
         Actualizar_Contexto(Id_De_Sesion, Etiqueta_Detectada, {
