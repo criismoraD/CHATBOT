@@ -227,7 +227,17 @@
         "catalogo",
         "productos",
         "comprar",
-        "estoy buscando ropa deportiva"
+        "estoy buscando ropa deportiva",
+        "quiero ver pantalones blancos",
+        "muestrame zapatillas azules de hombre",
+        "busco polos rojos",
+        "quiero zapatillas talla 42",
+        "tienen pantalones negros para mujer",
+        "quiero algo en color blanco",
+        "muestrame opciones en verde",
+        "busco calzado deportivo",
+        "busco polos en talla l",
+        "quiero unos pantalones"
       ],
       "responses": [
         "¡Encontré productos que coinciden! Te los muestro en el catálogo.",
@@ -650,7 +660,15 @@
         "colores disponibles",
         "que tonos tienes",
         "hay colores",
-        "colores?"
+        "colores?",
+        "que otros colores tienes",
+        "tienes en color azul",
+        "lo tienes en negro",
+        "hay en rojo?",
+        "en que colores viene",
+        "quiero ver los colores",
+        "muestrame los colores",
+        "tienes en otros colores?"
       ],
       "responses": [
         "Trabajamos con 6 colores: Negro, Blanco, Rojo, Azul, Gris y Verde.",

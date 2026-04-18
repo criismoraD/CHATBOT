@@ -790,4 +790,6 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
         # En caso de otros tags no queremos sobrescribir los filtros con dict de None (que borraria la memoria)
         Actualizar_Contexto(Id_De_Sesion, Etiqueta_Detectada, Filtros=None)
 
+    if Accion_De_Filtro and 'Productos_Encontrados' in locals() and Productos_Encontrados:
+        Accion_De_Filtro['product_ids'] = [p['id'] for p in Productos_Encontrados]
     return Respuesta_Final, Etiqueta_Detectada, Accion_De_Filtro
