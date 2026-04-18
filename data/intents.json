@@ -219,7 +219,8 @@
         "quiero ver el catalogo",
         "catalogo",
         "productos",
-        "comprar"
+        "comprar",
+        "estoy buscando ropa deportiva"
       ],
       "responses": [
         "¡Encontré productos que coinciden! Te los muestro en el catálogo.",
@@ -929,11 +930,14 @@
         "me devolvieron mi dinero tarde estoy muy indignado con la empresa",
         "la casaca esta muy sucia quiero asentar mi denuncia en el libro de reclamaciones fisico",
         "me devolvieron mi dinero tarde estoy muy indignado con la empresa",
-        "la casaca esta muy sucia quiero asentar mi denuncia en el libro de reclamaciones fisico"
+        "la casaca esta muy sucia quiero asentar mi denuncia en el libro de reclamaciones fisico",
+        "quiero devolver unos zapatos",
+        "devoluciones",
+        "soporte",
+        "como devuelvo"
       ],
       "responses": [
-        "Lamento el inconveniente. Indícame tu número de pedido para ayudarte.",
-        "Sentimos lo ocurrido. Escríbenos a soporte SENATI o dime tu pedido."
+        "Lamentamos el inconveniente. Para devoluciones o cambios, nuestra política requiere que el producto esté sin uso, en su empaque original y presentar el comprobante de pago dentro de los primeros 7 días. Por favor comunícate a nuestro correo de soporte@senatisports.com para ayudarte."
       ]
     },
     {
@@ -1388,12 +1392,14 @@
         "explícame",
         "quien es el presidente",
         "cuéntame un chiste",
-        "que opinas de la inteligencia artificial"
+        "que opinas de la inteligencia artificial",
+        "el pan es bueno para la salud?",
+        "eres una porqueria",
+        "aslkfasjlkfsdf"
       ],
       "responses": [
-        "Soy el asistente virtual de SENATI SPORTS, especializado en productos deportivos. Por favor, intenta usar otras palabras relacionadas a nuestra tienda.",
-        "Mi función es ayudarte con calzado, ropa y accesorios. Si no encuentras lo que buscas, prueba usando los botones de filtro de la izquierda.",
-        "No logré entender tu consulta. Recuerda que puedo ayudarte a buscar zapatillas, polos y accesorios si me das algunos detalles."
+        "Soy un asistente de SENATI Sports, solo puedo ayudarte con nuestro catálogo de ropa y calzado deportivo.",
+        "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
       ]
     },
     {
@@ -1559,12 +1565,14 @@
         "donde me descargo mi comprobante de pago con igv",
         "tienen servicio tecnico para ropa fallada",
         "queria saber el horario de oficina de atencion",
-        "como rastreo mi paquete cuando ya pague"
+        "como rastreo mi paquete cuando ya pague",
+        "como es el envio",
+        "informacion sobre envios",
+        "delivery",
+        "costo de envio"
       ],
       "responses": [
-        "Atendemos lun-sáb 9am-8pm. Envíos a todo Perú, gratis en Chiclayo >S/300.",
-        "Estamos en Chiclayo. Aceptamos tarjetas, Yape, Plin y contraentrega.",
-        "Delivery 24-48h en Chiclayo. Cambios dentro de 7 días con boleta."
+        "Atendemos de lunes a sábado de 9am a 8pm. Hacemos envíos por delivery a todo el Perú, con envío gratis en Chiclayo por compras mayores a S/300. Aceptamos tarjetas, Yape, Plin y contraentrega."
       ]
     }
   ]

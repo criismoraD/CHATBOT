@@ -16,7 +16,7 @@ Palabras_Vacias_Entidad_Producto = {
     "de", "del", "la", "el", "los", "las", "para", "con", "en", "por", "y", "o", "un", "una", "unos", "unas"
 }
 Palabras_Vacias_De_Busqueda = {
-    "quiero", "quisiera", "busco", "mostrar", "muestrame", "muestrame", "dame", "tienes", "tiene", "hay", "del",
+    "quiero", "quisiera", "busco", "mostrar", "muestrame", "muestrame", "dame", "tienes", "tiene", "hay", "del", "devolver", "devolucion",
     "de", "la", "el", "los", "las", "para", "con", "en", "por", "un", "una", "unos", "unas", "este", "esta",
     "producto", "productos", "me", "porfavor", "porfa", "por", "tengo", "soles", "sol", "precio", "presupuesto",
     "ver", "comprar", "saber", "conseguir", "alguna", "algun", "estan", "hola", "buenas", "buenos", "dias", "tardes", "noches",
@@ -131,7 +131,7 @@ def Extraer_Filtros(Mensaje_Usuario, Categorias_Dinamicas, Colores_Dinamicos):
         "zapatillas": "CALZADO", "zapatilla": "CALZADO", "zapas": "CALZADO", "zapatos": "CALZADO", "zapato": "CALZADO",
         "botines": "CALZADO", "botin": "CALZADO", "chimpunes": "CALZADO", "botas": "CALZADO",
         "polo": "POLOS", "camiseta": "POLOS", "camisetas": "POLOS", "jersey": "POLOS", "bividi": "POLOS",
-        "pantalon": "PANTALONES", "short": "PANTALONES", "shorts": "PANTALONES", "leggings": "PANTALONES", "buzo": "PANTALONES",
+        "pantalon": "PANTALONES", "pantalones": "PANTALONES", "short": "PANTALONES", "shorts": "PANTALONES", "leggings": "PANTALONES", "buzo": "PANTALONES",
         "falda": "PANTALONES", "faldas": "PANTALONES", "vestido": "PANTALONES", "vestidos": "PANTALONES",
         "medias": "OTROS", "calcetines": "OTROS", "tobilleras": "OTROS", "accesorios": "OTROS", "accesorio": "OTROS",
         "gorra": "OTROS", "gorras": "OTROS", "mochila": "OTROS", "mochilas": "OTROS", "reloj": "OTROS", "guantes": "OTROS",
@@ -154,7 +154,7 @@ def Extraer_Filtros(Mensaje_Usuario, Categorias_Dinamicas, Colores_Dinamicos):
                 continue
             if not Categoria_Detectada:
                 Match_Cat = process.extractOne(Palabra, Opciones_Categorias)
-                if Match_Cat and Match_Cat[1] >= 80:
+                if Match_Cat and Match_Cat[1] >= 80 and (len(Palabra) / len(Match_Cat[0]) >= 0.5):
                     if Match_Cat[0] in Sinonimos_De_Categorias:
                         Categoria_Detectada = Sinonimos_De_Categorias[Match_Cat[0]]
                     else:
@@ -168,7 +168,7 @@ def Extraer_Filtros(Mensaje_Usuario, Categorias_Dinamicas, Colores_Dinamicos):
                 continue
             if not Color_Detectado:
                 Match_Color = process.extractOne(Palabra, Opciones_Colores)
-                if Match_Color and Match_Color[1] >= 80:
+                if Match_Color and Match_Color[1] >= 90 and (len(Palabra) / len(Match_Color[0]) >= 0.5):
                     if Match_Color[0] in Sinonimos_De_Colores:
                         Color_Detectado = Sinonimos_De_Colores[Match_Color[0]]
                     else:
