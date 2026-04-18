@@ -16,13 +16,27 @@ Palabras_Vacias_Entidad_Producto = {
     "de", "del", "la", "el", "los", "las", "para", "con", "en", "por", "y", "o", "un", "una", "unos", "unas"
 }
 Palabras_Vacias_De_Busqueda = {
-    "quiero", "quisiera", "busco", "mostrar", "muestrame", "muestrame", "dame", "tienes", "tiene", "hay", "del", "devolver", "devolucion",
+    "quiero", "quisiera", "busco", "mostrar", "muestrame", "dame", "tienes", "tiene", "hay", "del", "devolver", "devolucion",
     "de", "la", "el", "los", "las", "para", "con", "en", "por", "un", "una", "unos", "unas", "este", "esta",
     "producto", "productos", "me", "porfavor", "porfa", "por", "tengo", "soles", "sol", "precio", "presupuesto",
-    "ver", "comprar", "saber", "conseguir", "alguna", "algun", "estan", "hola", "buenas", "buenos", "dias", "tardes", "noches",
-    "todo", "todos", "toda", "todas"
+    "ver", "comprar", "saber", "conseguir", "alguna", "algun", "algo", "estan", "hola", "buenas", "buenos", "dias", "tardes", "noches",
+    "todo", "todos", "toda", "todas", "mejor", "que"
 }
 Mapa_De_Sinonimos_De_Palabras_Clave = {
+    "zapatillas": "zapatilla",
+    "zapas": "zapatilla",
+    "polos": "polo",
+    "pantalones": "pantalon",
+    "faldas": "falda",
+    "vestidos": "vestido",
+    "leggings": "legging",
+    "joggers": "jogger",
+    "shorts": "short",
+    "gorras": "gorra",
+    "mochilas": "mochila",
+    "casacas": "casaca",
+    "medias": "media",
+    "calcetines": "calcetin",
     "tomatodos": "tomatodo",
     "botella": "tomatodo",
     "botellas": "tomatodo",
@@ -45,6 +59,10 @@ def Inferir_Categoria_Desde_Nombre(Nombre_De_Producto):
     if not Nombre_Normalizado:
         return None
 
+    Tokens_Del_Nombre = set(re.findall(r'[a-z0-9]+', Nombre_Normalizado))
+    if not Tokens_Del_Nombre:
+        return None
+
     Reglas_De_Categoria = (
         ('CALZADO', ('zapatilla', 'zapatillas', 'zapato', 'zapatos', 'botin', 'botines', 'chimpun', 'chimpunes', 'tenis')),
         ('PANTALONES', ('pantalon', 'pantalones', 'short', 'shorts', 'legging', 'leggings', 'jogger', 'joggers', 'buzo', 'buzos', 'falda', 'faldas', 'vestido', 'vestidos')),
@@ -53,7 +71,7 @@ def Inferir_Categoria_Desde_Nombre(Nombre_De_Producto):
     )
 
     for Categoria_De_Regla, Palabras_Clave in Reglas_De_Categoria:
-        if any(Palabra_Clave in Nombre_Normalizado for Palabra_Clave in Palabras_Clave):
+        if any(Palabra_Clave in Tokens_Del_Nombre for Palabra_Clave in Palabras_Clave):
             return Categoria_De_Regla
 
     return None
@@ -194,22 +212,38 @@ def Extraer_Filtros(Mensaje_Usuario, Categorias_Dinamicas, Colores_Dinamicos):
 def Extraer_Palabras_Clave_De_Mensaje(Mensaje_Usuario):
     Mensaje_Normalizado = Normalizar_Texto_Base(Mensaje_Usuario)
     Palabras_Clave = []
+    
+    # Ruidos de presupuesto y colores comunes para excluir de keywords de búsqueda pura
+    Ruidos_Excluir = {
+        "menos", "hasta", "max", "maximo", "min", "minimo", "presupuesto",
+        "sole", "sol", "soles", "precio", "precios", "costo", "costos",
+        "cuanto", "cuesta", "vale", "valen", "color", "colores",
+        "negro", "negra", "negros", "negras", "blanco", "blanca", "blancos", "blancas",
+        "rojo", "roja", "rojos", "rojas", "azul", "azules", "gris", "grises", "verde", "verdes"
+    }
+    
     for Token in Mensaje_Normalizado.replace('-', ' ').split():
         Token_Original = Token
         if len(Token) < 3:
             continue
+        
         Token = Mapa_De_Sinonimos_De_Palabras_Clave.get(Token, Token)
-        Es_Sinonimo_Dominio = Token != Token_Original
         if Token in Palabras_Vacias_De_Busqueda:
             continue
-        if (not Es_Sinonimo_Dominio) and (Token in Mapa_De_Genero):
+        if Token in Ruidos_Excluir:
             continue
+            
+        # Evitar duplicar genero como keyword si ya es entidad
+        if Token in Mapa_De_Genero:
+            continue
+            
         if Token in {"talla", "tallas", "xs", "s", "m", "l", "xl", "xxl"}:
             continue
         if re.fullmatch(r'\d{2}', Token):
             continue
         if Token.isdigit():
             continue
+            
         if Token not in Palabras_Clave:
             Palabras_Clave.append(Token)
     return Palabras_Clave

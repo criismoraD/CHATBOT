@@ -84,16 +84,19 @@ def Obtener_Colores_De_Producto(Producto):
 
 
 def Obtener_Colores_Filtrables_De_Producto(Producto):
+    Colores_Disponibles = set()
+    
     Color_Principal = str(Producto.get('color') or '').strip()
     if Color_Principal:
-        return [Color_Principal]
+        Colores_Disponibles.add(Color_Principal)
 
     Colores_Registrados = Producto.get('colores')
-    if isinstance(Colores_Registrados, list) and Colores_Registrados:
-        Primer_Color = str(Colores_Registrados[0]).strip()
-        return [Primer_Color] if Primer_Color else []
+    if isinstance(Colores_Registrados, list):
+        for c in Colores_Registrados:
+            if c:
+                Colores_Disponibles.add(str(c).strip())
 
-    return []
+    return list(Colores_Disponibles)
 
 
 def Extraer_Entidades_Dinamicas():
@@ -164,6 +167,43 @@ def Inicializar_Motor_Semantico():
     Matriz_TFIDF_Productos = Vectorizador_TFIDF.fit_transform(Lista_Textos_Productos)
 
 
+def Generar_Variantes_Lexicas_De_Termino(Termino):
+    Termino_Normalizado = Normalizar_Texto_Base(Termino)
+    Variantes = {Termino_Normalizado}
+    if len(Termino_Normalizado) > 4 and Termino_Normalizado.endswith('es'):
+        Variantes.add(Termino_Normalizado[:-2])
+    if len(Termino_Normalizado) > 3 and Termino_Normalizado.endswith('s'):
+        Variantes.add(Termino_Normalizado[:-1])
+    return {Variante for Variante in Variantes if Variante}
+
+
+def Buscar_Productos_Por_Coincidencia_Lexica(Indices_Filtrados, Lista_De_Palabras_Clave):
+    if not Lista_De_Palabras_Clave:
+        return []
+
+    Resultados_Con_Puntaje = []
+    for Indice_Producto in Indices_Filtrados:
+        Producto_Actual = Datos_De_Productos[Indice_Producto]
+        Texto_Buscable = Normalizar_Texto_Base(
+            f"{Producto_Actual.get('name', '')} {Producto_Actual.get('description', '')} "
+            f"{Producto_Actual.get('category', '')} {Producto_Actual.get('genero', '')} "
+            f"{' '.join(Obtener_Colores_De_Producto(Producto_Actual))} "
+            f"{' '.join(Producto_Actual.get('tallas', [])) if isinstance(Producto_Actual.get('tallas'), list) else ''}"
+        )
+
+        Coincidencias = 0
+        for Palabra_Clave in Lista_De_Palabras_Clave:
+            Variantes_De_Palabra = Generar_Variantes_Lexicas_De_Termino(Palabra_Clave)
+            if any(Variante in Texto_Buscable for Variante in Variantes_De_Palabra):
+                Coincidencias += 1
+
+        if Coincidencias > 0:
+            Resultados_Con_Puntaje.append((Coincidencias, Producto_Actual))
+
+    Resultados_Con_Puntaje.sort(key=lambda Item: Item[0], reverse=True)
+    return [Producto for _, Producto in Resultados_Con_Puntaje]
+
+
 def Buscar_Productos(Categoria=None, Color=None, Precio_Maximo=None, Talla=None, Genero=None, Palabras_Clave=None, Limite=5):
     try:
         Limite_Seguro = max(1, int(Limite))
@@ -174,7 +214,11 @@ def Buscar_Productos(Categoria=None, Color=None, Precio_Maximo=None, Talla=None,
     if isinstance(Palabras_Clave, str) and Palabras_Clave.strip():
         Lista_De_Palabras_Clave = Extraer_Palabras_Clave_De_Mensaje(Palabras_Clave)
     elif isinstance(Palabras_Clave, list):
-        Lista_De_Palabras_Clave = [str(Palabra).lower() for Palabra in Palabras_Clave if str(Palabra).strip()]
+        Lista_De_Palabras_Clave = [
+            Normalizar_Texto_Base(Palabra)
+            for Palabra in Palabras_Clave
+            if isinstance(Palabra, str) and Normalizar_Texto_Base(Palabra)
+        ]
 
     Indices_Filtrados = list(range(len(Datos_De_Productos)))
 
@@ -202,10 +246,15 @@ def Buscar_Productos(Categoria=None, Color=None, Precio_Maximo=None, Talla=None,
 
         Resultados_Ordenados = []
         for idx in Indices_Ordenados_Por_Similitud:
-            if Similitudes[idx] > 0.05:
+            if Similitudes[idx] > 0.03:
                 Resultados_Ordenados.append(Datos_De_Productos[Indices_Filtrados[idx]])
 
+        if not Resultados_Ordenados:
+            Resultados_Ordenados = Buscar_Productos_Por_Coincidencia_Lexica(Indices_Filtrados, Lista_De_Palabras_Clave)
+
         Resultados = Resultados_Ordenados
+    elif Lista_De_Palabras_Clave:
+        Resultados = Buscar_Productos_Por_Coincidencia_Lexica(Indices_Filtrados, Lista_De_Palabras_Clave)
     else:
         Resultados = [Datos_De_Productos[i] for i in Indices_Filtrados]
         random.shuffle(Resultados)

@@ -1,1 +1,0 @@
-python scrape_products.py --selector-producto “.cart-product” --selector-nombre “.card-product-title” --selector-imagen “img” --selector-categoria “.card-product-cat” --limite-por-url 5 --permitir-sin-imagen

@@ -38,6 +38,9 @@ def Actualizar_Contexto(Id_De_Sesion, Etiqueta=None, Filtros=None, Id_De_Product
         Memoria_Del_Chat[Id_De_Sesion]["last_filters"] = Filtros
     if Id_De_Producto is not None:
         Memoria_Del_Chat[Id_De_Sesion]["selected_product_id"] = Id_De_Producto
+    elif Filtros is not None and Etiqueta in ["buscar_producto", "filtrar_categoria", "filtrar_genero"]:
+        # Si es una nueva búsqueda general, limpiamos el producto anterior de la memoria
+        Memoria_Del_Chat[Id_De_Sesion]["selected_product_id"] = None
     if Fuente_De_Catalogo is not None:
         Memoria_Del_Chat[Id_De_Sesion]["catalog_source"] = Normalizar_Fuente_De_Catalogo(Fuente_De_Catalogo)
 

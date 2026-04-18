@@ -69,7 +69,14 @@
         "que hay de nuevo bot",
         "alo",
         "holanda",
-        "buenas noches, todavia hay atencion a esta hora"
+        "buenas noches, todavia hay atencion a esta hora",
+        "quien eres",
+        "quien eres?",
+        "que eres",
+        "que puedes hacer",
+        "que haces",
+        "que cosas puedes hacer",
+        "cual es tu funcion"
       ],
       "responses": [
         "¡Hola! Bienvenido a SENATI SPORTS. ¿En qué puedo ayudarte hoy?",
@@ -1252,7 +1259,6 @@
         "cuentame algo",
         "qué hora es",
         "resuelve",
-        "quien eres",
         "religion",
         "me puedes dictar una dieta semanal sana para diabeticos",
         "puedes cantar",

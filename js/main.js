@@ -2,7 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // State management
     let Productos_Mostrados = [];
     let Datos_De_Productos = Normalizar_Lista_De_Productos(Array.isArray(window.PRODUCT_DATA) ? window.PRODUCT_DATA : []);
-    const URL_Base_API = window.SENATI_API_URL || 'http://localhost:5000';
+    const Origen_Actual = typeof window !== 'undefined' && window.location ? window.location.origin : '';
+    const Candidatos_De_URL_API = Array.from(new Set([
+        window.SENATI_API_URL,
+        (Origen_Actual && /^https?:\/\//i.test(Origen_Actual)) ? Origen_Actual : null,
+        'http://127.0.0.1:5000',
+        'http://localhost:5000',
+    ].filter(Boolean)));
+    let URL_Base_API = Candidatos_De_URL_API[0] || 'http://127.0.0.1:5000';
     let Categoria_Actual = 'all';
     let Color_Actual = null;
     let Talla_Actual = null;
@@ -14,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let Texto_De_Busqueda = '';
     let Cantidad_A_Mostrar = 12;
     let Carrito_Actual = JSON.parse(localStorage.getItem('senati_cart')) || [];
+    let Id_De_Producto_En_Contexto_Chat = null;
 
     // Elements
     const Lista_De_Productos = document.getElementById('product-list');
@@ -56,6 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return null;
         }
 
+        const Tokens_Del_Nombre = new Set((Nombre_Normalizado.match(/[a-z0-9]+/g) || []));
+        if (!Tokens_Del_Nombre.size) {
+            return null;
+        }
+
         const Reglas_De_Categoria = [
             { Categoria: 'CALZADO', Palabras_Clave: ['zapatilla', 'zapatillas', 'zapato', 'zapatos', 'botin', 'botines', 'chimpun', 'chimpunes', 'tenis'] },
             { Categoria: 'PANTALONES', Palabras_Clave: ['pantalon', 'pantalones', 'short', 'shorts', 'legging', 'leggings', 'jogger', 'joggers', 'buzo', 'buzos', 'falda', 'faldas', 'vestido', 'vestidos'] },
@@ -64,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
 
         for (const Regla_Actual of Reglas_De_Categoria) {
-            if (Regla_Actual.Palabras_Clave.some(Palabra_Clave => Nombre_Normalizado.includes(Palabra_Clave))) {
+            if (Regla_Actual.Palabras_Clave.some(Palabra_Clave => Tokens_Del_Nombre.has(Palabra_Clave))) {
                 return Regla_Actual.Categoria;
             }
         }
@@ -125,12 +138,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return [];
     }
 
+    async function Resolver_URL_Base_API() {
+        for (const URL_Candidata of Candidatos_De_URL_API) {
+            try {
+                const Respuesta_Estado = await fetch(`${URL_Candidata}/status`, { method: 'GET' });
+                if (Respuesta_Estado.ok) {
+                    URL_Base_API = URL_Candidata;
+                    return;
+                }
+            } catch (Error_De_Conexion) {
+                console.warn(`[FRONTEND] API no disponible en ${URL_Candidata}:`, Error_De_Conexion.message);
+            }
+        }
+    }
+
     function Restablecer_Filtros_Visuales_Y_Estado() {
         Categoria_Actual = 'all';
         Color_Actual = null;
         Talla_Actual = null;
         Genero_Actual = null;
         Texto_De_Busqueda = '';
+        Id_De_Producto_En_Contexto_Chat = null;
         Precio_Minimo_Actual = Precio_Minimo_Base;
         Precio_Maximo_Actual = Precio_Maximo_Base;
         Cantidad_A_Mostrar = 12;
@@ -166,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function Inicializar_Dashboard() {
+        await Resolver_URL_Base_API();
         const Productos_Cargados = await Cargar_Productos_Desde_Json();
         if (Productos_Cargados.length || !Datos_De_Productos.length) {
             Datos_De_Productos = Productos_Cargados;
@@ -288,7 +317,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return true;
         }
 
-        const Tokens_De_Busqueda = Texto_Busqueda_Normalizado.split(/\s+/).filter(Boolean);
+        const Tokens_De_Busqueda = Texto_Busqueda_Normalizado.split(/\s+/).filter(t => t.length > 2);
+        if (Tokens_De_Busqueda.length === 0) return true;
+
         const Texto_Indexable_Del_Producto = Normalizar_Texto_Para_Busqueda([
             Producto.name,
             Producto.description,
@@ -299,7 +330,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return Tokens_De_Busqueda.every(Token => {
             const Variantes_Del_Token = Expandir_Variantes_De_Token(Token);
-            return Variantes_Del_Token.some(Variante => Texto_Indexable_Del_Producto.includes(Variante));
+            // Si alguna variante coincide exactamente o como palabra completa, o si el token largo está incluido
+            return Variantes_Del_Token.some(Variante => {
+                if (Texto_Indexable_Del_Producto.includes(Variante)) return true;
+                return false;
+            });
         });
     }
 
@@ -453,23 +488,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function Obtener_Colores_Filtrables(Producto, Colores_Disponibles = null) {
+        const Set_De_Colores = new Set();
+        
         const Color_Principal = typeof Producto.color === 'string' ? Producto.color.trim() : '';
         if (Color_Principal) {
-            return [Color_Principal];
+            Set_De_Colores.add(Color_Principal);
         }
 
         const Lista_De_Colores = Array.isArray(Colores_Disponibles) ? Colores_Disponibles : Obtener_Colores_Producto(Producto);
-        if (Lista_De_Colores.length) {
-            return [Lista_De_Colores[0]];
-        }
+        Lista_De_Colores.forEach(Color_Item => {
+            if (typeof Color_Item === 'string' && Color_Item.trim()) {
+                Set_De_Colores.add(Color_Item.trim());
+            }
+        });
 
-        return [];
+        return Array.from(Set_De_Colores);
     }
 
     function Consultar_Producto(product) {
         // Enviar un mensaje visual distinto al chat
         const infoMsg = `[Consulta iniciada para: ${product.name}]`;
         Agregar_Mensaje_Chat(infoMsg, 'user');
+        Id_De_Producto_En_Contexto_Chat = product.id;
         
         // Enviar al backend indicándole el contexto del producto ocultamente
         Obtener_Respuesta_Chat('quiero saber mas de este producto', product.id);
@@ -512,11 +552,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         Actualizar_Botones_De_Genero();
 
-        // El bot no escribe en el buscador visual, pero si puede filtrar internamente por keywords.
-        if (Array.isArray(Accion_De_Filtro.keywords) && Accion_De_Filtro.keywords.length) {
+        // Evita sobre-filtrar cuando ya tenemos filtros estructurados (categoria/color/talla/genero/precio).
+        const Tiene_Filtros_Estructurados = Boolean(
+            Accion_De_Filtro.category
+            || Accion_De_Filtro.color
+            || Accion_De_Filtro.talla
+            || Accion_De_Filtro.genero
+            || typeof Accion_De_Filtro.max_price === 'number'
+        );
+
+        const Lista_De_Keywords_Especificas = new Set([
+            'mochila', 'mochilas', 'gorra', 'gorras', 'tomatodo', 'tomatodos',
+            'falda', 'faldas', 'vestido', 'vestidos', 'legging', 'leggings',
+            'jogger', 'joggers', 'short', 'shorts', 'casaca', 'casacas'
+        ]);
+
+        const Debe_Aplicar_Keywords_Con_Filtros = Array.isArray(Accion_De_Filtro.keywords)
+            && Accion_De_Filtro.keywords.some(Keyword_Actual => {
+                const Keyword_Normalizada = Normalizar_Texto_Para_Busqueda(Keyword_Actual);
+                return Lista_De_Keywords_Especificas.has(Keyword_Normalizada);
+            });
+
+        if (Array.isArray(Accion_De_Filtro.keywords)
+            && Accion_De_Filtro.keywords.length
+            && (!Tiene_Filtros_Estructurados || Debe_Aplicar_Keywords_Con_Filtros)) {
             Texto_De_Busqueda = Accion_De_Filtro.keywords.join(' ').trim();
         } else {
             Texto_De_Busqueda = '';
+        }
+
+        if (Entrada_Busqueda) {
+            Entrada_Busqueda.value = '';
         }
 
         if (typeof Accion_De_Filtro.max_price === 'number') {
@@ -786,9 +852,13 @@ document.addEventListener('DOMContentLoaded', () => {
             session_id: 'user_local',
             catalog_source: 'scraped',
         };
+
+        const Id_De_Contexto_Para_Enviar = Id_Producto_En_Contexto !== null
+            ? Id_Producto_En_Contexto
+            : Id_De_Producto_En_Contexto_Chat;
         
-        if (Id_Producto_En_Contexto !== null) {
-            Carga_Util.context_product_id = Id_Producto_En_Contexto;
+        if (Id_De_Contexto_Para_Enviar !== null) {
+            Carga_Util.context_product_id = Id_De_Contexto_Para_Enviar;
         }
 
         fetch(`${URL_Base_API}/chat`, {
@@ -805,6 +875,24 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             // Remover indicador de escritura
             Indicador_De_Escritura.remove();
+
+            const Tags_Que_Mantienen_Contexto = new Set([
+                'contexto_iniciado', 'consulta_precio', 'consultar_precio_item', 'consultar_stock_item', 'colores'
+            ]);
+            const Tags_Que_Limpian_Contexto = new Set([
+                'buscar_producto', 'filtrar_categoria', 'filtrar_genero', 'saludo', 'agradecimiento',
+                'despedida', 'promociones', 'pedidos', 'reclamos', 'informacion_tienda', 'fuera_de_dominio'
+            ]);
+
+            if (Id_Producto_En_Contexto !== null && data.tag === 'contexto_iniciado') {
+                Id_De_Producto_En_Contexto_Chat = Id_Producto_En_Contexto;
+            } else if (Tags_Que_Mantienen_Contexto.has(data.tag)) {
+                if (Id_De_Contexto_Para_Enviar !== null) {
+                    Id_De_Producto_En_Contexto_Chat = Id_De_Contexto_Para_Enviar;
+                }
+            } else if (Tags_Que_Limpian_Contexto.has(data.tag)) {
+                Id_De_Producto_En_Contexto_Chat = null;
+            }
             
             Agregar_Mensaje_Chat(data.response || 'No pude procesar la respuesta del servidor.', 'bot');
             

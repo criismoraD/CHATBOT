@@ -1,3 +1,4 @@
+import re
 import random
 import config
 from ia import Predecir_Tag, Datos_De_Intents
@@ -68,8 +69,8 @@ def Debe_Heredar_Filtros_De_Contexto(
     # si los filtros anteriores siguen ahí.
 
     Tokens_Del_Mensaje = Normalizar_Texto_Base(Mensaje_Usuario).split()
-    if len(Tokens_Del_Mensaje) <= 4:
-        return True
+    if not Tokens_Del_Mensaje:
+        return False
 
     if Tokens_Del_Mensaje and Tokens_Del_Mensaje[0] in {"y", "ademas", "tambien"}:
         return True
@@ -78,6 +79,12 @@ def Debe_Heredar_Filtros_De_Contexto(
         return True
 
     if Color_Filtro and not any([Categoria_Filtro, Genero_Filtro, Precio_Maximo_Filtro is not None, Talla_Filtro]) and len(Tokens_Del_Mensaje) <= 6:
+        return True
+
+    if Talla_Filtro and not any([Categoria_Filtro, Color_Filtro, Genero_Filtro, Precio_Maximo_Filtro is not None]) and len(Tokens_Del_Mensaje) <= 6:
+        return True
+
+    if Precio_Maximo_Filtro is not None and not any([Categoria_Filtro, Color_Filtro, Genero_Filtro, Talla_Filtro]) and len(Tokens_Del_Mensaje) <= 6:
         return True
 
     return False
@@ -104,14 +111,23 @@ def Heredar_Filtros_De_Contexto(
     if Cambio_De_Categoria:
         Color_Final = Color_Filtro
         Talla_Final = Talla_Filtro
+        Genero_Final = Genero_Filtro
+        Keywords_Finales = Palabras_Clave_Detectadas if isinstance(Palabras_Clave_Detectadas, list) else []
     else:
         Color_Final = Color_Filtro or Filtros_Anteriores.get("color")
         Talla_Final = Talla_Filtro or Filtros_Anteriores.get("talla")
+        Genero_Final = Genero_Filtro or Filtros_Anteriores.get("genero")
+        
+        # Herencia de keywords: si no hay nuevas pero hay herencia de filtros, mantenemos las anteriores
+        if not Palabras_Clave_Detectadas and Filtros_Anteriores.get("keywords"):
+            Keywords_Finales = Filtros_Anteriores.get("keywords")
+        else:
+            Keywords_Finales = Palabras_Clave_Detectadas if isinstance(Palabras_Clave_Detectadas, list) else []
 
-    Precio_Maximo_Final = Precio_Maximo_Filtro if Precio_Maximo_Filtro is not None else Filtros_Anteriores.get("max_price")
-    Genero_Final = Genero_Filtro or Filtros_Anteriores.get("genero")
-
-    Keywords_Finales = Palabras_Clave_Detectadas if isinstance(Palabras_Clave_Detectadas, list) else []
+    if Cambio_De_Categoria:
+        Precio_Maximo_Final = Precio_Maximo_Filtro
+    else:
+        Precio_Maximo_Final = Precio_Maximo_Filtro if Precio_Maximo_Filtro is not None else Filtros_Anteriores.get("max_price")
 
     return (
         Categoria_Final,
@@ -123,10 +139,121 @@ def Heredar_Filtros_De_Contexto(
     )
 
 
+def Inferir_Etiqueta_Por_Heuristicas_De_Soporte(Mensaje_Normalizado, Etiqueta_Detectada):
+    Tokens_Del_Mensaje = set(Mensaje_Normalizado.split())
+    if not Tokens_Del_Mensaje:
+        return None
+
+    Indicadores_De_Informacion_De_Tienda = {
+        "delivery", "deliverys", "envio", "envios", "domicilio", "horario", "horarios",
+        "ubicacion", "direccion", "tarjeta", "yape", "plin", "contraentrega", "factura", "boleta"
+    }
+    if Tokens_Del_Mensaje.intersection(Indicadores_De_Informacion_De_Tienda):
+        return "informacion_tienda"
+
+    Indicadores_De_Reclamo = {
+        "reclamo", "reclamos", "soporte", "devolucion", "devolver", "cambio", "garantia", "queja"
+    }
+    if Tokens_Del_Mensaje.intersection(Indicadores_De_Reclamo):
+        return "reclamos"
+
+    Indicadores_De_Ayuda_General = {
+        "ayuda", "ayudame", "ayudar", "asesor", "asesoria", "asistencia"
+    }
+    if Etiqueta_Detectada in {None, "fuera_de_dominio", "saludo"} and Tokens_Del_Mensaje.intersection(Indicadores_De_Ayuda_General):
+        return "saludo"
+
+    return None
+
+
+def Es_Mensaje_De_Ayuda_General(Mensaje_Normalizado):
+    Tokens_Del_Mensaje = set(Mensaje_Normalizado.split())
+    if not Tokens_Del_Mensaje:
+        return False
+
+    Indicadores_De_Ayuda_General = {
+        "ayuda", "ayudame", "ayudar", "asesor", "asesoria", "asistencia"
+    }
+    return bool(Tokens_Del_Mensaje.intersection(Indicadores_De_Ayuda_General))
+
+
+def Obtener_Texto_Natural_De_Busqueda(Palabras_Clave_Detectadas):
+    if not isinstance(Palabras_Clave_Detectadas, list):
+        return None
+
+    Mapa_De_Texto_Natural = {
+        "mochila": "mochilas",
+        "mochilas": "mochilas",
+        "gorra": "gorras",
+        "gorras": "gorras",
+        "tomatodo": "tomatodos",
+        "tomatodos": "tomatodos",
+        "accesorio": "accesorios",
+        "accesorios": "accesorios",
+        "falda": "faldas",
+        "faldas": "faldas",
+        "vestido": "vestidos",
+        "vestidos": "vestidos",
+        "zapatilla": "zapatillas",
+        "zapatillas": "zapatillas",
+        "polo": "polos",
+        "polos": "polos",
+        "pantalon": "pantalones",
+        "pantalones": "pantalones",
+        "calzado": "productos de calzado",
+    }
+
+    for Palabra_Clave in Palabras_Clave_Detectadas:
+        Palabra_Normalizada = Normalizar_Texto_Base(Palabra_Clave)
+        if Palabra_Normalizada in Mapa_De_Texto_Natural:
+            return Mapa_De_Texto_Natural[Palabra_Normalizada]
+
+    return None
+
+
+def Es_Busqueda_Especifica_Por_Keyword(Palabras_Clave_Detectadas):
+    if not isinstance(Palabras_Clave_Detectadas, list):
+        return False
+
+    Keywords_Especificas = {
+        "mochila", "mochilas", "gorra", "gorras", "tomatodo", "tomatodos", "media", "medias", "calcetin", "calcetines",
+        "falda", "faldas", "vestido", "vestidos", "legging", "leggings", "jogger", "joggers", "short", "shorts", "casaca", "casacas"
+    }
+
+    for Palabra_Clave in Palabras_Clave_Detectadas:
+        Palabra_Normalizada = Normalizar_Texto_Base(Palabra_Clave)
+        if Palabra_Normalizada in Keywords_Especificas:
+            return True
+
+    return False
+
+
+def Forzar_Etiqueta_De_Detalle_Con_Contexto(Mensaje_Normalizado, Hay_Producto_En_Contexto):
+    if not Hay_Producto_En_Contexto:
+        return None
+
+    Tokens_Del_Mensaje = set(Mensaje_Normalizado.split())
+    if not Tokens_Del_Mensaje:
+        return None
+
+    Indicadores_De_Stock = {"talla", "tallas", "stock", "disponibilidad", "disponible", "queda", "quedan"}
+    Indicadores_De_Precio = {"precio", "precios", "costo", "costos", "cuanto", "cuesta", "vale", "valen"}
+
+    if Tokens_Del_Mensaje.intersection(Indicadores_De_Stock):
+        return "consultar_stock_item"
+    if Tokens_Del_Mensaje.intersection(Indicadores_De_Precio):
+        return "consultar_precio_item"
+    if Tokens_Del_Mensaje.intersection({"color", "colores"}):
+        return "colores"
+
+    return None
+
+
 def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
     Etiqueta_Detectada, Confianza_Modelo, Margen_De_Confianza = Predecir_Tag(Mensaje_Usuario)
     Contexto_Actual = Obtener_Contexto(Id_De_Sesion)
     Mensaje_Normalizado = Normalizar_Texto_Base(Mensaje_Usuario)
+    Es_Peticion_De_Ayuda_General = Es_Mensaje_De_Ayuda_General(Mensaje_Normalizado)
     Es_Consulta_De_Seguimiento = Es_Consulta_De_Seguimiento_De_Pedido(Mensaje_Usuario)
 
     Id_De_Producto_Detectado = Detectar_Id_De_Producto_En_Texto(Mensaje_Usuario, Indice_De_Nombres_De_Producto, Frecuencia_De_Tokens_De_Producto)
@@ -136,6 +263,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
 
     Categoria_Filtro, Color_Filtro, Precio_Maximo_Filtro, Talla_Filtro, Genero_Filtro = Extraer_Filtros(Mensaje_Usuario, Categorias_Dinamicas, Colores_Dinamicos)
     Palabras_Clave_Detectadas = Extraer_Palabras_Clave_De_Mensaje(Mensaje_Usuario)
+    Respuesta_Final = None
 
     if Es_Solicitud_De_Reinicio_De_Filtros(Mensaje_Usuario):
         Accion_De_Filtro = {
@@ -198,36 +326,67 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
     if Es_Consulta_De_Seguimiento and Etiqueta_Detectada in {None, "pedidos", "fuera_de_dominio"}:
         Etiqueta_Detectada = "pedidos"
 
-    Umbral_De_Margen_Actual = config.Umbral_De_Margen_Por_Tag.get(Etiqueta_Detectada, config.Umbral_De_Margen_Base)
-    Prediccion_Ambigua = (
-        Confianza_Modelo < config.Umbral_De_Confianza
-        or Margen_De_Confianza < Umbral_De_Margen_Actual
-    )
-    if Prediccion_Ambigua and not (Categoria_Filtro or Color_Filtro or Precio_Maximo_Filtro or Talla_Filtro or Genero_Filtro):
-        Etiqueta_Detectada = None
+    # --- MEJORA: Validar patrones SIEMPRE si no es una intención fuerte de negocio ---
+    # Priorizamos patrones sobre la predicción del modelo si el modelo dice fuera de dominio o es ambiguo.
+    Etiquetas_De_Detalle_Prioritario = {"consultar_stock_item", "consultar_precio_item", "colores", "contexto_iniciado"}
+    if Etiqueta_Detectada not in Etiquetas_De_Detalle_Prioritario:
+        Tag_De_Patron = None
         for intent in Datos_De_Intents['intents']:
             for pattern in intent['patterns']:
-                if Normalizar_Texto_Base(pattern) in Mensaje_Normalizado:
-                    Etiqueta_Detectada = intent['tag']
-                    break
-            if Etiqueta_Detectada:
+                patron_norm = Normalizar_Texto_Base(pattern)
+                if patron_norm and patron_norm in Mensaje_Normalizado:
+                    print(f"[DEBUG] Patron coincidente: '{patron_norm}' en '{Mensaje_Normalizado}' -> Tag: {intent['tag']}")
+                    # Si el patrón es corto (<= 4), exigimos palabra completa para evitar falsos positivos
+                    if len(patron_norm) <= 4:
+                        if re.search(r'\b' + re.escape(patron_norm) + r'\b', Mensaje_Normalizado):
+                            Tag_De_Patron = intent['tag']
+                            break
+                    else:
+                        Tag_De_Patron = intent['tag']
+                        break
+            if Tag_De_Patron:
                 break
 
-        if Etiqueta_Detectada is None:
-            Etiqueta_Detectada = "fuera_de_dominio"
+        if Tag_De_Patron:
+            Etiqueta_Detectada = Tag_De_Patron
+        else:
+            print(f"[DEBUG] No se encontro patron para: '{Mensaje_Normalizado}'")
 
-    if Prediccion_Ambigua and (Categoria_Filtro or Color_Filtro or Precio_Maximo_Filtro or Talla_Filtro or Genero_Filtro):
-        if not Etiqueta_Detectada in ['reclamos', 'informacion_tienda', 'pedidos', 'fuera_de_dominio']:
+    if Mensaje_Normalizado == "quiero saber mas de este producto" or Mensaje_Normalizado == "quiero saber mas de este":
+        Etiqueta_Detectada = "contexto_iniciado"
+
+    Etiqueta_Por_Heuristica = Inferir_Etiqueta_Por_Heuristicas_De_Soporte(Mensaje_Normalizado, Etiqueta_Detectada)
+    if Etiqueta_Por_Heuristica:
+        Etiqueta_Detectada = Etiqueta_Por_Heuristica
+
+    Es_Busqueda_Por_Subtipo = Es_Busqueda_Especifica_Por_Keyword(Palabras_Clave_Detectadas)
+    if Es_Busqueda_Por_Subtipo and Categoria_Filtro:
+        Categoria_Filtro = None
+
+    if Es_Busqueda_Por_Subtipo and Etiqueta_Detectada in {"saludo", "fuera_de_dominio", None}:
+        Etiqueta_Detectada = "buscar_producto"
+
+    if Etiqueta_Detectada == "filtrar_categoria" and Es_Busqueda_Por_Subtipo:
+        Etiqueta_Detectada = "buscar_producto"
+
+    # Si hay filtros, forzamos buscar_producto a menos que sea algo muy específico
+    if (Color_Filtro or Precio_Maximo_Filtro or Genero_Filtro or Categoria_Filtro or Talla_Filtro):
+        if Etiqueta_Detectada in {"saludo", "fuera_de_dominio", None}:
             Etiqueta_Detectada = "buscar_producto"
 
     if Es_Consulta_De_Seguimiento and Etiqueta_Detectada in {None, "pedidos", "fuera_de_dominio"}:
         Etiqueta_Detectada = "pedidos"
+
+    Etiqueta_De_Detalle_Forzada = Forzar_Etiqueta_De_Detalle_Con_Contexto(Mensaje_Normalizado, Hay_Producto_En_Contexto)
+    if Etiqueta_De_Detalle_Forzada:
+        Etiqueta_Detectada = Etiqueta_De_Detalle_Forzada
 
     Accion_De_Filtro = None
     Productos_Encontrados = []
 
     # --- LÓGICA POR TAG ---
     if Etiqueta_Detectada == "buscar_producto":
+        Busqueda_Relajada_Sin_Keywords = False
         Productos_Encontrados = Buscar_Productos(
             Categoria=Categoria_Filtro,
             Color=Color_Filtro,
@@ -235,7 +394,22 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             Talla=Talla_Filtro,
             Genero=Genero_Filtro,
             Palabras_Clave=Palabras_Clave_Detectadas,
+            Limite=len(Datos_De_Productos),
         )
+
+        if not Productos_Encontrados and Palabras_Clave_Detectadas:
+            Productos_Encontrados = Buscar_Productos(
+                Categoria=Categoria_Filtro,
+                Color=Color_Filtro,
+                Precio_Maximo=Precio_Maximo_Filtro,
+                Talla=Talla_Filtro,
+                Genero=Genero_Filtro,
+                Palabras_Clave=None,
+                Limite=len(Datos_De_Productos),
+            )
+            if Productos_Encontrados:
+                Palabras_Clave_Detectadas = []
+                Busqueda_Relajada_Sin_Keywords = True
 
         if not Productos_Encontrados and not Palabras_Clave_Detectadas and not Categoria_Filtro and Color_Filtro:
             Respuesta_Final = f"Me parece genial el color {Color_Filtro.lower()}, pero ¿qué buscas exactamente? ¿Zapatillas, polos, pantalones o algo más?"
@@ -254,12 +428,19 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 "genero": Genero_Filtro,
             }
         elif Productos_Encontrados:
+            Texto_Natural_De_Busqueda = Obtener_Texto_Natural_De_Busqueda(Palabras_Clave_Detectadas)
+            Texto_Base_De_Resultado = Texto_Natural_De_Busqueda or "productos"
+
             Texto_De_Filtro = ""
             if Color_Filtro: Texto_De_Filtro += f" en color {Color_Filtro}"
-            if Categoria_Filtro: Texto_De_Filtro += f" de {Categoria_Filtro.lower()}"
+            if Categoria_Filtro and not Texto_Natural_De_Busqueda:
+                Texto_De_Filtro += f" de {Categoria_Filtro.lower()}"
             if Talla_Filtro: Texto_De_Filtro += f" talla {Talla_Filtro}"
             if Genero_Filtro: Texto_De_Filtro += f" para {Genero_Filtro.lower()}"
-            Respuesta_Final = f"Encontré {len(Productos_Encontrados)} productos{Texto_De_Filtro}. Ya te los muestro en el catálogo, indícame cuál te interesa."
+            if Busqueda_Relajada_Sin_Keywords:
+                Respuesta_Final = f"No encontré coincidencias exactas por términos, pero sí {len(Productos_Encontrados)} {Texto_Base_De_Resultado}{Texto_De_Filtro}. Ya te los muestro en el catálogo."
+            else:
+                Respuesta_Final = f"Encontré {len(Productos_Encontrados)} {Texto_Base_De_Resultado}{Texto_De_Filtro}. Ya te los muestro en el catálogo, indícame cuál te interesa."
             Accion_De_Filtro = {
                 "category": Categoria_Filtro,
                 "color": Color_Filtro,
@@ -486,13 +667,34 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             else:
                 Respuesta_Final = "¡Con gusto lo reviso! ¿Me podrías decir qué modelo de zapatilla o prenda estás buscando específicamente?"
 
-    if Etiqueta_Detectada and Etiqueta_Detectada != "fuera_de_dominio" and not (Etiqueta_Detectada in ["buscar_producto", "filtrar_genero", "filtrar_categoria", "colores"]):
-        Respuesta_Final = Obtener_Respuesta_Aleatoria_De_Intent(Etiqueta_Detectada) or "No entiendo tu consulta. puedes repetirla?."
+    # --- LÓGICA DE RESPUESTA FINAL ---
+    # Si ya tenemos una Respuesta_Final (calculada manualmente arriba), NO la sobrescribimos.
+    # Solo buscamos respuesta aleatoria si Respuesta_Final es None o si el tag no fue manejado.
+    
+    Tags_Manejados_Manualmente = {
+        "buscar_producto", "filtrar_categoria", "filtrar_genero", "consulta_precio",
+        "pedidos", "colores", "disponibilidad", "consultar_precio_item", "consultar_stock_item"
+    }
+
+    if (
+        Etiqueta_Detectada == "saludo"
+        and Es_Peticion_De_Ayuda_General
+        and not any([Categoria_Filtro, Color_Filtro, Precio_Maximo_Filtro, Talla_Filtro, Genero_Filtro])
+    ):
+        Respuesta_Final = (
+            "Puedo ayudarte a buscar productos por categoria, color, talla, genero y precio. "
+            "Tambien te explico delivery, metodos de pago y reclamos. "
+            "Prueba por ejemplo: busco zapatillas negras talla 42 para hombre."
+        )
+
+    if Etiqueta_Detectada and Etiqueta_Detectada != "fuera_de_dominio" and Etiqueta_Detectada not in Tags_Manejados_Manualmente:
+        if not Respuesta_Final:
+            Respuesta_Final = Obtener_Respuesta_Aleatoria_De_Intent(Etiqueta_Detectada) or "No entiendo tu consulta. puedes repetirla?."
     elif Etiqueta_Detectada == "fuera_de_dominio":
         Respuesta_Final = "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
-    elif Etiqueta_Detectada == "buscar_producto" and not (Categoria_Filtro or Color_Filtro or Genero_Filtro or Palabras_Clave_Detectadas or Talla_Filtro):
-        Respuesta_Final = "¡Claro! Dime qué buscas y te muestro las opciones."
-    else:
+    
+    # Si después de todo Respuesta_Final sigue siendo None (no debería pasar), ponemos un fallback
+    if not Respuesta_Final:
         if Categoria_Filtro or Color_Filtro or Genero_Filtro or Palabras_Clave_Detectadas or Talla_Filtro:
             Productos_Encontrados = Buscar_Productos(
                 Categoria=Categoria_Filtro,
@@ -570,7 +772,10 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             else:
                 Respuesta_Final = "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
         else:
-            Respuesta_Final = "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
+            if Etiqueta_Detectada == "buscar_producto":
+                Respuesta_Final = "¡Claro! Dime qué buscas y te muestro las opciones."
+            else:
+                Respuesta_Final = "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
 
     if Etiqueta_Detectada in ["buscar_producto", "filtrar_categoria", "filtrar_genero", "colores"]:
         Actualizar_Contexto(Id_De_Sesion, Etiqueta_Detectada, {

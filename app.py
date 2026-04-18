@@ -1,6 +1,6 @@
 import os
 import tempfile
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
 import config
@@ -18,8 +18,64 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 
+def Detectar_Intencion_De_Detalle_Contextual(Mensaje_Usuario):
+    Texto_Normalizado = str(Mensaje_Usuario or "").strip().lower()
+    if not Texto_Normalizado:
+        return None
+
+    Indicadores_De_Precio = ("precio", "cuesta", "costo", "coste", "valor")
+    Indicadores_De_Stock = ("talla", "tallas", "stock", "disponible", "disponibles")
+    Indicadores_De_Color = ("color", "colores", "tono", "tonos")
+
+    if any(Indicador in Texto_Normalizado for Indicador in Indicadores_De_Precio):
+        return "consultar_precio_item"
+    if any(Indicador in Texto_Normalizado for Indicador in Indicadores_De_Stock):
+        return "consultar_stock_item"
+    if any(Indicador in Texto_Normalizado for Indicador in Indicadores_De_Color):
+        return "colores"
+
+    return None
+
+
+def Construir_Respuesta_Contextual_Rapida(Producto, Etiqueta_Detalle):
+    Nombre_Producto = Producto.get("name", "producto")
+
+    if Etiqueta_Detalle == "consultar_precio_item":
+        Precio = Producto.get("price")
+        if isinstance(Precio, (int, float)):
+            return f"¡Excelente elección! El precio del {Nombre_Producto} es de S/ {Precio:.2f}."
+        return f"Aún no tengo registrado el precio del {Nombre_Producto}."
+
+    if Etiqueta_Detalle == "consultar_stock_item":
+        Tallas = Producto.get("tallas") or ["No especificadas"]
+        Genero = Producto.get("genero") or "No especificado"
+        Stock = Producto.get("stock")
+        if Stock is None:
+            Stock = "No especificado"
+        return (
+            f"Claro, el {Nombre_Producto} lo tenemos en las siguientes tallas: {', '.join(Tallas)}. "
+            f"Genero: {Genero}. Stock: {Stock} unidades."
+        )
+
+    if Etiqueta_Detalle == "colores":
+        Colores = Producto.get("colores") or []
+        if Colores:
+            return f"El {Nombre_Producto} está disponible en estos colores: {', '.join(Colores)}."
+        Color_Principal = Producto.get("color")
+        if Color_Principal:
+            return f"El {Nombre_Producto} está disponible en color {Color_Principal}."
+        return f"Aún no tengo colores registrados para el {Nombre_Producto}."
+
+    return None
+
+
 @app.route('/', methods=['GET'])
 def index():
+    return send_from_directory('.', 'index.html')
+
+
+@app.route('/status', methods=['GET'])
+def Estado_Del_Servidor():
     return jsonify({
         "status": "online",
         "products_active": len(Datos_De_Productos),
@@ -31,10 +87,21 @@ def index():
     })
 
 
+@app.route('/css/<path:Nombre_De_Archivo>', methods=['GET'])
+def Servir_Archivos_Css(Nombre_De_Archivo):
+    return send_from_directory('css', Nombre_De_Archivo)
+
+
+@app.route('/js/<path:Nombre_De_Archivo>', methods=['GET'])
+def Servir_Archivos_Js(Nombre_De_Archivo):
+    return send_from_directory('js', Nombre_De_Archivo)
+
+
 @app.route('/chat', methods=['POST'])
 def chat():
     Datos_Usuario = request.get_json(silent=True) or {}
     mensaje = str(Datos_Usuario.get('message', '')).strip()
+    print(f"[DEBUG] Mensaje recibido: '{mensaje}'")
     Id_De_Sesion_Actual = str(Datos_Usuario.get('session_id', 'default_user')).strip() or 'default_user'
     Id_De_Producto_En_Contexto = Datos_Usuario.get('context_product_id')
     Contexto_Actual = Obtener_Contexto(Id_De_Sesion_Actual)
@@ -56,6 +123,7 @@ def chat():
             Id_De_Producto=Id_De_Producto_En_Contexto,
             Fuente_De_Catalogo=Fuente_Usada,
         )
+        Contexto_Actual = Obtener_Contexto(Id_De_Sesion_Actual)
         # Si es el mensaje oculto de inicio de consulta, cortamos aquí
         if mensaje == 'quiero saber mas de este producto':
             product = Obtener_Producto_Por_Id(Id_De_Producto_En_Contexto)
@@ -72,6 +140,29 @@ def chat():
         
     if not mensaje:
         return jsonify({"error": "No se recibio mensaje"}), 400
+
+    Id_De_Producto_Contextual = Contexto_Actual.get('selected_product_id')
+    Etiqueta_De_Detalle_Contextual = Detectar_Intencion_De_Detalle_Contextual(mensaje)
+    if Id_De_Producto_Contextual and Etiqueta_De_Detalle_Contextual:
+        Producto_Contextual = Obtener_Producto_Por_Id(Id_De_Producto_Contextual)
+        if Producto_Contextual:
+            Respuesta_Contextual = Construir_Respuesta_Contextual_Rapida(
+                Producto_Contextual,
+                Etiqueta_De_Detalle_Contextual,
+            )
+            if Respuesta_Contextual:
+                Actualizar_Contexto(
+                    Id_De_Sesion_Actual,
+                    Etiqueta=Etiqueta_De_Detalle_Contextual,
+                    Id_De_Producto=Id_De_Producto_Contextual,
+                    Fuente_De_Catalogo=Fuente_Usada,
+                )
+                return jsonify({
+                    "response": Respuesta_Contextual,
+                    "tag": Etiqueta_De_Detalle_Contextual,
+                    "bot_name": "Asistente SENATI",
+                    "catalog_source": Fuente_Usada,
+                })
 
     Respuesta_Bot, Etiqueta_Bot, Accion_De_Filtro = Obtener_Respuesta_Principal(Id_De_Sesion_Actual, mensaje)
 
@@ -156,6 +247,9 @@ def Buscar_Endpoint():
 
 if __name__ == '__main__':
     server_port = int(os.getenv('SENATI_PORT', '5000'))
-    debug_mode = os.getenv('SENATI_DEBUG', 'false').lower() == 'true'
-    print(f">>> Servidor SENATI IA listo en http://localhost:{server_port} (debug={debug_mode})")
+    debug_mode = True
+    print(f">>> Frontend listo en http://localhost:{server_port}/")
+    print(f">>> Estado API en http://localhost:{server_port}/status")
+    print(f">>> Chat API en http://localhost:{server_port}/chat")
+    print(f">>> Debug: {debug_mode}")
     app.run(port=server_port, debug=debug_mode)
