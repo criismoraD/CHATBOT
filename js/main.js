@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const Texto_Precio_Minimo = document.getElementById('price-min-value');
     const Texto_Precio_Maximo = document.getElementById('price-max-value');
     const Barra_Rango_De_Precio = document.getElementById('price-range-highlight');
-    const Boton_Limpiar_Precio = document.getElementById('clear-price-filter');
     const Boton_Reiniciar_Filtros = document.getElementById('reset-all-filters');
     const Boton_Carrito = document.getElementById('cart-btn');
     const Panel_Carrito = document.getElementById('cart-sidebar');
@@ -824,6 +823,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (Boton_Carrito) Boton_Carrito.addEventListener('click', Abrir_Panel_Carrito);
         if (Boton_Cerrar_Carrito) Boton_Cerrar_Carrito.addEventListener('click', Cerrar_Panel_Carrito);
         if (Overlay_Carrito) Overlay_Carrito.addEventListener('click', Cerrar_Panel_Carrito);
+
+        // Mobile Chat Toggle
+        const Boton_Toggle_Chat = document.getElementById('mobile-chat-toggle');
+        const Panel_Derecho = document.getElementById('dashboard-right');
+
+        if (Boton_Toggle_Chat && Panel_Derecho) {
+            Boton_Toggle_Chat.addEventListener('click', (e) => {
+                e.stopPropagation();
+                Panel_Derecho.classList.toggle('mobile-open');
+                if (Panel_Derecho.classList.contains('mobile-open')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Cerrar chat móvil si se hace clic fuera
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768 && 
+                    Panel_Derecho.classList.contains('mobile-open') && 
+                    !Panel_Derecho.contains(e.target)) {
+                    Panel_Derecho.classList.remove('mobile-open');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
     }
 
     function Abrir_Panel_Carrito() {

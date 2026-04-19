@@ -92,7 +92,6 @@
                                 <input type="range" id="price-max-slider" class="price-range-slider thumb-max" min="0" max="500" step="1" value="500">
                             </div>
                         </div>
-                        <button id="clear-price-filter" class="price-filter-btn secondary" title="Limpiar precio"><i class="fa-solid fa-rotate-left"></i></button>
                         <button id="reset-all-filters" class="price-filter-btn" title="Reiniciar todos los filtros">Reiniciar filtros</button>
                     </div>
                 </div>
@@ -114,7 +113,10 @@
         </main>
 
         <!-- CHATBOT (Right Panel) -->
-        <aside class="dashboard-right">
+        <aside class="dashboard-right" id="dashboard-right">
+            <div class="mobile-chat-toggle" id="mobile-chat-toggle">
+                <i class="fa-solid fa-comment-dots"></i>
+            </div>
             <div id="chat-window" class="chat-window embedded open">
                 <div class="chat-header">
                     <div class="chat-user-info">

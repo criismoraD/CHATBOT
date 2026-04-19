@@ -7,6 +7,41 @@
 - `app.py` ahora sirve `index.html` en `/` y mantiene estado tecnico en `/status` al iniciar por puerto.
 
 ## Completado
+- [18/04] **Refuerzo de Contraste y Tipografia de Parrafos (v6):**
+    - `documentacion/index.html`: aumentado contraste de texto y bordes manteniendo estilo pastel crema.
+    - `documentacion/index.html`: incrementado tamano y peso de etiquetas `p` y contenido asociado para lectura mas clara.
+    - `documentacion/index.html`: ajustada tipografia en bloques de tabla y tarjetas para mejorar legibilidad global.
+- [18/04] **Ajuste Visual Pastel Infantil de Documentacion (v5):**
+    - `documentacion/index.html`: migrada la tipografia a estilo infantil/comic (Baloo 2 + Comic Neue).
+    - `documentacion/index.html`: fondos refinados a paleta pastel crema en tarjetas, tablas, bloques de codigo y layout general.
+    - `documentacion/index.html`: titulos convertidos a tonos pastel con sombra suave, eliminando contornos en tipografia.
+    - `documentacion/index.html`: ajuste de contraste para mantener legibilidad sin usar texto en negro.
+- [18/04] **Mejora Visual de Documentacion (v4):**
+    - `documentacion/index.html`: incremento de contraste general (fondos, bordes y textos) para facilitar lectura en pantallas de distinta calidad.
+    - `documentacion/index.html`: aplicado estilo de resaltado en verde pastel con contornos y negrita para encabezados y texto importante.
+    - `documentacion/index.html`: incorporadas animaciones adicionales (orbitales de fondo, flujo animado en lineas de diagrama, realce de tarjetas).
+    - `documentacion/index.html`: agregados nuevos graficos explicativos en arquitectura, flujo NLP y ciclo de respuesta API para hacer la guia mas didactica.
+- [18/04] **Refuerzo Integral de Documentacion Tecnica (v3):**
+    - `documentacion/index.html`: reescrita la guia para usar lenguaje mas simple, largo y didactico orientado a personas sin base tecnica.
+    - `documentacion/index.html`: ampliada la seccion **Arquitectura de Archivos** con todos los archivos reales del proyecto (backend, frontend, datos, instalacion y bitacora).
+    - `documentacion/index.html`: corregida la explicacion del motor de IA para reflejar la arquitectura real (Embedding + BiLSTM) y documentados endpoints principales (`/chat`, `/search`, `/products`, `/transcribe`, `/status`).
+- [18/04] **Ampliación de Documentación Técnica (v2):**
+    - `index.html` (docs): agregado diagrama de flujo interactivo del ciclo de vida de una petición (`app.py` -> `ia.py`).
+    - `index.html` (docs): expandida sección de NLP con comparativa visual entre TF-IDF y Embeddings.
+    - `index.html` (docs): nueva sección de Intenciones detallando la estructura de `intents.json`.
+- [18/04] **Generación de Documentación Técnica:**
+    - Creado directorio `/documentacion` con manual interactivo `index.html`.
+    - Documentados flujos de Memoria, Entrenamiento e Inferencia con diagramas SVG.
+    - Explicación de la evolución NLP (de Bag of Words a TF-IDF/Embeddings).
+- [18/04] **Optimización de Interfaz Móvil (Responsive Design):**
+    - `index.html`: agregado botón flotante `mobile-chat-toggle` para controlar el chatbot en pantallas pequeñas.
+    - `css/style.css`: implementadas Media Queries para apilar paneles, habilitar scroll en body y redimensionar tarjetas de producto (2 columnas en móviles).
+    - `js/main.js`: añadida lógica de interactividad para abrir/cerrar el chat móvil y auto-cierre al hacer clic fuera del panel.
+- [18/04] **Sincronización Exacta Backend-Frontend por IDs de Producto:**
+    - `dialogo.py`: actualizado payload `filter_action` para enviar lista explícita de `product_ids` encontrados.
+    - `js/main.js`: implementado `Ids_Filtrados_Por_Backend` (Set) para renderizado estricto basado en la respuesta del NLP.
+    - `intents.json` & `model.pth`: reentrenamiento del modelo con nuevos patrones para `buscar_producto` y `colores`.
+    - Eliminación de discrepancias entre búsqueda semántica del backend y filtrado lógico del frontend.
 - [18/04] **Hotfix Crítico de Estabilidad en /chat (500 por UnboundLocalError):**
     - `dialogo.py`: se inicializó `Respuesta_Final = None` al inicio de `Obtener_Respuesta_Principal` para garantizar estado definido en todas las rutas.
     - Se eliminó el error intermitente `UnboundLocalError: cannot access local variable 'Respuesta_Final'` que causaba HTTP 500 en mensajes como `hola` y consultas ambiguas.
