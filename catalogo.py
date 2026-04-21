@@ -15,6 +15,7 @@ Fuente_Activa_De_Catalogo = "scraped"
 Colores_Dinamicos = set()
 Categorias_Dinamicas = set()
 Indice_De_Nombres_De_Producto = []
+Diccionario_Productos_Por_Id = {}
 Frecuencia_De_Tokens_De_Producto = {}
 Vectorizador_TFIDF = None
 Matriz_TFIDF_Productos = None
@@ -70,6 +71,7 @@ def Cambiar_Fuente_De_Catalogo(Fuente_Solicitada):
 
     if Cambio_De_Fuente or not Indice_De_Nombres_De_Producto:
         Reconstruir_Indice_De_Nombres_De_Producto()
+        Reconstruir_Diccionario_De_Productos()
 
     return Fuente_Activa_De_Catalogo
 
@@ -113,6 +115,15 @@ def Extraer_Entidades_Dinamicas():
         for col in colores:
             if col:
                 Colores_Dinamicos.add(col)
+
+
+def Reconstruir_Diccionario_De_Productos():
+    global Diccionario_Productos_Por_Id
+    Diccionario_Productos_Por_Id = {}
+    for Producto in Datos_De_Productos:
+        Id_Producto = Producto.get('id')
+        if Id_Producto is not None and Id_Producto not in Diccionario_Productos_Por_Id:
+            Diccionario_Productos_Por_Id[Id_Producto] = Producto
 
 
 def Reconstruir_Indice_De_Nombres_De_Producto():
@@ -263,7 +274,7 @@ def Buscar_Productos(Categoria=None, Color=None, Precio_Maximo=None, Talla=None,
 
 
 def Obtener_Producto_Por_Id(Id_De_Producto):
-    return next((Producto for Producto in Datos_De_Productos if Producto.get('id') == Id_De_Producto), None)
+    return Diccionario_Productos_Por_Id.get(Id_De_Producto)
 
 
 def Obtener_Detalle_De_Inventario(Producto):
