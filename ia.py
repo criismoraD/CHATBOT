@@ -18,7 +18,7 @@ Modelo_Voz = WhisperModel("tiny", device="cuda" if torch.cuda.is_available() els
 # Cargar modelo PyTorch
 if os.path.exists(config.Ruta_Modelo_Pytorch):
     try:
-        data_model = torch.load(config.Ruta_Modelo_Pytorch, map_location=Dispositivo, weights_only=False)
+        data_model = torch.load(config.Ruta_Modelo_Pytorch, map_location=Dispositivo, weights_only=True)
         Modelo_IA = NeuralNet(
             data_model["input_size"],
             data_model["hidden_size"],
