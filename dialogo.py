@@ -329,25 +329,36 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
     # --- MEJORA: Validar patrones SIEMPRE si no es una intención fuerte de negocio ---
     # Priorizamos patrones sobre la predicción del modelo si el modelo dice fuera de dominio o es ambiguo.
     Etiquetas_De_Detalle_Prioritario = {"consultar_stock_item", "consultar_precio_item", "colores", "contexto_iniciado"}
-    if Etiqueta_Detectada not in Etiquetas_De_Detalle_Prioritario:
+    Etiquetas_De_Negocio_Prioritarias = {
+        "buscar_producto", "pedidos", "reclamos", "consulta_precio",
+        "filtrar_categoria", "filtrar_genero", "informacion_tienda", "promociones"
+    }
+
+    Es_Intencion_Fuerte_Y_Confiable = (
+        Etiqueta_Detectada in Etiquetas_De_Negocio_Prioritarias
+        and Confianza_Modelo >= config.Umbral_De_Confianza
+        and Margen_De_Confianza >= config.Umbral_De_Margen_Base
+    )
+
+    if Etiqueta_Detectada not in Etiquetas_De_Detalle_Prioritario and (not Es_Intencion_Fuerte_Y_Confiable or Etiqueta_Detectada == "fuera_de_dominio"):
         Tag_De_Patron = None
-        for intent in Datos_De_Intents['intents']:
-            for pattern in intent['patterns']:
-                patron_norm = Normalizar_Texto_Base(pattern)
-                if patron_norm and patron_norm in Mensaje_Normalizado:
-                    print(f"[DEBUG] Patron coincidente: '{patron_norm}' en '{Mensaje_Normalizado}' -> Tag: {intent['tag']}")
+        Max_Longitud_Patron = 0
+        for Intent_Item in Datos_De_Intents['intents']:
+            for Patron_Original in Intent_Item['patterns']:
+                Patron_Norm = Normalizar_Texto_Base(Patron_Original)
+                if Patron_Norm and Patron_Norm in Mensaje_Normalizado:
                     # Si el patrón es corto (<= 4), exigimos palabra completa para evitar falsos positivos
-                    if len(patron_norm) <= 4:
-                        if re.search(r'\b' + re.escape(patron_norm) + r'\b', Mensaje_Normalizado):
-                            Tag_De_Patron = intent['tag']
-                            break
-                    else:
-                        Tag_De_Patron = intent['tag']
-                        break
-            if Tag_De_Patron:
-                break
+                    if len(Patron_Norm) <= 4:
+                        if not re.search(r'\b' + re.escape(Patron_Norm) + r'\b', Mensaje_Normalizado):
+                            continue
+
+                    # Priorizamos el patrón más largo encontrado para mayor precisión
+                    if len(Patron_Norm) > Max_Longitud_Patron:
+                        Max_Longitud_Patron = len(Patron_Norm)
+                        Tag_De_Patron = Intent_Item['tag']
 
         if Tag_De_Patron:
+            print(f"[DEBUG] Patron coincidente prioritario: '{Tag_De_Patron}' (Longitud: {Max_Longitud_Patron})")
             Etiqueta_Detectada = Tag_De_Patron
         else:
             print(f"[DEBUG] No se encontro patron para: '{Mensaje_Normalizado}'")
