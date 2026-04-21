@@ -8,3 +8,6 @@ faster-whisper
 scikit-learn
 spacy
 thefuzz
+PyQt5>=5.15.0
+sounddevice>=0.5.0
+soundfile>=0.13.0

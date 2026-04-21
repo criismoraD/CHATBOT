@@ -752,17 +752,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        if (Boton_Limpiar_Precio) {
-            Boton_Limpiar_Precio.addEventListener('click', () => {
-                Precio_Minimo_Actual = Precio_Minimo_Base;
-                Precio_Maximo_Actual = Precio_Maximo_Base;
-                if (Slider_Precio_Minimo) Slider_Precio_Minimo.value = String(Precio_Minimo_Base);
-                if (Slider_Precio_Maximo) Slider_Precio_Maximo.value = String(Precio_Maximo_Base);
-                Actualizar_Textos_Rango_De_Precio();
-                Cantidad_A_Mostrar = 12;
-                Renderizar_Productos();
-            });
-        }
+
 
         if (Boton_Reiniciar_Filtros) {
             Boton_Reiniciar_Filtros.addEventListener('click', () => {
