@@ -7,6 +7,8 @@
 - `app.py` ahora sirve `index.html` en `/` y mantiene estado tecnico en `/status` al iniciar por puerto.
 
 ## Completado
+- [18/04] **Limpieza de Código en Entrenamiento:**
+    - `train_pytorch.py`: eliminadas importaciones no utilizadas de `re` y `unicodedata` para mejorar la legibilidad y salud del código.
 - [18/04] **Refuerzo de Contraste y Tipografia de Parrafos (v6):**
     - `documentacion/index.html`: aumentado contraste de texto y bordes manteniendo estilo pastel crema.
     - `documentacion/index.html`: incrementado tamano y peso de etiquetas `p` y contenido asociado para lectura mas clara.
@@ -71,7 +73,7 @@
     - `dialogo.py`: las intenciones de detalle contextual (`consultar_stock_item`, `consultar_precio_item`, `colores`) ya no son sobreescritas por pattern matching generico.
     - `js/main.js`: keywords de subtipo ahora se aplican incluso si llega categoria en `filter_action`, evitando mostrar toda la categoria.
     - `extractor.py`: ampliada normalizacion de plurales (faldas, vestidos, leggings, joggers, casacas) y agregado "mejor" como palabra vacia para evitar ruido.
-    - Validado runtime: "tienes mochilas" => `keywords=['mochila']` y `genero=None`; "mejor muestrame faldas" => `keywords=['falda']`; "que talla tienes?" en contexto => `consultar_stock_item`.
+    - Validado runtime: "tienes mochilas" => `keywords=['mochila']` and `genero=None`; "mejor muestrame faldas" => `keywords=['falda']`; "que talla tienes?" en contexto => `consultar_stock_item`.
 - [17/04] **Naturalidad en Respuesta de Busqueda + Herencia de Precio:**
     - `dialogo.py`: respuesta de `buscar_producto` ahora usa texto natural por keyword (ejemplo: "Encontré 5 mochilas...").
     - `dialogo.py`: al cambiar de categoria, ya no se hereda `max_price` previo si el usuario no lo solicita.
