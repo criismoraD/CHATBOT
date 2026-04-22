@@ -18,21 +18,32 @@ from utils_nlp import tokenizar_y_lematizar as tokenizar
 
 # --- DE model_arch.py ---
 class NeuralNet(nn.Module):
-    def __init__(self, vocab_size, hidden_size, num_classes, padding_idx=0):
+    def __init__(self, vocab_size, hidden_size, num_classes, padding_idx=0, embedding_dim=128):
         super().__init__()
-        embedding_dim = 128
+        self.padding_idx = padding_idx
         self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=padding_idx)
         self.lstm = nn.LSTM(embedding_dim, hidden_size // 2, batch_first=True, bidirectional=True, num_layers=1)
         self.dropout = nn.Dropout(0.4)
         self.fc = nn.Linear(hidden_size, num_classes)
 
-    def forward(self, x):
+    def forward(self, x, longitudes=None):
         # x shape: (batch_size, sequence_length)
         out = self.embedding(x)
         # out shape: (batch_size, sequence_length, embedding_dim)
 
-        # Pasar por LSTM
-        out, (hn, cn) = self.lstm(out)
+        if longitudes is None:
+            longitudes = (x != self.padding_idx).sum(dim=1)
+
+        longitudes = longitudes.clamp(min=1).to('cpu')
+        Secuencias_Empaquetadas = nn.utils.rnn.pack_padded_sequence(
+            out,
+            longitudes,
+            batch_first=True,
+            enforce_sorted=False,
+        )
+
+        # Pasar por LSTM ignorando pasos de padding.
+        _, (hn, cn) = self.lstm(Secuencias_Empaquetadas)
 
         # hn shape: (num_layers * num_directions, batch_size, hidden_size // 2)
         # Al ser 1 capa bidireccional, concatenamos las dos direcciones
@@ -50,6 +61,7 @@ Semilla_Global = 100
 
 Tamano_Lote = 32
 Tamano_Capa_Oculta = 128
+Tamano_Embedding = 128
 Tasa_Aprendizaje = 0.005
 Numero_De_Epocas = 40
 Paciencia_EarlyStopping = 30
@@ -144,7 +156,8 @@ def Evaluar_Modelo(modelo, data_loader, criterio, dispositivo):
     with torch.no_grad():
         for xb, yb in data_loader:
             xb, yb = xb.to(dispositivo), yb.to(dispositivo)
-            salida = modelo(xb)
+            longitudes = (xb != 0).sum(dim=1).clamp(min=1)
+            salida = modelo(xb, longitudes)
             perdida = criterio(salida, yb)
             perdida_total += perdida.item()
             predicciones.extend(salida.argmax(1).cpu().numpy())
@@ -157,7 +170,12 @@ def Evaluar_Modelo(modelo, data_loader, criterio, dispositivo):
 
 def Entrenar_Modelo(train_loader, val_loader, input_size, output_size, pesos_clase):
     dispositivo = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    modelo = NeuralNet(input_size, Tamano_Capa_Oculta, output_size).to(dispositivo)
+    modelo = NeuralNet(
+        input_size,
+        Tamano_Capa_Oculta,
+        output_size,
+        embedding_dim=Tamano_Embedding,
+    ).to(dispositivo)
     
     criterio = nn.CrossEntropyLoss(weight=pesos_clase.to(dispositivo))
     optimizador = torch.optim.Adam(modelo.parameters(), lr=Tasa_Aprendizaje, weight_decay=Weight_Decay)
@@ -178,7 +196,8 @@ def Entrenar_Modelo(train_loader, val_loader, input_size, output_size, pesos_cla
         for xb, yb in train_loader:
             xb, yb = xb.to(dispositivo), yb.to(dispositivo)
             optimizador.zero_grad()
-            out = modelo(xb)
+            longitudes = (xb != 0).sum(dim=1).clamp(min=1)
+            out = modelo(xb, longitudes)
             loss = criterio(out, yb)
             loss.backward()
             optimizador.step()
@@ -260,6 +279,7 @@ def main():
         "input_size": len(vocab),
         "hidden_size": Tamano_Capa_Oculta,
         "output_size": len(tags),
+        "embedding_dim": Tamano_Embedding,
         "all_words": vocab,
         "tags": tags,
         "max_length": longitud_maxima

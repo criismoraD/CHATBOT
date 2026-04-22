@@ -948,59 +948,178 @@ document.addEventListener('DOMContentLoaded', () => {
         Mensajes_Chat.scrollTop = Mensajes_Chat.scrollHeight;
     }
 
-    // Voice recording logic
+    // Voice recognition logic (nativo del navegador primero, Whisper como fallback)
+    const Constructor_De_Reconocimiento_Nativo = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+    let Reconocedor_De_Voz_Nativo = null;
+    let Reconocimiento_Nativo_Activo = false;
+    let Reconocimiento_Nativo_Con_Resultado = false;
+    let Reconocimiento_Nativo_Fallo = false;
+    let Reconocimiento_Nativo_Cancelado_Manual = false;
+
     let Grabadora_De_Medios = null;
     let Segmentos_De_Audio = [];
 
+    async function Enviar_Audio_A_Whisper(Blob_De_Audio) {
+        const Datos_De_Formulario = new FormData();
+        Datos_De_Formulario.append('audio', Blob_De_Audio, 'voice.webm');
+
+        try {
+            const Respuesta_De_Transcripcion = await fetch(`${URL_Base_API}/transcribe`, {
+                method: 'POST',
+                body: Datos_De_Formulario
+            });
+
+            if (!Respuesta_De_Transcripcion.ok) {
+                throw new Error(`HTTP ${Respuesta_De_Transcripcion.status}`);
+            }
+
+            const Datos_Transcritos = await Respuesta_De_Transcripcion.json();
+            if (Datos_Transcritos.text) {
+                Entrada_Chat.value = Datos_Transcritos.text;
+                Enviar_Mensaje();
+                return;
+            }
+
+            if (Datos_Transcritos.error) {
+                Agregar_Mensaje_Chat('Error de voz: ' + Datos_Transcritos.error, 'bot');
+                return;
+            }
+
+            Agregar_Mensaje_Chat('No pude transcribir tu audio con Whisper.', 'bot');
+        } catch (Error_De_Voz) {
+            console.error('Error al transcribir con Whisper:', Error_De_Voz);
+            Agregar_Mensaje_Chat('No pude procesar tu voz en este momento.', 'bot');
+        }
+    }
+
+    async function Iniciar_Grabacion_Con_Whisper() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            Agregar_Mensaje_Chat('Tu navegador no soporta captura de audio.', 'bot');
+            return;
+        }
+
+        if (Grabadora_De_Medios && Grabadora_De_Medios.state === 'recording') {
+            Grabadora_De_Medios.stop();
+            Boton_Microfono.classList.remove('recording');
+            return;
+        }
+
+        try {
+            const Flujo_De_Audio = await navigator.mediaDevices.getUserMedia({ audio: true });
+            Grabadora_De_Medios = new MediaRecorder(Flujo_De_Audio);
+            Segmentos_De_Audio = [];
+
+            Grabadora_De_Medios.ondataavailable = (Evento) => {
+                Segmentos_De_Audio.push(Evento.data);
+            };
+
+            Grabadora_De_Medios.onstop = async () => {
+                const Blob_De_Audio = new Blob(Segmentos_De_Audio, { type: 'audio/webm' });
+                await Enviar_Audio_A_Whisper(Blob_De_Audio);
+                Flujo_De_Audio.getTracks().forEach(Track => Track.stop());
+            };
+
+            Grabadora_De_Medios.start();
+            Boton_Microfono.classList.add('recording');
+
+            // Evita grabaciones largas cuando el fallback se activa automaticamente.
+            setTimeout(() => {
+                if (Grabadora_De_Medios && Grabadora_De_Medios.state === 'recording') {
+                    Grabadora_De_Medios.stop();
+                    Boton_Microfono.classList.remove('recording');
+                }
+            }, 7000);
+        } catch (Error_De_Microfono) {
+            console.error('Error accediendo al microfono:', Error_De_Microfono);
+            Agregar_Mensaje_Chat('No se pudo acceder al microfono.', 'bot');
+        }
+    }
+
+    function Asegurar_Reconocedor_Nativo() {
+        if (!Constructor_De_Reconocimiento_Nativo || Reconocedor_De_Voz_Nativo) {
+            return;
+        }
+
+        Reconocedor_De_Voz_Nativo = new Constructor_De_Reconocimiento_Nativo();
+        Reconocedor_De_Voz_Nativo.lang = 'es-ES';
+        Reconocedor_De_Voz_Nativo.interimResults = false;
+        Reconocedor_De_Voz_Nativo.maxAlternatives = 1;
+        Reconocedor_De_Voz_Nativo.continuous = false;
+
+        Reconocedor_De_Voz_Nativo.onstart = () => {
+            Reconocimiento_Nativo_Activo = true;
+            Boton_Microfono.classList.add('recording');
+        };
+
+        Reconocedor_De_Voz_Nativo.onresult = (Evento) => {
+            const Texto_Transcrito = (Evento.results?.[0]?.[0]?.transcript || '').trim();
+            if (!Texto_Transcrito) {
+                return;
+            }
+
+            Reconocimiento_Nativo_Con_Resultado = true;
+            Entrada_Chat.value = Texto_Transcrito;
+            Enviar_Mensaje();
+        };
+
+        Reconocedor_De_Voz_Nativo.onerror = (Evento) => {
+            console.warn('Reconocimiento nativo fallido:', Evento.error);
+            if (Evento.error !== 'aborted') {
+                Reconocimiento_Nativo_Fallo = true;
+            }
+        };
+
+        Reconocedor_De_Voz_Nativo.onend = () => {
+            Reconocimiento_Nativo_Activo = false;
+            Boton_Microfono.classList.remove('recording');
+
+            if (!Reconocimiento_Nativo_Cancelado_Manual && (Reconocimiento_Nativo_Fallo || !Reconocimiento_Nativo_Con_Resultado)) {
+                Agregar_Mensaje_Chat('No pude captar tu voz con el navegador. Intentare con Whisper.', 'bot');
+                Iniciar_Grabacion_Con_Whisper();
+            }
+        };
+    }
+
+    function Iniciar_Reconocimiento_Nativo() {
+        Asegurar_Reconocedor_Nativo();
+
+        if (!Reconocedor_De_Voz_Nativo) {
+            Iniciar_Grabacion_Con_Whisper();
+            return;
+        }
+
+        try {
+            Reconocimiento_Nativo_Con_Resultado = false;
+            Reconocimiento_Nativo_Fallo = false;
+            Reconocimiento_Nativo_Cancelado_Manual = false;
+            Reconocedor_De_Voz_Nativo.start();
+        } catch (Error_De_Reconocimiento) {
+            console.warn('No se pudo iniciar reconocimiento nativo:', Error_De_Reconocimiento);
+            Iniciar_Grabacion_Con_Whisper();
+        }
+    }
+
     if (Boton_Microfono) {
-        Boton_Microfono.addEventListener('click', async () => {
+        Boton_Microfono.addEventListener('click', () => {
             if (Grabadora_De_Medios && Grabadora_De_Medios.state === 'recording') {
                 Grabadora_De_Medios.stop();
                 Boton_Microfono.classList.remove('recording');
                 return;
             }
 
-            try {
-                const Flujo_De_Audio = await navigator.mediaDevices.getUserMedia({ audio: true });
-                Grabadora_De_Medios = new MediaRecorder(Flujo_De_Audio);
-                Segmentos_De_Audio = [];
-
-                Grabadora_De_Medios.ondataavailable = e => {
-                    Segmentos_De_Audio.push(e.data);
-                };
-
-                Grabadora_De_Medios.onstop = async () => {
-                    const Blob_De_Audio = new Blob(Segmentos_De_Audio, { type: 'audio/webm' });
-                    const Datos_De_Formulario = new FormData();
-                    Datos_De_Formulario.append('audio', Blob_De_Audio, 'voice.webm');
-
-                    try {
-                        const Respuesta_De_Transcripcion = await fetch(`${URL_Base_API}/transcribe`, {
-                            method: 'POST',
-                            body: Datos_De_Formulario
-                        });
-
-                        const Datos_Transcritos = await Respuesta_De_Transcripcion.json();
-                        if (Datos_Transcritos.text) {
-                            Entrada_Chat.value = Datos_Transcritos.text;
-                            Enviar_Mensaje();
-                        } else if (Datos_Transcritos.error) {
-                            Agregar_Mensaje_Chat('Error de voz: ' + Datos_Transcritos.error, 'bot');
-                        }
-                    } catch (Error_De_Voz) {
-                        console.error('Error al transcribir:', Error_De_Voz);
-                        Agregar_Mensaje_Chat('No pude procesar tu voz en este momento.', 'bot');
-                    }
-
-                    Flujo_De_Audio.getTracks().forEach(track => track.stop());
-                };
-
-                Grabadora_De_Medios.start();
-                Boton_Microfono.classList.add('recording');
-            } catch (Error_De_Microfono) {
-                console.error('Error accediendo al microfono:', Error_De_Microfono);
-                Agregar_Mensaje_Chat('No se pudo acceder al microfono.', 'bot');
+            if (Reconocimiento_Nativo_Activo && Reconocedor_De_Voz_Nativo) {
+                Reconocimiento_Nativo_Cancelado_Manual = true;
+                Reconocedor_De_Voz_Nativo.stop();
+                Boton_Microfono.classList.remove('recording');
+                return;
             }
+
+            if (Constructor_De_Reconocimiento_Nativo) {
+                Iniciar_Reconocimiento_Nativo();
+                return;
+            }
+
+            Iniciar_Grabacion_Con_Whisper();
         });
     }
 

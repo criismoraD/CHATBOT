@@ -7,6 +7,27 @@
 - `app.py` ahora sirve `index.html` en `/` y mantiene estado tecnico en `/status` al iniciar por puerto.
 
 ## Completado
+- [22/04] **Expansión de Sinónimos Antes de Lematización:**
+    - `utils_nlp.py`: agregado `DICCIONARIO_LOCAL_DE_SINONIMOS` para normalizar términos de catálogo (ej. `casaca` -> `chaqueta`) antes de limpiar y lematizar.
+    - `utils_nlp.py`: nueva función `normalizar_sinonimos_locales` integrada en `tokenizar_y_lematizar` previo a `limpiar_texto`.
+- [22/04] **Mejora de LSTM: Padding Correcto + Embedding Configurable:**
+    - `train_pytorch.py`: `NeuralNet` ahora recibe `embedding_dim` como parametro (antes fijo en 128).
+    - `train_pytorch.py`: implementado `pack_padded_sequence` para que el LSTM ignore padding en entrenamiento y evaluacion.
+    - `train_pytorch.py`: se guarda `embedding_dim` dentro de `model.pth` para mantener compatibilidad en carga.
+    - `ia.py`: inferencia actualizada para pasar longitudes reales y reconstruir `NeuralNet` usando `embedding_dim` del checkpoint.
+- [22/04] **Lazy Loading de Whisper para Arranque Mas Rapido:**
+    - `ia.py`: eliminada la instanciacion global de Whisper y creada funcion `Obtener_Modelo_Voz()` con carga bajo demanda y bloqueo por hilo.
+    - `app.py`: endpoint `/transcribe` ahora inicializa Whisper en el primer uso, con manejo de errores y limpieza segura de archivo temporal.
+    - `chat_gui.py`: transcripcion de audio adaptada para usar `Obtener_Modelo_Voz()`.
+- [22/04] **Buenas Prácticas en Seguridad y Configuración (CORS + bot_name):**
+    - `config.py`: agregada configuración `Origenes_Cors_Permitidos` desde variable de entorno `CORS_ALLOWED_ORIGINS` con fallback local seguro.
+    - `config.py`: agregado `Nombre_Del_Bot` desde variable de entorno `BOT_NAME`.
+    - `app.py`: CORS ahora usa `config.Origenes_Cors_Permitidos` en lugar de `origins: "*"`.
+    - `app.py`: `bot_name` centralizado en respuestas JSON usando `config.Nombre_Del_Bot`.
+- [22/04] **Reconocimiento de Voz Híbrido (Nativo + Whisper Base):**
+    - `js/main.js`: el botón de micrófono ahora usa primero `SpeechRecognition`/`webkitSpeechRecognition` del navegador.
+    - `js/main.js`: si el reconocimiento nativo falla o no devuelve texto, se activa automáticamente un fallback con grabación y transcripción en `/transcribe`.
+    - `ia.py`: `Modelo_Voz` actualizado de `tiny` a `base` para mejorar precisión cuando se usa Whisper.
 - [18/04] **Limpieza de Código en Entrenamiento:**
     - `train_pytorch.py`: eliminadas importaciones no utilizadas de `re` y `unicodedata` para mejorar la legibilidad y salud del código.
 - [18/04] **Refuerzo de Contraste y Tipografia de Parrafos (v6):**

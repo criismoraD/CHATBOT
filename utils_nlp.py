@@ -13,6 +13,21 @@ except OSError:
 # Palabras que NO queremos que se eliminen porque son importantes para e-commerce
 PALABRAS_CLAVE_ECOMMERCE = {"con", "sin", "para", "de", "mujer", "hombre", "talla", "hasta", "menos", "mas"}
 
+# Normalización local de términos para unificar sinónimos de catálogo antes de lematizar.
+DICCIONARIO_LOCAL_DE_SINONIMOS = {
+    "casaca": "chaqueta",
+    "casacas": "chaqueta",
+    "chaquetas": "chaqueta",
+    "polera": "sudadera",
+    "poleras": "sudadera",
+    "polo": "camiseta",
+    "polos": "camiseta",
+    "playera": "camiseta",
+    "playeras": "camiseta",
+    "zapatillas": "zapatilla",
+    "tenis": "zapatilla",
+}
+
 # Actualizar el vocabulario de stop words de spaCy
 for palabra in PALABRAS_CLAVE_ECOMMERCE:
     nlp.vocab[palabra].is_stop = False
@@ -24,12 +39,21 @@ def limpiar_texto(texto: str) -> str:
     texto = re.sub(r'[^a-z0-9\s-]', ' ', texto)
     return re.sub(r'\s+', ' ', texto).strip()
 
+
+def normalizar_sinonimos_locales(texto: str) -> str:
+    texto_normalizado = str(texto or "")
+    for termino_original, termino_canonico in DICCIONARIO_LOCAL_DE_SINONIMOS.items():
+        patron = rf"\b{re.escape(termino_original)}\b"
+        texto_normalizado = re.sub(patron, termino_canonico, texto_normalizado, flags=re.IGNORECASE)
+    return texto_normalizado
+
 def tokenizar_y_lematizar(texto: str) -> list[str]:
     """
     Recibe un texto, lo limpia, elimina stop words (respetando excepciones de e-commerce),
     y devuelve la lista de lemas de las palabras resultantes, más los bigramas.
     """
-    texto_limpio = limpiar_texto(texto)
+    texto_normalizado = normalizar_sinonimos_locales(texto)
+    texto_limpio = limpiar_texto(texto_normalizado)
     doc = nlp(texto_limpio)
 
     # Extraemos lemas, omitiendo stop words y puntuación, quedándonos solo con tokens de al menos 2 letras

@@ -1,6 +1,22 @@
+import os
+
+
+def Obtener_Origenes_Cors_Permitidos():
+    Valor_De_Entorno = os.getenv(
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:5000,http://127.0.0.1:5000"
+    )
+    Origenes = [Origen.strip() for Origen in Valor_De_Entorno.split(',') if Origen.strip()]
+    if Origenes:
+        return Origenes
+    return ["http://localhost:5000", "http://127.0.0.1:5000"]
+
+
 Ruta_Modelo_Pytorch = "data/model.pth"
 Ruta_Intents = "data/intents.json"
 Ruta_Productos_Scrapeados = "data/products_scraped.json"
+Origenes_Cors_Permitidos = Obtener_Origenes_Cors_Permitidos()
+Nombre_Del_Bot = os.getenv("BOT_NAME", "Asistente SENATI")
 Fuentes_De_Catalogo_Validas = {"scraped"}
 Umbral_De_Confianza = 0.75
 Umbral_De_Margen_Base = 0.08
