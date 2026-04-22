@@ -570,6 +570,8 @@ document.addEventListener('DOMContentLoaded', () => {
             || Accion_De_Filtro.genero
             || typeof Accion_De_Filtro.max_price === 'number'
         );
+        const Tiene_Ids_De_Backend = Array.isArray(Accion_De_Filtro.product_ids)
+            && Accion_De_Filtro.product_ids.length > 0;
 
         const Lista_De_Keywords_Especificas = new Set([
             'mochila', 'mochilas', 'gorra', 'gorras', 'tomatodo', 'tomatodos',
@@ -583,7 +585,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return Lista_De_Keywords_Especificas.has(Keyword_Normalizada);
             });
 
-        if (Array.isArray(Accion_De_Filtro.keywords)
+        if (!Tiene_Ids_De_Backend
+            && Array.isArray(Accion_De_Filtro.keywords)
             && Accion_De_Filtro.keywords.length
             && (!Tiene_Filtros_Estructurados || Debe_Aplicar_Keywords_Con_Filtros)) {
             Texto_De_Busqueda = Accion_De_Filtro.keywords.join(' ').trim();
@@ -661,6 +664,28 @@ document.addEventListener('DOMContentLoaded', () => {
         Actualizar_UI_Carrito();
     }
 
+    function Aumentar_Cantidad(id) {
+        const item = Carrito_Actual.find(item => item.id === id);
+        if (item) {
+            item.quantity += 1;
+            Guardar_Carrito();
+            Actualizar_UI_Carrito();
+        }
+    }
+
+    function Disminuir_Cantidad(id) {
+        const item = Carrito_Actual.find(item => item.id === id);
+        if (item) {
+            item.quantity -= 1;
+            if (item.quantity <= 0) {
+                Quitar_Del_Carrito(id);
+            } else {
+                Guardar_Carrito();
+                Actualizar_UI_Carrito();
+            }
+        }
+    }
+
     function Guardar_Carrito() {
         localStorage.setItem('senati_cart', JSON.stringify(Carrito_Actual));
     }
@@ -683,7 +708,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="cart-item-emoji">${Obtener_Emoji_Categoria(item.category)}</div>
                     <div class="cart-item-info">
                         <h4>${item.name}</h4>
-                        <p>S/ ${item.price.toFixed(2)} x ${item.quantity}</p>
+                        <div class="cart-item-qty-controls" style="display: flex; align-items: center; gap: 8px; margin: 4px 0;">
+                            <button class="qty-btn decrease-qty" data-id="${item.id}" style="width: 24px; height: 24px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">-</button>
+                            <span style="font-size: 0.9rem; font-weight: 600; min-width: 20px; text-align: center;">${item.quantity}</span>
+                            <button class="qty-btn increase-qty" data-id="${item.id}" style="width: 24px; height: 24px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
+                        </div>
+                        <p style="margin: 0; font-weight: bold; color: var(--primary-color);">S/ ${(item.price * item.quantity).toFixed(2)} <span style="font-size: 0.8em; color: #777; font-weight: normal;">(S/ ${item.price.toFixed(2)} c/u)</span></p>
                     </div>
                     <button class="remove-item" data-id="${item.id}">
                         <i class="fa-solid fa-trash-can"></i>
@@ -691,6 +721,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 Lista_Items_Carrito.appendChild(itemDiv);
                 itemDiv.querySelector('.remove-item').addEventListener('click', () => Quitar_Del_Carrito(item.id));
+                itemDiv.querySelector('.increase-qty').addEventListener('click', () => Aumentar_Cantidad(item.id));
+                itemDiv.querySelector('.decrease-qty').addEventListener('click', () => Disminuir_Cantidad(item.id));
             });
             Monto_Total_Carrito.innerText = `S/ ${total.toFixed(2)}`;
         }
@@ -814,6 +846,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (Boton_Cerrar_Carrito) Boton_Cerrar_Carrito.addEventListener('click', Cerrar_Panel_Carrito);
         if (Overlay_Carrito) Overlay_Carrito.addEventListener('click', Cerrar_Panel_Carrito);
 
+        const Boton_Checkout = document.getElementById('checkout-btn');
+        if (Boton_Checkout) {
+            Boton_Checkout.addEventListener('click', Generar_Boleta_PDF);
+        }
+
         // Mobile Chat Toggle
         const Boton_Toggle_Chat = document.getElementById('mobile-chat-toggle');
         const Panel_Derecho = document.getElementById('dashboard-right');
@@ -853,6 +890,96 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'auto';
     }
 
+    function Generar_Boleta_PDF() {
+        if (Carrito_Actual.length === 0) {
+            alert('Tu carrito está vacío. Agrega productos para comprar.');
+            return;
+        }
+
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+            alert('El generador de PDF está cargando. Por favor, intenta de nuevo en unos segundos.');
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Configuración inicial
+        doc.setFontSize(20);
+        doc.text('SENATI SPORTS - Boleta de Venta', 105, 20, { align: 'center' });
+
+        doc.setFontSize(12);
+        const date = new Date();
+        doc.text(`Fecha: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`, 20, 30);
+
+        // Cabeceras de tabla
+        let startY = 45;
+        doc.setFont(undefined, 'bold');
+        doc.text('Producto', 20, startY);
+        doc.text('Cant.', 120, startY);
+        doc.text('P. Unit', 150, startY);
+        doc.text('Subtotal', 180, startY);
+
+        // Línea separadora
+        doc.setLineWidth(0.5);
+        doc.line(20, startY + 2, 190, startY + 2);
+
+        // Items
+        startY += 10;
+        doc.setFont(undefined, 'normal');
+        let total = 0;
+
+        Carrito_Actual.forEach(item => {
+            const subtotal = item.price * item.quantity;
+            total += subtotal;
+
+            // Truncate name if too long
+            const name = item.name.length > 40 ? item.name.substring(0, 37) + '...' : item.name;
+
+            doc.text(name, 20, startY);
+            doc.text(item.quantity.toString(), 125, startY, { align: 'right' });
+            doc.text(`S/ ${item.price.toFixed(2)}`, 160, startY, { align: 'right' });
+            doc.text(`S/ ${subtotal.toFixed(2)}`, 190, startY, { align: 'right' });
+
+            startY += 10;
+        });
+
+        // Línea separadora final
+        doc.line(20, startY - 5, 190, startY - 5);
+
+        // Total
+        doc.setFont(undefined, 'bold');
+        doc.text('TOTAL:', 150, startY + 5);
+        doc.text(`S/ ${total.toFixed(2)}`, 190, startY + 5, { align: 'right' });
+
+        // Mensaje de agradecimiento
+        doc.setFont(undefined, 'italic');
+        doc.setFontSize(10);
+        doc.text('¡Gracias por tu compra en SENATI SPORTS!', 105, startY + 20, { align: 'center' });
+
+        // Abrir PDF en una nueva pestaña
+        const pdfBlob = doc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        window.open(pdfUrl, '_blank');
+
+        // Limpiar carrito
+        Carrito_Actual = [];
+        Guardar_Carrito();
+        Actualizar_UI_Carrito();
+        Cerrar_Panel_Carrito();
+        
+        // Notificar en el chat de forma visual si existe el panel de chat
+        const chatWindow = document.getElementById('chat-window');
+        if (chatWindow && typeof Agregar_Mensaje_Chat === 'function') {
+            // Check if mobile panel is open, if not, we can force it open or just add silently
+            const Panel_Derecho = document.getElementById('dashboard-right');
+            if (Panel_Derecho && window.innerWidth <= 768 && !Panel_Derecho.classList.contains('mobile-open')) {
+                Panel_Derecho.classList.add('mobile-open');
+            }
+            Agregar_Mensaje_Chat('¡Compra finalizada exitosamente! He generado tu boleta de venta en formato PDF.', 'bot');
+        }
+    }
+
     // ============================================================
     // CHATBOT LOGIC (Conexión real con PyTorch backend)
     // ============================================================
@@ -864,6 +991,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function Enviar_Mensaje() {
         const Texto_Usuario = Entrada_Chat.value.trim();
         if (!Texto_Usuario) return;
+        Limpiar_Sugerencias_Chat();
         Agregar_Mensaje_Chat(Texto_Usuario, 'user');
         Entrada_Chat.value = '';
         Obtener_Respuesta_Chat(Texto_Usuario);
@@ -925,6 +1053,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             Agregar_Mensaje_Chat(data.response || 'No pude procesar la respuesta del servidor.', 'bot');
+            const Sugerencias_Coherentes = Obtener_Sugerencias_Coherentes(data.tag, data.filter_action || {});
+            Renderizar_Sugerencias_Chat(Sugerencias_Coherentes);
             
             // Si hay filter_action, aplicar el filtro en el catálogo
             if (data.filter_action) {
@@ -945,6 +1075,149 @@ document.addEventListener('DOMContentLoaded', () => {
         msgDiv.className = `message ${Remitente}`;
         msgDiv.innerText = Texto_Mensaje;
         Mensajes_Chat.appendChild(msgDiv);
+        Mensajes_Chat.scrollTop = Mensajes_Chat.scrollHeight;
+    }
+
+    function Limpiar_Sugerencias_Chat() {
+        Mensajes_Chat.querySelectorAll('.chat-suggestions').forEach(Nodo => Nodo.remove());
+    }
+
+    let Indice_De_Rotacion_Sugerencias = 0;
+
+    function Seleccionar_Sugerencias_Variadas(Lista_De_Sugerencias, Maximo = 3) {
+        const Sugerencias_Unicas = [];
+        for (const Sugerencia of Lista_De_Sugerencias) {
+            if (Sugerencia && !Sugerencias_Unicas.includes(Sugerencia)) {
+                Sugerencias_Unicas.push(Sugerencia);
+            }
+        }
+
+        if (Sugerencias_Unicas.length <= Maximo) {
+            return Sugerencias_Unicas;
+        }
+
+        const Resultado = [];
+        const Inicio = Indice_De_Rotacion_Sugerencias % Sugerencias_Unicas.length;
+        for (let i = 0; i < Sugerencias_Unicas.length && Resultado.length < Maximo; i += 1) {
+            Resultado.push(Sugerencias_Unicas[(Inicio + i) % Sugerencias_Unicas.length]);
+        }
+
+        Indice_De_Rotacion_Sugerencias += 1;
+        return Resultado;
+    }
+
+    function Obtener_Sugerencias_Coherentes(Tag_Del_Bot, Accion_De_Filtro = {}) {
+        const Categoria = Accion_De_Filtro?.category || null;
+        const Color = Accion_De_Filtro?.color || null;
+        const Genero = Accion_De_Filtro?.genero || null;
+        const Talla = Accion_De_Filtro?.talla || null;
+
+        const Sugerencias = [];
+
+        if (Tag_Del_Bot === 'saludo') {
+            return Seleccionar_Sugerencias_Variadas([
+                '🛒 Cómo comprar',
+                '💳 Métodos de pago',
+                '🎧 Soporte y reclamos'
+            ]);
+        }
+
+        if (Tag_Del_Bot === 'buscar_producto' || Tag_Del_Bot === 'filtrar_categoria' || Tag_Del_Bot === 'filtrar_genero') {
+            if (Categoria === 'POLOS') {
+                Sugerencias.push(
+                    '👗 Polos para mujer',
+                    '👨 Polos para hombre',
+                    '🎨 Polos en color rojo',
+                    '📏 Polos en talla M',
+                    '💸 Polos menos de 80 soles',
+                    '🏃 Polos para entrenamiento'
+                );
+            } else if (Categoria === 'CALZADO') {
+                Sugerencias.push(
+                    '👨 Zapatillas para hombre',
+                    '👗 Zapatillas para mujer',
+                    '🎨 Zapatillas en color negro',
+                    '📏 Zapatillas en talla 42',
+                    '💸 Zapatillas menos de 150 soles',
+                    '🏃 Zapatillas para running'
+                );
+            } else if (Categoria === 'PANTALONES') {
+                Sugerencias.push(
+                    '👖 Joggers para hombre',
+                    '👗 Leggings para mujer',
+                    '🎨 Pantalones en color negro',
+                    '📏 Pantalones en talla M',
+                    '💸 Pantalones menos de 120 soles',
+                    '🏃 Shorts para running'
+                );
+            } else if (Categoria === 'OTROS') {
+                Sugerencias.push(
+                    '🎒 Muéstrame mochilas',
+                    '🧢 Quiero ver gorras',
+                    '🎨 Accesorios en color negro',
+                    '💸 Accesorios menos de 60 soles',
+                    '🏷️ Quiero ver tomatodos'
+                );
+            } else {
+                Sugerencias.push(
+                    '👟 Zapatillas negras',
+                    '👕 Polos de mujer',
+                    '👖 Pantalones de hombre',
+                    '🎒 Mochilas deportivas',
+                    '💸 Menos de 100 soles',
+                    '🎨 Color rojo'
+                );
+            }
+
+            if (Color && !Talla) {
+                Sugerencias.push(Categoria === 'CALZADO' ? '📏 En talla 42' : '📏 En talla M');
+            }
+            if (Genero && !Color) {
+                Sugerencias.push('🎨 En color negro', '🎨 En color blanco');
+            }
+            if (Talla && !Genero) {
+                Sugerencias.push('👗 Para mujer', '👨 Para hombre');
+            }
+        }
+
+        if (Tag_Del_Bot === 'consultar_precio_item') {
+            Sugerencias.push('📏 ¿Qué tallas tiene?', '🎨 ¿Qué colores hay?', '📦 ¿Hay stock disponible?', '🛍️ Muéstrame similares');
+        }
+
+        if (Tag_Del_Bot === 'consultar_stock_item') {
+            Sugerencias.push('💰 ¿Cuál es el precio?', '🎨 ¿Qué colores hay?', '🛍️ Muéstrame productos similares', '👕 Quiero otra opción');
+        }
+
+        if (Tag_Del_Bot === 'colores') {
+            Sugerencias.push('📏 ¿Hay talla M?', '💰 ¿Cuál es el precio?', '🛒 Quiero agregar al carrito', '👀 Muéstrame más opciones');
+        }
+
+        return Seleccionar_Sugerencias_Variadas(Sugerencias, 3);
+    }
+
+    function Renderizar_Sugerencias_Chat(Lista_De_Sugerencias) {
+        Limpiar_Sugerencias_Chat();
+
+        if (!Array.isArray(Lista_De_Sugerencias) || !Lista_De_Sugerencias.length) {
+            return;
+        }
+
+        const Contenedor = document.createElement('div');
+        Contenedor.className = 'chat-suggestions';
+
+        Lista_De_Sugerencias.forEach(Texto_Sugerencia => {
+            const Boton = document.createElement('button');
+            Boton.type = 'button';
+            Boton.className = 'chat-suggestion-btn';
+            Boton.innerText = Texto_Sugerencia;
+            Boton.addEventListener('click', () => {
+                Entrada_Chat.value = Texto_Sugerencia.replace(/^[^\p{L}\p{N}]+/u, '').trim();
+                Enviar_Mensaje();
+            });
+            Contenedor.appendChild(Boton);
+        });
+
+        Mensajes_Chat.appendChild(Contenedor);
         Mensajes_Chat.scrollTop = Mensajes_Chat.scrollHeight;
     }
 
@@ -1129,6 +1402,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Enter') Enviar_Mensaje();
         });
     }
+
+    Renderizar_Sugerencias_Chat(Obtener_Sugerencias_Coherentes('saludo'));
 
     Inicializar_Dashboard().catch((Error_De_Inicio) => {
         console.error('No se pudo inicializar el dashboard:', Error_De_Inicio);

@@ -157,6 +157,11 @@ def Inferir_Etiqueta_Por_Heuristicas_De_Soporte(Mensaje_Normalizado, Etiqueta_De
     if Tokens_Del_Mensaje.intersection(Indicadores_De_Reclamo):
         return "reclamos"
 
+    Indicadores_Guia_Compra = {"comprar", "compra", "pedido"}
+    Indicadores_Ayuda_Compra = {"como", "informacion", "pasos", "guia", "ayuda", "ayudame", "explicame"}
+    if Tokens_Del_Mensaje.intersection(Indicadores_Guia_Compra) and Tokens_Del_Mensaje.intersection(Indicadores_Ayuda_Compra):
+        return "guia_compra"
+
     Indicadores_De_Ayuda_General = {
         "ayuda", "ayudame", "ayudar", "asesor", "asesoria", "asistencia"
     }
@@ -331,7 +336,8 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
     Etiquetas_De_Detalle_Prioritario = {"consultar_stock_item", "consultar_precio_item", "colores", "contexto_iniciado"}
     Etiquetas_De_Negocio_Prioritarias = {
         "buscar_producto", "pedidos", "reclamos", "consulta_precio",
-        "filtrar_categoria", "filtrar_genero", "informacion_tienda", "promociones"
+        "filtrar_categoria", "filtrar_genero", "informacion_tienda", "promociones",
+        "guia_compra", "metodos_pago"
     }
 
     Es_Intencion_Fuerte_Y_Confiable = (
@@ -449,7 +455,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             if Talla_Filtro: Texto_De_Filtro += f" talla {Talla_Filtro}"
             if Genero_Filtro: Texto_De_Filtro += f" para {Genero_Filtro.lower()}"
             if Busqueda_Relajada_Sin_Keywords:
-                Respuesta_Final = f"No encontré coincidencias exactas por términos, pero sí {len(Productos_Encontrados)} {Texto_Base_De_Resultado}{Texto_De_Filtro}. Ya te los muestro en el catálogo."
+                Respuesta_Final = f"Encontré {len(Productos_Encontrados)} opciones relacionadas de {Texto_Base_De_Resultado}{Texto_De_Filtro}. Ya te las muestro en el catálogo, indícame cuál te interesa."
             else:
                 Respuesta_Final = f"Encontré {len(Productos_Encontrados)} {Texto_Base_De_Resultado}{Texto_De_Filtro}. Ya te los muestro en el catálogo, indícame cuál te interesa."
             Accion_De_Filtro = {
@@ -473,9 +479,31 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
 
     elif Etiqueta_Detectada == "filtrar_categoria":
         if Categoria_Filtro:
-            Cantidad_Productos = len([p for p in Datos_De_Productos if p['category'] == Categoria_Filtro])
-            Respuesta_Final = f"Listo! Te muestro los {Cantidad_Productos} productos de {Categoria_Filtro}. Revisa el catalogo arriba."
-            Accion_De_Filtro = {"category": Categoria_Filtro}
+            Productos_Filtrados = Buscar_Productos(
+                Categoria=Categoria_Filtro,
+                Color=Color_Filtro,
+                Precio_Maximo=Precio_Maximo_Filtro,
+                Talla=Talla_Filtro,
+                Genero=Genero_Filtro,
+                Palabras_Clave=Palabras_Clave_Detectadas,
+                Limite=len(Datos_De_Productos),
+            )
+            Cantidad_Productos = len(Productos_Filtrados)
+            Texto_Natural_De_Busqueda = Obtener_Texto_Natural_De_Busqueda(Palabras_Clave_Detectadas)
+
+            if Texto_Natural_De_Busqueda:
+                Respuesta_Final = f"Listo! Te muestro {Cantidad_Productos} {Texto_Natural_De_Busqueda}. Revisa el catalogo arriba."
+            else:
+                Respuesta_Final = f"Listo! Te muestro los {Cantidad_Productos} productos de {Categoria_Filtro}. Revisa el catalogo arriba."
+
+            Accion_De_Filtro = {
+                "category": Categoria_Filtro,
+                "color": Color_Filtro,
+                "max_price": Precio_Maximo_Filtro,
+                "talla": Talla_Filtro,
+                "genero": Genero_Filtro,
+                "keywords": Palabras_Clave_Detectadas,
+            }
         else:
             Respuesta_Final = "Claro! Que categoria te interesa? Tenemos: Calzado, Polos, Pantalones y Otros."
 
@@ -668,13 +696,36 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 Respuesta_Final = "No encuentro la información de tallas de ese producto en específico."
         else:
             if Talla_Filtro:
-                Productos_Encontrados = Buscar_Productos(Talla=Talla_Filtro, Limite=3)
+                Productos_Encontrados = Buscar_Productos(
+                    Categoria=Categoria_Filtro,
+                    Color=Color_Filtro,
+                    Precio_Maximo=Precio_Maximo_Filtro,
+                    Talla=Talla_Filtro,
+                    Genero=Genero_Filtro,
+                    Palabras_Clave=Palabras_Clave_Detectadas,
+                    Limite=len(Datos_De_Productos),
+                )
                 if Productos_Encontrados:
-                    Respuesta_Final = f"Listo, ya filtre productos en talla {Talla_Filtro}. Revisa el catalogo e indicame cual te interesa."
-                    Accion_De_Filtro = {"talla": Talla_Filtro}
+                    Texto_De_Condicion = f" en talla {Talla_Filtro}"
+                    if Categoria_Filtro:
+                        Texto_De_Condicion += f" de {Categoria_Filtro.lower()}"
+                    if Color_Filtro:
+                        Texto_De_Condicion += f" color {Color_Filtro.lower()}"
+                    if Genero_Filtro:
+                        Texto_De_Condicion += f" para {Genero_Filtro.lower()}"
+
+                    Respuesta_Final = f"Listo, ya filtré productos{Texto_De_Condicion}. Revisa el catálogo e indícame cuál te interesa."
+                    Accion_De_Filtro = {
+                        "category": Categoria_Filtro,
+                        "color": Color_Filtro,
+                        "max_price": Precio_Maximo_Filtro,
+                        "talla": Talla_Filtro,
+                        "genero": Genero_Filtro,
+                        "keywords": Palabras_Clave_Detectadas,
+                    }
                     Etiqueta_Detectada = "buscar_producto"
                 else:
-                    Respuesta_Final = f"Actualmente no me queda stock en la base de datos para la talla {Talla_Filtro}."
+                    Respuesta_Final = f"No encontré productos con talla {Talla_Filtro} bajo los filtros actuales. ¿Quieres que ampliemos la búsqueda?"
             else:
                 Respuesta_Final = "¡Con gusto lo reviso! ¿Me podrías decir qué modelo de zapatilla o prenda estás buscando específicamente?"
 

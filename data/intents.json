@@ -1066,6 +1066,59 @@
       ]
     },
     {
+      "tag": "metodos_pago",
+      "patterns": [
+        "puedo pagar con yape",
+        "aceptan yape",
+        "aceptan plin",
+        "aceptan tarjeta",
+        "aceptan visa",
+        "aceptan mastercard",
+        "aceptan efectivo",
+        "aceptan transferencia",
+        "pago contraentrega",
+        "contra entrega",
+        "metodos de pago",
+        "medios de pago",
+        "como pago",
+        "con que puedo pagar",
+        "puedo pagar por yape",
+        "como pago mi pedido",
+        "que formas de pago tienen",
+        "se puede pagar con plin"
+      ],
+      "responses": [
+        "Aceptamos Yape, Plin, tarjetas (Visa/Mastercard), transferencia y pago contraentrega en zonas aplicables.",
+        "Puedes pagar con Yape, Plin, tarjeta o transferencia. Si deseas, te guío con el método que prefieras.",
+        "Nuestros medios de pago son: Yape, Plin, tarjeta, transferencia y contraentrega (según cobertura)."
+      ]
+    },
+    {
+      "tag": "guia_compra",
+      "patterns": [
+        "como comprar",
+        "cómo comprar",
+        "como compro paso a paso",
+        "guia de compra",
+        "guía de compra",
+        "pasos para comprar",
+        "como hago mi pedido",
+        "donde agrego al carrito",
+        "como finalizo compra",
+        "como terminar mi pedido",
+        "como hago checkout",
+        "ayudame a comprar",
+        "quiero una guia para comprar",
+        "explicame como comprar",
+        "como realizo una compra en la web"
+      ],
+      "responses": [
+        "Guía rápida de compra: 1) Busca el producto. 2) Presiona AGREGAR. 3) Abre el carrito. 4) Revisa total y confirma. 5) Elige medio de pago y finaliza.",
+        "Para comprar: selecciona producto, agrégalo al carrito, confirma cantidades y completa el pago. Si quieres, te guío paso a paso con tu primera compra.",
+        "Proceso de compra: filtra productos, añade al carrito, valida talla/color, confirma pedido y paga con Yape, Plin, tarjeta o transferencia."
+      ]
+    },
+    {
       "tag": "informacion_tienda",
       "patterns": [
         "horario",
@@ -1167,6 +1220,74 @@
       ],
       "responses": [
         "Atendemos de lunes a sábado de 9am a 8pm. Hacemos envíos por delivery a todo el Perú, con envío gratis en Chiclayo por compras mayores a S/300. Aceptamos tarjetas, Yape, Plin y contraentrega."
+      ]
+    },
+    {
+      "tag": "tallas",
+      "patterns": [
+        "guia de tallas",
+        "guía de tallas",
+        "como sé mi talla",
+        "como se mi talla",
+        "tabla de medidas",
+        "tabla de tallas",
+        "cuantos centimetros es la talla",
+        "cuántos cm es la talla 38",
+        "cuántos cm es la talla 39",
+        "es de horma chica o grande",
+        "horma grande o pequeña",
+        "es horma normal angosta o ancha",
+        "como tomar las medidas del pie",
+        "como medir mi pie",
+        "como medir el pie en casa",
+        "quiero saber las medidas exactas",
+        "medida de plantilla",
+        "medida de plantilla en cm",
+        "equivalencia de tallas",
+        "equivalencia us eu cm",
+        "tallas en US EU y Perú",
+        "qué talla soy si mi pie mide",
+        "mi pie mide 24 cm qué talla es",
+        "mi pie mide 25 cm que talla es",
+        "entre dos tallas cuál elijo",
+        "entre 38 y 39 cual compro",
+        "tengo pie ancho qué talla compro",
+        "tengo pie ancho",
+        "calza grande o pequeño",
+        "calza igual que nike",
+        "calza igual que adidas",
+        "no sé qué talla pedir",
+        "no se que talla comprar",
+        "me queda ajustado debería subir talla",
+        "guia tallas zapatillas"
+      ],
+      "responses": [
+        "Para asegurarte de pedir la talla correcta, te sugerimos revisar la 'Guía de tallas' disponible en la descripción de cada producto. Allí verás la equivalencia en centímetros.",
+        "Te recomendamos comparar la medida en centímetros de tu pie con la tabla de tallas de nuestra tienda, ya que las hormas pueden variar según la marca.",
+        "¿Cómo medir tu pie en casa? 1) Pon una hoja contra la pared. 2) Pisa descalzo con el talón pegado. 3) Marca la punta del dedo más largo. 4) Mide en cm. Hazlo de noche y añade 0.5 cm de holgura.",
+        "Si estás entre dos tallas, elige la mayor. Es mejor si tienes pie ancho, empeine alto o usarás medias gruesas.",
+        "La mayoría de nuestros modelos son horma regular. Te avisamos en la ficha si un modelo es de horma chica (pide media talla más) o de horma grande (pide media talla menos).",
+        "Trabajamos en talla EU. Referencia rápida: EU 36 = 23 cm, 37 = 23.5 cm, 38 = 24 cm, 39 = 24.5 cm, 40 = 25.5 cm, 41 = 26 cm, 42 = 26.5 cm. Confirma siempre con la tabla del producto.",
+        "¿Pie ancho? Busca los modelos marcados como 'Wide Fit' o sube media talla. Escríbenos tu medida en cm y te decimos exacto.",
+        "Si dudas entre marcas, dime qué talla usas en Nike o Adidas y el modelo que quieres, y te doy la equivalencia exacta. Tienes cambio gratis por talla en 7 días."
+      ]
+    },
+    {
+      "tag": "material_producto",
+      "patterns": [
+        "es de algodon",
+        "de que material es",
+        "es original",
+        "la tela es buena",
+        "que material usan",
+        "es material sintetico",
+        "que calidad tiene"
+      ],
+      "responses": [
+        "Nuestros productos aseguran una gran durabilidad y calidad. Trabajamos con marcas 100% originales.",
+        "Utilizamos materiales cuidadosamente seleccionados, enfocados en confort y durabilidad para el producto.",
+        "El material varía por artículo. Contamos con ropa en algodón premium y poliéster, mientras que el calzado incluye cueros o mallas textiles.",
+        "¡Absolutamente! Todos nuestros artículos son originales y están confeccionados con materiales de la mayor calidad. Puedes leer los componentes exactos en la descripción de cada producto."
       ]
     }
   ]

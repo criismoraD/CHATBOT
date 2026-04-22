@@ -7,6 +7,22 @@
 - `app.py` ahora sirve `index.html` en `/` y mantiene estado tecnico en `/status` al iniciar por puerto.
 
 ## Completado
+- [22/04] **Fix de Mochilas (IDs backend vs búsqueda textual):**
+    - `js/main.js`: en `Aplicar_Filtro_Desde_Chat`, cuando `filter_action` trae `product_ids`, se desactiva la búsqueda textual por `keywords` para evitar sobre-filtrado y resultados 0 incorrectos.
+- [22/04] **Mejora de Copy en Categoría + Variación de Recomendaciones:**
+    - `dialogo.py`: en `filtrar_categoria` ahora se prioriza texto natural por entidad detectada (ej. `zapatillas`) en lugar de mostrar solo la categoría técnica (`CALZADO`) cuando aplica.
+    - `js/main.js`: chips de recomendación ahora tienen mayor diversidad y rotación para evitar repetición de los mismos botones.
+    - `js/main.js`: renovadas sugerencias iniciales con opciones distintas y más orientadas a intención de compra.
+- [22/04] **Sugerencias Contextuales en Chat Web (Chips):**
+    - `js/main.js`: agregadas funciones para sugerencias coherentes por `tag` del bot y filtros activos (`Obtener_Sugerencias_Coherentes`, `Renderizar_Sugerencias_Chat`).
+    - `js/main.js`: al llegar respuesta del bot, ahora se renderizan botones sugeridos y se limpian al enviar un nuevo mensaje.
+    - `css/style.css`: añadidos estilos `chat-suggestions` y `chat-suggestion-btn` con look tipo píldora y alto contraste.
+- [22/04] **Corrección de Filtros Encadenados por Talla (Chat):**
+    - `dialogo.py`: en el flujo `consultar_stock_item` sin producto contextual, la búsqueda por talla ahora respeta también `category`, `color`, `genero`, `max_price` y `keywords` heredados del contexto.
+    - `dialogo.py`: `filter_action` para talla ahora retorna el conjunto completo de filtros para evitar que el frontend muestre productos fuera del contexto conversacional.
+- [22/04] **Ajuste de Respuesta Conversacional + Mejora Visual de Carrito:**
+    - `dialogo.py`: removida la frase "No encontré coincidencias exactas por términos" en búsqueda relajada, reemplazándola por un mensaje positivo de "opciones relacionadas".
+    - `css/style.css`: reforzado el estilo del carrito (`cart-sidebar`, `cart-header`, `cart-item-row`, `cart-footer`, `empty-msg`) para mantener fondo oscuro y mejor contraste.
 - [22/04] **Expansión de Sinónimos Antes de Lematización:**
     - `utils_nlp.py`: agregado `DICCIONARIO_LOCAL_DE_SINONIMOS` para normalizar términos de catálogo (ej. `casaca` -> `chaqueta`) antes de limpiar y lematizar.
     - `utils_nlp.py`: nueva función `normalizar_sinonimos_locales` integrada en `tokenizar_y_lematizar` previo a `limpiar_texto`.
