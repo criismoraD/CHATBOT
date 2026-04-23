@@ -16,6 +16,7 @@ Colores_Dinamicos = set()
 Categorias_Dinamicas = set()
 Indice_De_Nombres_De_Producto = []
 Diccionario_Productos_Por_Id = {}
+Diccionario_Colores_Por_Categoria = {}
 Frecuencia_De_Tokens_De_Producto = {}
 Vectorizador_TFIDF = None
 Matriz_TFIDF_Productos = None
@@ -72,6 +73,7 @@ def Cambiar_Fuente_De_Catalogo(Fuente_Solicitada):
     if Cambio_De_Fuente or not Indice_De_Nombres_De_Producto:
         Reconstruir_Indice_De_Nombres_De_Producto()
         Reconstruir_Diccionario_De_Productos()
+        Reconstruir_Diccionario_De_Colores_Por_Categoria()
 
     return Fuente_Activa_De_Catalogo
 
@@ -124,6 +126,21 @@ def Reconstruir_Diccionario_De_Productos():
         Id_Producto = Producto.get('id')
         if Id_Producto is not None and Id_Producto not in Diccionario_Productos_Por_Id:
             Diccionario_Productos_Por_Id[Id_Producto] = Producto
+
+
+def Reconstruir_Diccionario_De_Colores_Por_Categoria():
+    global Diccionario_Colores_Por_Categoria
+    Diccionario_Colores_Por_Categoria = {}
+    for Producto in Datos_De_Productos:
+        Categoria = Producto.get('category')
+        if Categoria:
+            if Categoria not in Diccionario_Colores_Por_Categoria:
+                Diccionario_Colores_Por_Categoria[Categoria] = set()
+            for Color in Obtener_Colores_De_Producto(Producto):
+                Diccionario_Colores_Por_Categoria[Categoria].add(Color)
+
+    for Categoria in Diccionario_Colores_Por_Categoria:
+        Diccionario_Colores_Por_Categoria[Categoria] = sorted(list(Diccionario_Colores_Por_Categoria[Categoria]))
 
 
 def Reconstruir_Indice_De_Nombres_De_Producto():

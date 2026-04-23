@@ -10,7 +10,8 @@ from extractor import (
 from catalogo import (
     Datos_De_Productos, Buscar_Productos, Obtener_Producto_Por_Id,
     Obtener_Colores_De_Producto, Obtener_Detalle_De_Inventario,
-    Categorias_Dinamicas, Colores_Dinamicos, Indice_De_Nombres_De_Producto, Frecuencia_De_Tokens_De_Producto
+    Categorias_Dinamicas, Colores_Dinamicos, Indice_De_Nombres_De_Producto, Frecuencia_De_Tokens_De_Producto,
+    Diccionario_Colores_Por_Categoria
 )
 from memoria import Obtener_Contexto, Actualizar_Contexto
 
@@ -609,15 +610,11 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             else:
                 Respuesta_Final = "No encuentro el producto en contexto para listar sus colores."
         elif Categoria_Filtro:
-            Colores_Disponibles = sorted(
-                {
-                    Color_Item
-                    for p in Datos_De_Productos
-                    if p['category'] == Categoria_Filtro
-                    for Color_Item in Obtener_Colores_De_Producto(p)
-                }
-            )
-            Respuesta_Final = f"En {Categoria_Filtro} tenemos los colores: {', '.join(Colores_Disponibles)}."
+            Colores_Disponibles = Diccionario_Colores_Por_Categoria.get(Categoria_Filtro, [])
+            if Colores_Disponibles:
+                Respuesta_Final = f"En {Categoria_Filtro} tenemos los colores: {', '.join(Colores_Disponibles)}."
+            else:
+                Respuesta_Final = f"No encontré colores registrados para la categoría {Categoria_Filtro}."
         else:
             Respuesta_Final = "Nuestros productos estan disponibles en: Negro, Blanco, Rojo, Azul, Gris y Verde."
 
