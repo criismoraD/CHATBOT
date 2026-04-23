@@ -11,16 +11,15 @@ if BASE_DIR not in sys.path:
 # IMPORTANTE: Importar torch/dialogo ANTES que PyQt5 para evitar WinError 1114 en Windows
 import torch
 from dialogo import Obtener_Respuesta_Principal
-from catalogo import Buscar_Productos, Obtener_Producto_Por_Id, Obtener_Colores_De_Producto, Obtener_Detalle_De_Inventario, Datos_De_Productos
+from catalogo import Buscar_Productos, Obtener_Producto_Por_Id, Obtener_Colores_De_Producto
 from ia import Obtener_Modelo_Voz
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QLineEdit, QPushButton, QScrollArea, QLabel, QFrame, QSizePolicy,
-    QGraphicsDropShadowEffect
+    QLineEdit, QPushButton, QScrollArea, QLabel, QFrame, QSizePolicy
 )
-from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QObject, QSize
-from PyQt5.QtGui import QFont, QColor, QIcon, QPainter, QPainterPath, QLinearGradient
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QObject
+from PyQt5.QtGui import QFont
 
 
 # ─────────────────────────────────────────────
