@@ -1,155 +1,39 @@
-## Estado
-- Chatbot optimizado y depurado.
-- Pruebas de 15 casos completadas con éxito.
-- Filtros inclusivos (color principal + secundarios) sincronizados en Backend y Frontend.
-- Coherencia conversacional reforzada para ayuda, delivery y secuencias con cambio de categoria.
-- Suite integrada de 20 casos ejecutada y aprobada (reporte_tecnico_20_tests.md).
-- `app.py` ahora sirve `index.html` en `/` y mantiene estado tecnico en `/status` al iniciar por puerto.
+# Historial Técnico - Chatbot E-commerce SENATI
 
-## Completado
-- [22/04] **Fix de Mochilas (IDs backend vs búsqueda textual):**
-    - `js/main.js`: en `Aplicar_Filtro_Desde_Chat`, cuando `filter_action` trae `product_ids`, se desactiva la búsqueda textual por `keywords` para evitar sobre-filtrado y resultados 0 incorrectos.
-- [22/04] **Mejora de Copy en Categoría + Variación de Recomendaciones:**
-    - `dialogo.py`: en `filtrar_categoria` ahora se prioriza texto natural por entidad detectada (ej. `zapatillas`) en lugar de mostrar solo la categoría técnica (`CALZADO`) cuando aplica.
-    - `js/main.js`: chips de recomendación ahora tienen mayor diversidad y rotación para evitar repetición de los mismos botones.
-    - `js/main.js`: renovadas sugerencias iniciales con opciones distintas y más orientadas a intención de compra.
-- [22/04] **Sugerencias Contextuales en Chat Web (Chips):**
-    - `js/main.js`: agregadas funciones para sugerencias coherentes por `tag` del bot y filtros activos (`Obtener_Sugerencias_Coherentes`, `Renderizar_Sugerencias_Chat`).
-    - `js/main.js`: al llegar respuesta del bot, ahora se renderizan botones sugeridos y se limpian al enviar un nuevo mensaje.
-    - `css/style.css`: añadidos estilos `chat-suggestions` y `chat-suggestion-btn` con look tipo píldora y alto contraste.
-- [22/04] **Corrección de Filtros Encadenados por Talla (Chat):**
-    - `dialogo.py`: en el flujo `consultar_stock_item` sin producto contextual, la búsqueda por talla ahora respeta también `category`, `color`, `genero`, `max_price` y `keywords` heredados del contexto.
-    - `dialogo.py`: `filter_action` para talla ahora retorna el conjunto completo de filtros para evitar que el frontend muestre productos fuera del contexto conversacional.
-- [22/04] **Ajuste de Respuesta Conversacional + Mejora Visual de Carrito:**
-    - `dialogo.py`: removida la frase "No encontré coincidencias exactas por términos" en búsqueda relajada, reemplazándola por un mensaje positivo de "opciones relacionadas".
-    - `css/style.css`: reforzado el estilo del carrito (`cart-sidebar`, `cart-header`, `cart-item-row`, `cart-footer`, `empty-msg`) para mantener fondo oscuro y mejor contraste.
-- [22/04] **Expansión de Sinónimos Antes de Lematización:**
-    - `utils_nlp.py`: agregado `DICCIONARIO_LOCAL_DE_SINONIMOS` para normalizar términos de catálogo (ej. `casaca` -> `chaqueta`) antes de limpiar y lematizar.
-    - `utils_nlp.py`: nueva función `normalizar_sinonimos_locales` integrada en `tokenizar_y_lematizar` previo a `limpiar_texto`.
-- [22/04] **Mejora de LSTM: Padding Correcto + Embedding Configurable:**
-    - `train_pytorch.py`: `NeuralNet` ahora recibe `embedding_dim` como parametro (antes fijo en 128).
-    - `train_pytorch.py`: implementado `pack_padded_sequence` para que el LSTM ignore padding en entrenamiento y evaluacion.
-    - `train_pytorch.py`: se guarda `embedding_dim` dentro de `model.pth` para mantener compatibilidad en carga.
-    - `ia.py`: inferencia actualizada para pasar longitudes reales y reconstruir `NeuralNet` usando `embedding_dim` del checkpoint.
-- [22/04] **Lazy Loading de Whisper para Arranque Mas Rapido:**
-    - `ia.py`: eliminada la instanciacion global de Whisper y creada funcion `Obtener_Modelo_Voz()` con carga bajo demanda y bloqueo por hilo.
-    - `app.py`: endpoint `/transcribe` ahora inicializa Whisper en el primer uso, con manejo de errores y limpieza segura de archivo temporal.
-    - `chat_gui.py`: transcripcion de audio adaptada para usar `Obtener_Modelo_Voz()`.
-- [22/04] **Buenas Prácticas en Seguridad y Configuración (CORS + bot_name):**
-    - `config.py`: agregada configuración `Origenes_Cors_Permitidos` desde variable de entorno `CORS_ALLOWED_ORIGINS` con fallback local seguro.
-    - `config.py`: agregado `Nombre_Del_Bot` desde variable de entorno `BOT_NAME`.
-    - `app.py`: CORS ahora usa `config.Origenes_Cors_Permitidos` en lugar de `origins: "*"`.
-    - `app.py`: `bot_name` centralizado en respuestas JSON usando `config.Nombre_Del_Bot`.
-- [22/04] **Reconocimiento de Voz Híbrido (Nativo + Whisper Base):**
-    - `js/main.js`: el botón de micrófono ahora usa primero `SpeechRecognition`/`webkitSpeechRecognition` del navegador.
-    - `js/main.js`: si el reconocimiento nativo falla o no devuelve texto, se activa automáticamente un fallback con grabación y transcripción en `/transcribe`.
-    - `ia.py`: `Modelo_Voz` actualizado de `tiny` a `base` para mejorar precisión cuando se usa Whisper.
-- [18/04] **Limpieza de Código en Entrenamiento:**
-    - `train_pytorch.py`: eliminadas importaciones no utilizadas de `re` y `unicodedata` para mejorar la legibilidad y salud del código.
-- [18/04] **Refuerzo de Contraste y Tipografia de Parrafos (v6):**
-    - `documentacion/index.html`: aumentado contraste de texto y bordes manteniendo estilo pastel crema.
-    - `documentacion/index.html`: incrementado tamano y peso de etiquetas `p` y contenido asociado para lectura mas clara.
-    - `documentacion/index.html`: ajustada tipografia en bloques de tabla y tarjetas para mejorar legibilidad global.
-- [18/04] **Ajuste Visual Pastel Infantil de Documentacion (v5):**
-    - `documentacion/index.html`: migrada la tipografia a estilo infantil/comic (Baloo 2 + Comic Neue).
-    - `documentacion/index.html`: fondos refinados a paleta pastel crema en tarjetas, tablas, bloques de codigo y layout general.
-    - `documentacion/index.html`: titulos convertidos a tonos pastel con sombra suave, eliminando contornos en tipografia.
-    - `documentacion/index.html`: ajuste de contraste para mantener legibilidad sin usar texto en negro.
-- [18/04] **Mejora Visual de Documentacion (v4):**
-    - `documentacion/index.html`: incremento de contraste general (fondos, bordes y textos) para facilitar lectura en pantallas de distinta calidad.
-    - `documentacion/index.html`: aplicado estilo de resaltado en verde pastel con contornos y negrita para encabezados y texto importante.
-    - `documentacion/index.html`: incorporadas animaciones adicionales (orbitales de fondo, flujo animado en lineas de diagrama, realce de tarjetas).
-    - `documentacion/index.html`: agregados nuevos graficos explicativos en arquitectura, flujo NLP y ciclo de respuesta API para hacer la guia mas didactica.
-- [18/04] **Refuerzo Integral de Documentacion Tecnica (v3):**
-    - `documentacion/index.html`: reescrita la guia para usar lenguaje mas simple, largo y didactico orientado a personas sin base tecnica.
-    - `documentacion/index.html`: ampliada la seccion **Arquitectura de Archivos** con todos los archivos reales del proyecto (backend, frontend, datos, instalacion y bitacora).
-    - `documentacion/index.html`: corregida la explicacion del motor de IA para reflejar la arquitectura real (Embedding + BiLSTM) y documentados endpoints principales (`/chat`, `/search`, `/products`, `/transcribe`, `/status`).
-- [18/04] **Ampliación de Documentación Técnica (v2):**
-    - `index.html` (docs): agregado diagrama de flujo interactivo del ciclo de vida de una petición (`app.py` -> `ia.py`).
-    - `index.html` (docs): expandida sección de NLP con comparativa visual entre TF-IDF y Embeddings.
-    - `index.html` (docs): nueva sección de Intenciones detallando la estructura de `intents.json`.
-- [18/04] **Generación de Documentación Técnica:**
-    - Creado directorio `/documentacion` con manual interactivo `index.html`.
-    - Documentados flujos de Memoria, Entrenamiento e Inferencia con diagramas SVG.
-    - Explicación de la evolución NLP (de Bag of Words a TF-IDF/Embeddings).
+## Tareas Recientes (Detalladas)
+
+- [19/04] **🔒 Seguridad: Mitigación de Vulnerabilidad XSS en Frontend:**
+    - `js/main.js`: Se eliminó el uso de `innerHTML` con literales de plantilla en `Crear_Tarjeta_Producto` y `Actualizar_UI_Carrito`.
+    - Se implementó la construcción programática del DOM mediante `document.createElement`, `textContent` y `appendChild`.
+    - Se garantizó que los datos controlados por el usuario (nombres de productos de catálogos scrapeados) se traten estrictamente como texto plano.
+    - Verificación: Validado mediante Playwright con payloads de inyección (`<img src=x onerror=...>`), confirmando que se renderizan de forma segura y no ejecutan scripts.
+    - Higiene: Se eliminaron artefactos de ejecución (`backend.log`, `frontend.log`) y código muerto antes del commit.
+
 - [18/04] **Optimización de Interfaz Móvil (Responsive Design):**
     - `index.html`: agregado botón flotante `mobile-chat-toggle` para controlar el chatbot en pantallas pequeñas.
     - `css/style.css`: implementadas Media Queries para apilar paneles, habilitar scroll en body y redimensionar tarjetas de producto (2 columnas en móviles).
     - `js/main.js`: añadida lógica de interactividad para abrir/cerrar el chat móvil y auto-cierre al hacer clic fuera del panel.
+
 - [18/04] **Sincronización Exacta Backend-Frontend por IDs de Producto:**
     - `dialogo.py`: actualizado payload `filter_action` para enviar lista explícita de `product_ids` encontrados.
     - `js/main.js`: implementado `Ids_Filtrados_Por_Backend` (Set) para renderizado estricto basado en la respuesta del NLP.
     - `intents.json` & `model.pth`: reentrenamiento del modelo con nuevos patrones para `buscar_producto` y `colores`.
-    - Eliminación de discrepancias entre búsqueda semántica del backend y filtrado lógico del frontend.
-- [18/04] **Hotfix Crítico de Estabilidad en /chat (500 por UnboundLocalError):**
-    - `dialogo.py`: se inicializó `Respuesta_Final = None` al inicio de `Obtener_Respuesta_Principal` para garantizar estado definido en todas las rutas.
-    - Se eliminó el error intermitente `UnboundLocalError: cannot access local variable 'Respuesta_Final'` que causaba HTTP 500 en mensajes como `hola` y consultas ambiguas.
-    - Validado en runtime (`http://127.0.0.1:5000/chat`): `hola`, `xq no sirve`, `ayuda`, `tienes mochilas`, `mejor muestrame faldas` -> todos responden HTTP 200.
-    - Revalidado flujo contextual: `faldas -> context_product_id -> precio -> que talla tienes?` mantiene `consultar_stock_item` sin caída.
-- [17/04] **Limpieza Segura de Archivos Python (manteniendo runtime + entrenamiento):**
-    - Se conservaron los archivos núcleo del bot: `app.py`, `ia.py`, `dialogo.py`, `extractor.py`, `catalogo.py`, `memoria.py`, `config.py`, `utils_nlp.py`.
-    - Se conservó el archivo de entrenamiento: `train_pytorch.py`.
-    - Se eliminaron scripts Python sobrantes de pruebas y utilidades: `test_15_cases.py`, `run_20_tests.py`, `run_final_tests.py` y los `.py` de `Herramientas/`.
-    - Verificado inventario final de `.py`: 9 archivos activos (solo runtime + entrenamiento).
-- [17/04] **Hotfix de Coherencia Contextual en API + Subtipos sin Recorte por Categoria:**
-    - `app.py`: se agregó un atajo defensivo en `/chat` para responder consultas de detalle (`precio`, `stock/talla`, `colores`) cuando ya existe `selected_product_id` en contexto.
-    - `app.py`: al recibir `context_product_id`, ahora se refresca `Contexto_Actual` en la misma solicitud para evitar desincronización de sesión.
-    - `dialogo.py`: cuando la búsqueda es por subtipo (`mochila`, `falda`, etc.), se limpia `category` para no recortar resultados por una categoria inferida.
-    - `dialogo.py`: si hay keyword de subtipo y el clasificador cae en `fuera_de_dominio`/`saludo`, se fuerza `buscar_producto` para evitar respuestas de rechazo en consultas válidas (ej: "tienes mochilas").
-    - `dialogo.py`: en `buscar_producto` se elevó el `Limite` de búsqueda al tamaño total del catálogo para no truncar resultados por el límite por defecto.
-    - `dialogo.py`: en el forzado de detalle contextual se quitó el token genérico `tienes` para evitar falsos desvíos cuando el usuario cambia de intención.
-    - `dialogo.py`: consultas de ayuda (`ayuda`, `quiero ayuda`, `ayudame`) ahora devuelven una guía útil de capacidades en lugar de saludo genérico.
-    - `js/main.js`: se persiste `context_product_id` tras clic en el icono de robot y se reenvía en mensajes siguientes para estabilizar el contexto del producto en UI.
-    - `js/main.js`: el contexto local se limpia automáticamente cuando el bot entra en flujos generales (por ejemplo `buscar_producto`, `filtrar_categoria`, `informacion_tienda`, etc.).
-    - `extractor.py`: se agregó `que` como palabra vacía de búsqueda para evitar keywords ruidosas en respuestas de fallback.
-    - Validado en runtime contra `http://127.0.0.1:5000/chat`: `tienes mochilas` retorna 7 resultados y `mejor muestrame faldas` retorna 5, ambos con `category=null`; en el flujo de captura (`faldas -> click robot -> precio -> que talla tienes?`) se mantiene `consultar_stock_item`; y `ayuda` / `quiero ayuda` retornan guía funcional del asistente.
-- [17/04] **Correccion Especifica de Subtipos (Mochilas/Faldas):**
-    - `dialogo.py`: consultas como "muestrame faldas" ahora se enrutan a `buscar_producto` (no solo `filtrar_categoria`) cuando hay keyword de subtipo.
-    - `dialogo.py`: soporte singular/plural en texto natural de respuesta (mochila/mochilas, falda/faldas, etc.).
-    - `dialogo.py`: herencia de filtros refinada para no arrastrar `genero`/`max_price` en consultas nuevas completas (ejemplo: "tienes mochilas?").
-    - `dialogo.py`: las intenciones de detalle contextual (`consultar_stock_item`, `consultar_precio_item`, `colores`) ya no son sobreescritas por pattern matching generico.
-    - `js/main.js`: keywords de subtipo ahora se aplican incluso si llega categoria en `filter_action`, evitando mostrar toda la categoria.
-    - `extractor.py`: ampliada normalizacion de plurales (faldas, vestidos, leggings, joggers, casacas) y agregado "mejor" como palabra vacia para evitar ruido.
-    - Validado runtime: "tienes mochilas" => `keywords=['mochila']` and `genero=None`; "mejor muestrame faldas" => `keywords=['falda']`; "que talla tienes?" en contexto => `consultar_stock_item`.
-- [17/04] **Naturalidad en Respuesta de Busqueda + Herencia de Precio:**
-    - `dialogo.py`: respuesta de `buscar_producto` ahora usa texto natural por keyword (ejemplo: "Encontré 5 mochilas...").
-    - `dialogo.py`: al cambiar de categoria, ya no se hereda `max_price` previo si el usuario no lo solicita.
-    - Validado en runtime: despues de "menos de 80 soles" + "busco mochilas", el filtro sale con `max_price: None` y mensaje natural.
-- [17/04] **Arranque Unificado Frontend + API por Puerto:**
-    - `app.py`: la ruta raíz `/` ahora entrega `index.html`.
-    - `app.py`: se movió el estado JSON a `/status` para diagnóstico.
-    - `app.py`: se agregaron rutas estáticas para `css/*` y `js/*`.
-    - Validado en puerto de prueba 5055: `GET /`, `GET /status`, `GET /css/style.css`, `GET /js/main.js` => HTTP 200.
-- [17/04] **Correccion de Coherencia Conversacional y Filtros (v2):**
-    - `extractor.py`: categorizacion por token completo para evitar falsos positivos (ejemplo: "mochila" ya no cae en POLOS por "top" dentro de "laptop").
-    - `extractor.py`: limpieza de keywords ruidosas de presupuesto y singularizacion basica (ejemplo: "mochilas" -> "mochila").
-    - `catalogo.py`: fallback de busqueda TF-IDF a coincidencia lexica cuando no hay match semantico.
-    - `dialogo.py`: ajuste de herencia de filtros para no arrastrar genero al cambiar de categoria sin solicitud explicita.
-    - `dialogo.py`: heuristicas de intencion para ayuda, soporte y delivery cuando el clasificador cae en `fuera_de_dominio`.
-    - `js/main.js`: keywords del chat dejan de sobre-filtrar la UI cuando ya hay filtros estructurados.
-    - Validacion automatizada: 20/20 casos aprobados con 6 interacciones por caso.
-- [17/04] **Corrección de Lógica de Diálogo:** Se evitó la sobrescritura de `Respuesta_Final` para intenciones específicas (`consultar_stock_item`, `consultar_precio_item`), eliminando el bug de placeholders sin reemplazar (`{tallas}`).
-- [17/04] **Optimización de Filtros de Color:** Backend (`catalogo.py`) y Frontend (`js/main.js`) ahora permiten filtrar productos por cualquiera de sus colores disponibles, no solo el color principal de la imagen (Flexibilidad de filtros).
-- [17/04] **Mejora en Detección de Intenciones:**
-    - Se prioriza el pattern matching sobre la predicción del modelo cuando este indica `fuera_de_dominio` o tiene baja confianza.
-    - Se implementó validación por límites de palabra (`\b`) para patrones de hasta 4 caracteres para evitar falsos positivos (ej: "que" en saludos).
-    - Soporte explícito para "quiero saber mas de este" (contexto iniciado desde UI).
-- [17/04] **Robustez en Filtros:** Se garantiza el cambio automático a `buscar_producto` cuando se detectan entidades (talla, color, etc.) aunque el modelo prediga `fuera_de_dominio`.
-- [17/04] **Categorización:** Mapeados sinónimos "vestido(s)" y "falda(s)" a PANTALONES para evitar desvíos a OTROS en filtros por chat.
-- [17/04] **Documentación y Pruebas:** Ejecución de 15 casos de prueba complejos cubriendo flujos de 6+ interacciones.
 
-## Resumen de Cambios Previos
-- Agregado botón "Reiniciar filtros" con reseteo completo de categoría, color, género, precio y búsqueda.
-- Soportado reinicio de filtros también por chat con frases tipo "mostrar todos" o "reiniciar filtros".
-- Añadida normalización heurística de categoría por nombre del producto en frontend y backend para corregir registros mal clasificados (ej. mochilas fuera de OTROS).
-- Rehabilitado filtro interno por keywords desde chat (sin escribir en el buscador) para refinar casos como "mochilas rojas" dentro de categorías amplias.
-- Depurada extracción de keywords del backend para ignorar saludos y reducir ruido semántico en resultados filtrados.
-- Restringido el chat para no escribir en el buscador: ahora solo aplica filtros estructurados y respeta el texto ingresado manualmente.
-- Aclarado placeholder del buscador para indicar que filtra por nombre, color y descripción del catálogo.
-- Mejorada la búsqueda del catálogo con coincidencia por tokens y variantes (plural/singular y sinónimos básicos como zapatilla/calzado/tenis).
-- Consolidada carpeta `Herramientas` con scripts de soporte y tests.
-- [16/04] Integración faster-whisper y soporte MediaRecorder.
-- [15/04] Mejoras en app.py: umbrales, persistencia y contexto.
+## Resumen de Tareas Anteriores (Compresión Activa)
+
+- [18/04] Hotfix Crítico de Estabilidad en /chat (500 por UnboundLocalError) mediante inicialización defensiva.
+- [17/04] Limpieza Segura de Archivos Python manteniendo núcleo de 9 archivos operativos.
+- [17/04] Hotfix de Coherencia Contextual en API y soporte para subtipos sin recorte de categoría.
+- [17/04] Corrección de subtipos (Mochilas/Faldas) y herencia de filtros refinada.
+- [17/04] Naturalidad en respuesta de búsqueda y gestión de herencia de precio.
+- [17/04] Arranque Unificado Frontend + API en el mismo puerto con rutas estáticas.
+- [17/04] Corrección de coherencia conversacional (TF-IDF fallback y singularización).
+- [17/04] Corrección de lógica de diálogo eliminando placeholders sin reemplazar.
+- [17/04] Optimización de filtros de color multivariante en backend y frontend.
+- [17/04] Mejora en detección de intenciones priorizando pattern matching en baja confianza.
+- [17/04] Robustez en filtros automáticos al detectar entidades en mensajes fuera de dominio.
+- [17/04] Categorización de faldas y vestidos en PANTALONES.
+- [17/04] Ejecución de batería de 15 casos de prueba complejos cubriendo 6+ turnos.
 
 ## Pendiente
 - Monitorear falsos positivos en búsquedas semánticas muy amplias.
