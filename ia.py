@@ -1,45 +1,28 @@
 import os
 import json
-import threading
 import torch
 import numpy as np
 from train_pytorch import NeuralNet
+from faster_whisper import WhisperModel
 import config
 from utils_nlp import tokenizar_y_lematizar as Tokenizar_Texto
 
 Dispositivo = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 Modelo_IA = None
-Modelo_Voz = None
 Todas_Las_Palabras = []
 Etiquetas_De_Intencion = []
 Longitud_Maxima_Secuencia = 10
-Candado_De_Modelo_Voz = threading.Lock()
 
-
-def Obtener_Modelo_Voz():
-    global Modelo_Voz
-    if Modelo_Voz is None:
-        with Candado_De_Modelo_Voz:
-            if Modelo_Voz is None:
-                from faster_whisper import WhisperModel
-                Modelo_Voz = WhisperModel(
-                    "base",
-                    device="cuda" if torch.cuda.is_available() else "cpu",
-                    compute_type="int8"
-                )
-                print("[OK] Modelo Whisper cargado bajo demanda.")
-    return Modelo_Voz
+Modelo_Voz = WhisperModel("tiny", device="cuda" if torch.cuda.is_available() else "cpu", compute_type="int8")
 
 # Cargar modelo PyTorch
 if os.path.exists(config.Ruta_Modelo_Pytorch):
     try:
-        data_model = torch.load(config.Ruta_Modelo_Pytorch, map_location=Dispositivo, weights_only=True)
-        Embedding_Dim = data_model.get("embedding_dim", 128)
+        data_model = torch.load(config.Ruta_Modelo_Pytorch, map_location=Dispositivo, weights_only=False)
         Modelo_IA = NeuralNet(
             data_model["input_size"],
             data_model["hidden_size"],
-            data_model["output_size"],
-            embedding_dim=Embedding_Dim,
+            data_model["output_size"]
         ).to(Dispositivo)
         Modelo_IA.load_state_dict(data_model["model_state"])
         Modelo_IA.eval()
@@ -78,12 +61,10 @@ def Predecir_Tag(Texto_Consulta):
 
     Palabras = Tokenizar_Texto(Texto_Consulta)
     Vector_Entrada = Construir_Secuencia(Palabras, Todas_Las_Palabras, Longitud_Maxima_Secuencia)
-    Longitud_Real = max(1, int(np.count_nonzero(Vector_Entrada)))
     Vector_Entrada = Vector_Entrada.reshape(1, Vector_Entrada.shape[0])
     Vector_Entrada = torch.from_numpy(Vector_Entrada).to(Dispositivo)
-    Longitudes = torch.tensor([Longitud_Real], dtype=torch.long, device=Dispositivo)
 
-    Salida_Modelo = Modelo_IA(Vector_Entrada, Longitudes)
+    Salida_Modelo = Modelo_IA(Vector_Entrada)
     _, Indice_Predicho = torch.max(Salida_Modelo, dim=1)
     Etiqueta_Predicha = Etiquetas_De_Intencion[Indice_Predicho.item()]
 

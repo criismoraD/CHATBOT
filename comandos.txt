@@ -1,4 +1,0 @@
-# Genera un enlace publico HTTPS para exponer tu bot local (puerto 5000) usando localhost.run
-ssh -T -o StrictHostKeyChecking=no -R 80:127.0.0.1:5000 nokey@localhost.run
-# Fix XSS vulnerability in shopping cart and product cards
-sed -i 's/innerHTML = `/textContent = .../g' js/main.js

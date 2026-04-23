@@ -10,8 +10,7 @@ from extractor import (
 from catalogo import (
     Datos_De_Productos, Buscar_Productos, Obtener_Producto_Por_Id,
     Obtener_Colores_De_Producto, Obtener_Detalle_De_Inventario,
-    Categorias_Dinamicas, Colores_Dinamicos, Indice_De_Nombres_De_Producto, Frecuencia_De_Tokens_De_Producto,
-    Diccionario_Colores_Por_Categoria
+    Categorias_Dinamicas, Colores_Dinamicos, Indice_De_Nombres_De_Producto, Frecuencia_De_Tokens_De_Producto
 )
 from memoria import Obtener_Contexto, Actualizar_Contexto
 
@@ -157,11 +156,6 @@ def Inferir_Etiqueta_Por_Heuristicas_De_Soporte(Mensaje_Normalizado, Etiqueta_De
     }
     if Tokens_Del_Mensaje.intersection(Indicadores_De_Reclamo):
         return "reclamos"
-
-    Indicadores_Guia_Compra = {"comprar", "compra", "pedido"}
-    Indicadores_Ayuda_Compra = {"como", "informacion", "pasos", "guia", "ayuda", "ayudame", "explicame"}
-    if Tokens_Del_Mensaje.intersection(Indicadores_Guia_Compra) and Tokens_Del_Mensaje.intersection(Indicadores_Ayuda_Compra):
-        return "guia_compra"
 
     Indicadores_De_Ayuda_General = {
         "ayuda", "ayudame", "ayudar", "asesor", "asesoria", "asistencia"
@@ -335,37 +329,25 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
     # --- MEJORA: Validar patrones SIEMPRE si no es una intención fuerte de negocio ---
     # Priorizamos patrones sobre la predicción del modelo si el modelo dice fuera de dominio o es ambiguo.
     Etiquetas_De_Detalle_Prioritario = {"consultar_stock_item", "consultar_precio_item", "colores", "contexto_iniciado"}
-    Etiquetas_De_Negocio_Prioritarias = {
-        "buscar_producto", "pedidos", "reclamos", "consulta_precio",
-        "filtrar_categoria", "filtrar_genero", "informacion_tienda", "promociones",
-        "guia_compra", "metodos_pago"
-    }
-
-    Es_Intencion_Fuerte_Y_Confiable = (
-        Etiqueta_Detectada in Etiquetas_De_Negocio_Prioritarias
-        and Confianza_Modelo >= config.Umbral_De_Confianza
-        and Margen_De_Confianza >= config.Umbral_De_Margen_Base
-    )
-
-    if Etiqueta_Detectada not in Etiquetas_De_Detalle_Prioritario and (not Es_Intencion_Fuerte_Y_Confiable or Etiqueta_Detectada == "fuera_de_dominio"):
+    if Etiqueta_Detectada not in Etiquetas_De_Detalle_Prioritario:
         Tag_De_Patron = None
-        Max_Longitud_Patron = 0
-        for Intent_Item in Datos_De_Intents['intents']:
-            for Patron_Original in Intent_Item['patterns']:
-                Patron_Norm = Normalizar_Texto_Base(Patron_Original)
-                if Patron_Norm and Patron_Norm in Mensaje_Normalizado:
+        for intent in Datos_De_Intents['intents']:
+            for pattern in intent['patterns']:
+                patron_norm = Normalizar_Texto_Base(pattern)
+                if patron_norm and patron_norm in Mensaje_Normalizado:
+                    print(f"[DEBUG] Patron coincidente: '{patron_norm}' en '{Mensaje_Normalizado}' -> Tag: {intent['tag']}")
                     # Si el patrón es corto (<= 4), exigimos palabra completa para evitar falsos positivos
-                    if len(Patron_Norm) <= 4:
-                        if not re.search(r'\b' + re.escape(Patron_Norm) + r'\b', Mensaje_Normalizado):
-                            continue
-
-                    # Priorizamos el patrón más largo encontrado para mayor precisión
-                    if len(Patron_Norm) > Max_Longitud_Patron:
-                        Max_Longitud_Patron = len(Patron_Norm)
-                        Tag_De_Patron = Intent_Item['tag']
+                    if len(patron_norm) <= 4:
+                        if re.search(r'\b' + re.escape(patron_norm) + r'\b', Mensaje_Normalizado):
+                            Tag_De_Patron = intent['tag']
+                            break
+                    else:
+                        Tag_De_Patron = intent['tag']
+                        break
+            if Tag_De_Patron:
+                break
 
         if Tag_De_Patron:
-            print(f"[DEBUG] Patron coincidente prioritario: '{Tag_De_Patron}' (Longitud: {Max_Longitud_Patron})")
             Etiqueta_Detectada = Tag_De_Patron
         else:
             print(f"[DEBUG] No se encontro patron para: '{Mensaje_Normalizado}'")
@@ -456,7 +438,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             if Talla_Filtro: Texto_De_Filtro += f" talla {Talla_Filtro}"
             if Genero_Filtro: Texto_De_Filtro += f" para {Genero_Filtro.lower()}"
             if Busqueda_Relajada_Sin_Keywords:
-                Respuesta_Final = f"Encontré {len(Productos_Encontrados)} opciones relacionadas de {Texto_Base_De_Resultado}{Texto_De_Filtro}. Ya te las muestro en el catálogo, indícame cuál te interesa."
+                Respuesta_Final = f"No encontré coincidencias exactas por términos, pero sí {len(Productos_Encontrados)} {Texto_Base_De_Resultado}{Texto_De_Filtro}. Ya te los muestro en el catálogo."
             else:
                 Respuesta_Final = f"Encontré {len(Productos_Encontrados)} {Texto_Base_De_Resultado}{Texto_De_Filtro}. Ya te los muestro en el catálogo, indícame cuál te interesa."
             Accion_De_Filtro = {
@@ -480,31 +462,9 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
 
     elif Etiqueta_Detectada == "filtrar_categoria":
         if Categoria_Filtro:
-            Productos_Filtrados = Buscar_Productos(
-                Categoria=Categoria_Filtro,
-                Color=Color_Filtro,
-                Precio_Maximo=Precio_Maximo_Filtro,
-                Talla=Talla_Filtro,
-                Genero=Genero_Filtro,
-                Palabras_Clave=Palabras_Clave_Detectadas,
-                Limite=len(Datos_De_Productos),
-            )
-            Cantidad_Productos = len(Productos_Filtrados)
-            Texto_Natural_De_Busqueda = Obtener_Texto_Natural_De_Busqueda(Palabras_Clave_Detectadas)
-
-            if Texto_Natural_De_Busqueda:
-                Respuesta_Final = f"Listo! Te muestro {Cantidad_Productos} {Texto_Natural_De_Busqueda}. Revisa el catalogo arriba."
-            else:
-                Respuesta_Final = f"Listo! Te muestro los {Cantidad_Productos} productos de {Categoria_Filtro}. Revisa el catalogo arriba."
-
-            Accion_De_Filtro = {
-                "category": Categoria_Filtro,
-                "color": Color_Filtro,
-                "max_price": Precio_Maximo_Filtro,
-                "talla": Talla_Filtro,
-                "genero": Genero_Filtro,
-                "keywords": Palabras_Clave_Detectadas,
-            }
+            Cantidad_Productos = len([p for p in Datos_De_Productos if p['category'] == Categoria_Filtro])
+            Respuesta_Final = f"Listo! Te muestro los {Cantidad_Productos} productos de {Categoria_Filtro}. Revisa el catalogo arriba."
+            Accion_De_Filtro = {"category": Categoria_Filtro}
         else:
             Respuesta_Final = "Claro! Que categoria te interesa? Tenemos: Calzado, Polos, Pantalones y Otros."
 
@@ -610,11 +570,15 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             else:
                 Respuesta_Final = "No encuentro el producto en contexto para listar sus colores."
         elif Categoria_Filtro:
-            Colores_Disponibles = Diccionario_Colores_Por_Categoria.get(Categoria_Filtro, [])
-            if Colores_Disponibles:
-                Respuesta_Final = f"En {Categoria_Filtro} tenemos los colores: {', '.join(Colores_Disponibles)}."
-            else:
-                Respuesta_Final = f"No encontré colores registrados para la categoría {Categoria_Filtro}."
+            Colores_Disponibles = sorted(
+                {
+                    Color_Item
+                    for p in Datos_De_Productos
+                    if p['category'] == Categoria_Filtro
+                    for Color_Item in Obtener_Colores_De_Producto(p)
+                }
+            )
+            Respuesta_Final = f"En {Categoria_Filtro} tenemos los colores: {', '.join(Colores_Disponibles)}."
         else:
             Respuesta_Final = "Nuestros productos estan disponibles en: Negro, Blanco, Rojo, Azul, Gris y Verde."
 
@@ -693,36 +657,13 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 Respuesta_Final = "No encuentro la información de tallas de ese producto en específico."
         else:
             if Talla_Filtro:
-                Productos_Encontrados = Buscar_Productos(
-                    Categoria=Categoria_Filtro,
-                    Color=Color_Filtro,
-                    Precio_Maximo=Precio_Maximo_Filtro,
-                    Talla=Talla_Filtro,
-                    Genero=Genero_Filtro,
-                    Palabras_Clave=Palabras_Clave_Detectadas,
-                    Limite=len(Datos_De_Productos),
-                )
+                Productos_Encontrados = Buscar_Productos(Talla=Talla_Filtro, Limite=3)
                 if Productos_Encontrados:
-                    Texto_De_Condicion = f" en talla {Talla_Filtro}"
-                    if Categoria_Filtro:
-                        Texto_De_Condicion += f" de {Categoria_Filtro.lower()}"
-                    if Color_Filtro:
-                        Texto_De_Condicion += f" color {Color_Filtro.lower()}"
-                    if Genero_Filtro:
-                        Texto_De_Condicion += f" para {Genero_Filtro.lower()}"
-
-                    Respuesta_Final = f"Listo, ya filtré productos{Texto_De_Condicion}. Revisa el catálogo e indícame cuál te interesa."
-                    Accion_De_Filtro = {
-                        "category": Categoria_Filtro,
-                        "color": Color_Filtro,
-                        "max_price": Precio_Maximo_Filtro,
-                        "talla": Talla_Filtro,
-                        "genero": Genero_Filtro,
-                        "keywords": Palabras_Clave_Detectadas,
-                    }
+                    Respuesta_Final = f"Listo, ya filtre productos en talla {Talla_Filtro}. Revisa el catalogo e indicame cual te interesa."
+                    Accion_De_Filtro = {"talla": Talla_Filtro}
                     Etiqueta_Detectada = "buscar_producto"
                 else:
-                    Respuesta_Final = f"No encontré productos con talla {Talla_Filtro} bajo los filtros actuales. ¿Quieres que ampliemos la búsqueda?"
+                    Respuesta_Final = f"Actualmente no me queda stock en la base de datos para la talla {Talla_Filtro}."
             else:
                 Respuesta_Final = "¡Con gusto lo reviso! ¿Me podrías decir qué modelo de zapatilla o prenda estás buscando específicamente?"
 
@@ -851,9 +792,4 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
 
     if Accion_De_Filtro and 'Productos_Encontrados' in locals() and Productos_Encontrados:
         Accion_De_Filtro['product_ids'] = [p['id'] for p in Productos_Encontrados]
-
-    # Si después de todo Respuesta_Final sigue siendo None (no debería pasar), ponemos un fallback
-    if Respuesta_Final is None:
-        Respuesta_Final = "Lo siento, no pude procesar tu solicitud. ¿Podrías reformularla?"
-
     return Respuesta_Final, Etiqueta_Detectada, Accion_De_Filtro

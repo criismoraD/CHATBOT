@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
 import config
-from ia import Modelo_IA, Etiquetas_De_Intencion, Obtener_Modelo_Voz
+from ia import Modelo_IA, Etiquetas_De_Intencion, Modelo_Voz
 from catalogo import (
     Datos_De_Productos, Catalogos_De_Productos, Fuente_Activa_De_Catalogo,
     Cambiar_Fuente_De_Catalogo, Buscar_Productos, Obtener_Producto_Por_Id
@@ -14,8 +14,8 @@ from dialogo import Obtener_Respuesta_Principal
 
 app = Flask(__name__)
 
-# Configuración de CORS: Permitir solo origenes definidos en config.
-CORS(app, resources={r"/*": {"origins": config.Origenes_Cors_Permitidos}})
+# Configuración de CORS: Permitir cualquier origen para desarrollo local.
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 def Detectar_Intencion_De_Detalle_Contextual(Mensaje_Usuario):
@@ -78,7 +78,6 @@ def index():
 def Estado_Del_Servidor():
     return jsonify({
         "status": "online",
-        "bot_name": config.Nombre_Del_Bot,
         "products_active": len(Datos_De_Productos),
         "products_auto": len(Catalogos_De_Productos.get("auto", [])),
         "products_scraped": len(Catalogos_De_Productos.get("scraped", [])),
@@ -135,7 +134,7 @@ def chat():
             return jsonify({
                 "response": msg,
                 "tag": "contexto_iniciado",
-                "bot_name": config.Nombre_Del_Bot,
+                "bot_name": "Asistente SENATI",
                 "catalog_source": Fuente_Usada,
             })
         
@@ -161,7 +160,7 @@ def chat():
                 return jsonify({
                     "response": Respuesta_Contextual,
                     "tag": Etiqueta_De_Detalle_Contextual,
-                    "bot_name": config.Nombre_Del_Bot,
+                    "bot_name": "Asistente SENATI",
                     "catalog_source": Fuente_Usada,
                 })
 
@@ -170,7 +169,7 @@ def chat():
     Resultado_Json = {
         "response": Respuesta_Bot,
         "tag": Etiqueta_Bot,
-        "bot_name": config.Nombre_Del_Bot,
+        "bot_name": "Asistente SENATI",
         "catalog_source": Fuente_Usada,
     }
 
@@ -196,23 +195,13 @@ def Transcribir_Voz():
         return jsonify({"error": "No audio file provided"}), 400
 
     Archivo_Audio = request.files['audio']
-    Ruta_Temporal = None
-
-    try:
-        with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as Archivo_Temporal:
-            Ruta_Temporal = Archivo_Temporal.name
-            Archivo_Audio.save(Ruta_Temporal)
-
-        Modelo_De_Voz = Obtener_Modelo_Voz()
-        Segmentos, _ = Modelo_De_Voz.transcribe(Ruta_Temporal, beam_size=5)
+    with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as Archivo_Temporal:
+        Archivo_Audio.save(Archivo_Temporal.name)
+        Segmentos, _ = Modelo_Voz.transcribe(Archivo_Temporal.name, beam_size=5)
         Texto_Transcrito = " ".join([segmento.text for segmento in Segmentos])
-        return jsonify({"text": Texto_Transcrito.strip()})
-    except Exception as Error_De_Transcripcion:
-        print(f"[ERROR] Transcripcion de voz: {Error_De_Transcripcion}")
-        return jsonify({"error": "No se pudo procesar el audio"}), 500
-    finally:
-        if Ruta_Temporal and os.path.exists(Ruta_Temporal):
-            os.remove(Ruta_Temporal)
+
+    os.remove(Archivo_Temporal.name)
+    return jsonify({"text": Texto_Transcrito.strip()})
 
 
 @app.route('/search', methods=['POST'])

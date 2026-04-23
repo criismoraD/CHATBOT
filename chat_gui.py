@@ -11,15 +11,16 @@ if BASE_DIR not in sys.path:
 # IMPORTANTE: Importar torch/dialogo ANTES que PyQt5 para evitar WinError 1114 en Windows
 import torch
 from dialogo import Obtener_Respuesta_Principal
-from catalogo import Buscar_Productos, Obtener_Producto_Por_Id, Obtener_Colores_De_Producto
-from ia import Obtener_Modelo_Voz
+from catalogo import Buscar_Productos, Obtener_Producto_Por_Id, Obtener_Colores_De_Producto, Obtener_Detalle_De_Inventario, Datos_De_Productos
+from ia import Modelo_Voz
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QLineEdit, QPushButton, QScrollArea, QLabel, QFrame, QSizePolicy
+    QLineEdit, QPushButton, QScrollArea, QLabel, QFrame, QSizePolicy,
+    QGraphicsDropShadowEffect
 )
-from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QObject
-from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QObject, QSize
+from PyQt5.QtGui import QFont, QColor, QIcon, QPainter, QPainterPath, QLinearGradient
 
 
 # ─────────────────────────────────────────────
@@ -627,8 +628,7 @@ class ChatWindow(QMainWindow):
                 tmp_path = os.path.join(tempfile.gettempdir(), "senati_voice_tmp.wav")
                 sf.write(tmp_path, audio_data, self.sample_rate)
 
-                modelo_de_voz = Obtener_Modelo_Voz()
-                segments, _ = modelo_de_voz.transcribe(tmp_path, beam_size=5)
+                segments, _ = Modelo_Voz.transcribe(tmp_path, beam_size=5)
                 texto = " ".join([s.text for s in segments]).strip()
 
                 os.remove(tmp_path)

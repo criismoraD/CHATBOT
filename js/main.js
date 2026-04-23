@@ -417,115 +417,51 @@ document.addEventListener('DOMContentLoaded', () => {
         const Colores_Como_Texto = Colores_Disponibles.length ? Colores_Disponibles.join(', ') : 'No definido';
         const Genero_Producto = product.genero || 'Unisex';
         const Stock_Producto = Number.isFinite(product.stock) ? product.stock : null;
+        const Dots_Colores = Colores_Disponibles
+            .map(Color_Item => `<div class="card-color-dot" style="background-color: ${Obtener_Color_Hex(Color_Item)};" title="${Color_Item}"></div>`)
+            .join('');
         const catEmoji = Obtener_Emoji_Categoria(product.category);
         const Url_Imagen_Producto = Obtener_Imagen_Producto(product);
+        const Visual_De_Tarjeta = Url_Imagen_Producto
+            ? `<img class="card-image" src="${Url_Imagen_Producto}" alt="${product.name}" loading="lazy" referrerpolicy="no-referrer">`
+            : `<span class="card-emoji">${catEmoji}</span>`;
+        
+        div.innerHTML = `
+            <div class="card-top">
+                <div class="card-media">${Visual_De_Tarjeta}</div>
+                <div class="card-color-dots">${Dots_Colores}</div>
+            </div>
+            
+            <span class="card-cat">${product.category}</span>
+            <h3>${product.name}</h3>
+            
+            <div class="card-meta">
+                <span>Colores: ${Colores_Como_Texto}</span>
+                <br>
+                <span>Genero: ${Genero_Producto}</span>
+            </div>
+            <div class="card-tallas-visor">
+                <span class="tallas-etiqueta">Tallas disponibles</span>
+                <span class="tallas-valores">${Tallas_Como_Texto}</span>
+            </div>
 
-        const cardTop = document.createElement('div');
-        cardTop.className = 'card-top';
+            <div class="card-stock">Stock: ${Stock_Producto !== null ? `${Stock_Producto} unidades` : 'No disponible'}</div>
+            
+            <div class="card-price-row">
+                <span class="card-price">S/ ${product.price.toFixed(2)}</span>
+                <div class="card-actions">
+                    <button class="card-btn consult-bot-quick" title="Preguntar" data-id="${product.id}">
+                        <i class="fa-solid fa-robot"></i>
+                    </button>
+                    <button class="card-btn add-to-cart-quick" title="Agregar al carrito" data-id="${product.id}">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        `;
 
-        const cardMedia = document.createElement('div');
-        cardMedia.className = 'card-media';
-        if (Url_Imagen_Producto) {
-            const img = document.createElement('img');
-            img.className = 'card-image';
-            img.src = Url_Imagen_Producto;
-            img.alt = product.name;
-            img.loading = 'lazy';
-            img.referrerPolicy = 'no-referrer';
-            cardMedia.appendChild(img);
-        } else {
-            const span = document.createElement('span');
-            span.className = 'card-emoji';
-            span.textContent = catEmoji;
-            cardMedia.appendChild(span);
-        }
-
-        const cardColorDots = document.createElement('div');
-        cardColorDots.className = 'card-color-dots';
-        Colores_Disponibles.forEach(Color_Item => {
-            const dot = document.createElement('div');
-            dot.className = 'card-color-dot';
-            dot.style.backgroundColor = Obtener_Color_Hex(Color_Item);
-            dot.title = Color_Item;
-            cardColorDots.appendChild(dot);
-        });
-
-        cardTop.appendChild(cardMedia);
-        cardTop.appendChild(cardColorDots);
-
-        const cardCat = document.createElement('span');
-        cardCat.className = 'card-cat';
-        cardCat.textContent = product.category;
-
-        const cardTitle = document.createElement('h3');
-        cardTitle.textContent = product.name;
-
-        const cardMeta = document.createElement('div');
-        cardMeta.className = 'card-meta';
-        const spanColores = document.createElement('span');
-        spanColores.textContent = `Colores: ${Colores_Como_Texto}`;
-        const spanGenero = document.createElement('span');
-        spanGenero.textContent = `Genero: ${Genero_Producto}`;
-        cardMeta.appendChild(spanColores);
-        cardMeta.appendChild(document.createElement('br'));
-        cardMeta.appendChild(spanGenero);
-
-        const cardTallasVisor = document.createElement('div');
-        cardTallasVisor.className = 'card-tallas-visor';
-        const tallasEtiqueta = document.createElement('span');
-        tallasEtiqueta.className = 'tallas-etiqueta';
-        tallasEtiqueta.textContent = 'Tallas disponibles';
-        const tallasValores = document.createElement('span');
-        tallasValores.className = 'tallas-valores';
-        tallasValores.textContent = Tallas_Como_Texto;
-        cardTallasVisor.appendChild(tallasEtiqueta);
-        cardTallasVisor.appendChild(tallasValores);
-
-        const cardStock = document.createElement('div');
-        cardStock.className = 'card-stock';
-        cardStock.textContent = `Stock: ${Stock_Producto !== null ? `${Stock_Producto} unidades` : 'No disponible'}`;
-
-        const cardPriceRow = document.createElement('div');
-        cardPriceRow.className = 'card-price-row';
-        const cardPrice = document.createElement('span');
-        cardPrice.className = 'card-price';
-        cardPrice.textContent = `S/ ${product.price.toFixed(2)}`;
-
-        const cardActions = document.createElement('div');
-        cardActions.className = 'card-actions';
-
-        const btnConsult = document.createElement('button');
-        btnConsult.className = 'card-btn consult-bot-quick';
-        btnConsult.title = 'Preguntar';
-        btnConsult.dataset.id = product.id;
-        const iconBot = document.createElement('i');
-        iconBot.className = 'fa-solid fa-robot';
-        btnConsult.appendChild(iconBot);
-
-        const btnAdd = document.createElement('button');
-        btnAdd.className = 'card-btn add-to-cart-quick';
-        btnAdd.title = 'Agregar al carrito';
-        btnAdd.dataset.id = product.id;
-        const iconPlus = document.createElement('i');
-        iconPlus.className = 'fa-solid fa-plus';
-        btnAdd.appendChild(iconPlus);
-
-        cardActions.appendChild(btnConsult);
-        cardActions.appendChild(btnAdd);
-
-        cardPriceRow.appendChild(cardPrice);
-        cardPriceRow.appendChild(cardActions);
-
-        div.appendChild(cardTop);
-        div.appendChild(cardCat);
-        div.appendChild(cardTitle);
-        div.appendChild(cardMeta);
-        div.appendChild(cardTallasVisor);
-        div.appendChild(cardStock);
-        div.appendChild(cardPriceRow);
-
-        btnAdd.addEventListener('click', () => Agregar_Al_Carrito(product));
-        btnConsult.addEventListener('click', () => Consultar_Producto(product));
+        div.querySelector('.add-to-cart-quick').addEventListener('click', () => Agregar_Al_Carrito(product));
+        div.querySelector('.consult-bot-quick').addEventListener('click', () => Consultar_Producto(product));
 
         return div;
     }
@@ -634,8 +570,6 @@ document.addEventListener('DOMContentLoaded', () => {
             || Accion_De_Filtro.genero
             || typeof Accion_De_Filtro.max_price === 'number'
         );
-        const Tiene_Ids_De_Backend = Array.isArray(Accion_De_Filtro.product_ids)
-            && Accion_De_Filtro.product_ids.length > 0;
 
         const Lista_De_Keywords_Especificas = new Set([
             'mochila', 'mochilas', 'gorra', 'gorras', 'tomatodo', 'tomatodos',
@@ -649,8 +583,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return Lista_De_Keywords_Especificas.has(Keyword_Normalizada);
             });
 
-        if (!Tiene_Ids_De_Backend
-            && Array.isArray(Accion_De_Filtro.keywords)
+        if (Array.isArray(Accion_De_Filtro.keywords)
             && Accion_De_Filtro.keywords.length
             && (!Tiene_Filtros_Estructurados || Debe_Aplicar_Keywords_Con_Filtros)) {
             Texto_De_Busqueda = Accion_De_Filtro.keywords.join(' ').trim();
@@ -728,28 +661,6 @@ document.addEventListener('DOMContentLoaded', () => {
         Actualizar_UI_Carrito();
     }
 
-    function Aumentar_Cantidad(id) {
-        const item = Carrito_Actual.find(item => item.id === id);
-        if (item) {
-            item.quantity += 1;
-            Guardar_Carrito();
-            Actualizar_UI_Carrito();
-        }
-    }
-
-    function Disminuir_Cantidad(id) {
-        const item = Carrito_Actual.find(item => item.id === id);
-        if (item) {
-            item.quantity -= 1;
-            if (item.quantity <= 0) {
-                Quitar_Del_Carrito(id);
-            } else {
-                Guardar_Carrito();
-                Actualizar_UI_Carrito();
-            }
-        }
-    }
-
     function Guardar_Carrito() {
         localStorage.setItem('senati_cart', JSON.stringify(Carrito_Actual));
     }
@@ -768,69 +679,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 total += item.price * item.quantity;
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cart-item-row';
-
-                const itemEmoji = document.createElement('div');
-                itemEmoji.className = 'cart-item-emoji';
-                itemEmoji.textContent = Obtener_Emoji_Categoria(item.category);
-
-                const itemInfo = document.createElement('div');
-                itemInfo.className = 'cart-item-info';
-
-                const itemName = document.createElement('h4');
-                itemName.textContent = item.name;
-
-                const qtyControls = document.createElement('div');
-                qtyControls.className = 'cart-item-qty-controls';
-                qtyControls.style.cssText = 'display: flex; align-items: center; gap: 8px; margin: 4px 0;';
-
-                const btnDecrease = document.createElement('button');
-                btnDecrease.className = 'qty-btn decrease-qty';
-                btnDecrease.dataset.id = item.id;
-                btnDecrease.style.cssText = 'width: 24px; height: 24px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;';
-                btnDecrease.textContent = '-';
-
-                const qtySpan = document.createElement('span');
-                qtySpan.style.cssText = 'font-size: 0.9rem; font-weight: 600; min-width: 20px; text-align: center;';
-                qtySpan.textContent = item.quantity;
-
-                const btnIncrease = document.createElement('button');
-                btnIncrease.className = 'qty-btn increase-qty';
-                btnIncrease.dataset.id = item.id;
-                btnIncrease.style.cssText = 'width: 24px; height: 24px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;';
-                btnIncrease.textContent = '+';
-
-                qtyControls.appendChild(btnDecrease);
-                qtyControls.appendChild(qtySpan);
-                qtyControls.appendChild(btnIncrease);
-
-                const pricePara = document.createElement('p');
-                pricePara.style.cssText = 'margin: 0; font-weight: bold; color: var(--primary-color);';
-                pricePara.textContent = `S/ ${(item.price * item.quantity).toFixed(2)} `;
-                const unitPriceSpan = document.createElement('span');
-                unitPriceSpan.style.cssText = 'font-size: 0.8em; color: #777; font-weight: normal;';
-                unitPriceSpan.textContent = `(S/ ${item.price.toFixed(2)} c/u)`;
-                pricePara.appendChild(unitPriceSpan);
-
-                itemInfo.appendChild(itemName);
-                itemInfo.appendChild(qtyControls);
-                itemInfo.appendChild(pricePara);
-
-                const btnRemove = document.createElement('button');
-                btnRemove.className = 'remove-item';
-                btnRemove.dataset.id = item.id;
-                const iconTrash = document.createElement('i');
-                iconTrash.className = 'fa-solid fa-trash-can';
-                btnRemove.appendChild(iconTrash);
-
-                itemDiv.appendChild(itemEmoji);
-                itemDiv.appendChild(itemInfo);
-                itemDiv.appendChild(btnRemove);
-
+                itemDiv.innerHTML = `
+                    <div class="cart-item-emoji">${Obtener_Emoji_Categoria(item.category)}</div>
+                    <div class="cart-item-info">
+                        <h4>${item.name}</h4>
+                        <p>S/ ${item.price.toFixed(2)} x ${item.quantity}</p>
+                    </div>
+                    <button class="remove-item" data-id="${item.id}">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
                 Lista_Items_Carrito.appendChild(itemDiv);
-
-                btnRemove.addEventListener('click', () => Quitar_Del_Carrito(item.id));
-                btnIncrease.addEventListener('click', () => Aumentar_Cantidad(item.id));
-                btnDecrease.addEventListener('click', () => Disminuir_Cantidad(item.id));
+                itemDiv.querySelector('.remove-item').addEventListener('click', () => Quitar_Del_Carrito(item.id));
             });
             Monto_Total_Carrito.innerText = `S/ ${total.toFixed(2)}`;
         }
@@ -954,11 +814,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (Boton_Cerrar_Carrito) Boton_Cerrar_Carrito.addEventListener('click', Cerrar_Panel_Carrito);
         if (Overlay_Carrito) Overlay_Carrito.addEventListener('click', Cerrar_Panel_Carrito);
 
-        const Boton_Checkout = document.getElementById('checkout-btn');
-        if (Boton_Checkout) {
-            Boton_Checkout.addEventListener('click', Generar_Boleta_PDF);
-        }
-
         // Mobile Chat Toggle
         const Boton_Toggle_Chat = document.getElementById('mobile-chat-toggle');
         const Panel_Derecho = document.getElementById('dashboard-right');
@@ -998,96 +853,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'auto';
     }
 
-    function Generar_Boleta_PDF() {
-        if (Carrito_Actual.length === 0) {
-            alert('Tu carrito está vacío. Agrega productos para comprar.');
-            return;
-        }
-
-        if (!window.jspdf || !window.jspdf.jsPDF) {
-            alert('El generador de PDF está cargando. Por favor, intenta de nuevo en unos segundos.');
-            return;
-        }
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        // Configuración inicial
-        doc.setFontSize(20);
-        doc.text('SENATI SPORTS - Boleta de Venta', 105, 20, { align: 'center' });
-
-        doc.setFontSize(12);
-        const date = new Date();
-        doc.text(`Fecha: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`, 20, 30);
-
-        // Cabeceras de tabla
-        let startY = 45;
-        doc.setFont(undefined, 'bold');
-        doc.text('Producto', 20, startY);
-        doc.text('Cant.', 120, startY);
-        doc.text('P. Unit', 150, startY);
-        doc.text('Subtotal', 180, startY);
-
-        // Línea separadora
-        doc.setLineWidth(0.5);
-        doc.line(20, startY + 2, 190, startY + 2);
-
-        // Items
-        startY += 10;
-        doc.setFont(undefined, 'normal');
-        let total = 0;
-
-        Carrito_Actual.forEach(item => {
-            const subtotal = item.price * item.quantity;
-            total += subtotal;
-
-            // Truncate name if too long
-            const name = item.name.length > 40 ? item.name.substring(0, 37) + '...' : item.name;
-
-            doc.text(name, 20, startY);
-            doc.text(item.quantity.toString(), 125, startY, { align: 'right' });
-            doc.text(`S/ ${item.price.toFixed(2)}`, 160, startY, { align: 'right' });
-            doc.text(`S/ ${subtotal.toFixed(2)}`, 190, startY, { align: 'right' });
-
-            startY += 10;
-        });
-
-        // Línea separadora final
-        doc.line(20, startY - 5, 190, startY - 5);
-
-        // Total
-        doc.setFont(undefined, 'bold');
-        doc.text('TOTAL:', 150, startY + 5);
-        doc.text(`S/ ${total.toFixed(2)}`, 190, startY + 5, { align: 'right' });
-
-        // Mensaje de agradecimiento
-        doc.setFont(undefined, 'italic');
-        doc.setFontSize(10);
-        doc.text('¡Gracias por tu compra en SENATI SPORTS!', 105, startY + 20, { align: 'center' });
-
-        // Abrir PDF en una nueva pestaña
-        const pdfBlob = doc.output('blob');
-        const pdfUrl = URL.createObjectURL(pdfBlob);
-        window.open(pdfUrl, '_blank');
-
-        // Limpiar carrito
-        Carrito_Actual = [];
-        Guardar_Carrito();
-        Actualizar_UI_Carrito();
-        Cerrar_Panel_Carrito();
-        
-        // Notificar en el chat de forma visual si existe el panel de chat
-        const chatWindow = document.getElementById('chat-window');
-        if (chatWindow && typeof Agregar_Mensaje_Chat === 'function') {
-            // Check if mobile panel is open, if not, we can force it open or just add silently
-            const Panel_Derecho = document.getElementById('dashboard-right');
-            if (Panel_Derecho && window.innerWidth <= 768 && !Panel_Derecho.classList.contains('mobile-open')) {
-                Panel_Derecho.classList.add('mobile-open');
-            }
-            Agregar_Mensaje_Chat('¡Compra finalizada exitosamente! He generado tu boleta de venta en formato PDF.', 'bot');
-        }
-    }
-
     // ============================================================
     // CHATBOT LOGIC (Conexión real con PyTorch backend)
     // ============================================================
@@ -1099,7 +864,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function Enviar_Mensaje() {
         const Texto_Usuario = Entrada_Chat.value.trim();
         if (!Texto_Usuario) return;
-        Limpiar_Sugerencias_Chat();
         Agregar_Mensaje_Chat(Texto_Usuario, 'user');
         Entrada_Chat.value = '';
         Obtener_Respuesta_Chat(Texto_Usuario);
@@ -1161,8 +925,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             Agregar_Mensaje_Chat(data.response || 'No pude procesar la respuesta del servidor.', 'bot');
-            const Sugerencias_Coherentes = Obtener_Sugerencias_Coherentes(data.tag, data.filter_action || {});
-            Renderizar_Sugerencias_Chat(Sugerencias_Coherentes);
             
             // Si hay filter_action, aplicar el filtro en el catálogo
             if (data.filter_action) {
@@ -1186,321 +948,59 @@ document.addEventListener('DOMContentLoaded', () => {
         Mensajes_Chat.scrollTop = Mensajes_Chat.scrollHeight;
     }
 
-    function Limpiar_Sugerencias_Chat() {
-        Mensajes_Chat.querySelectorAll('.chat-suggestions').forEach(Nodo => Nodo.remove());
-    }
-
-    let Indice_De_Rotacion_Sugerencias = 0;
-
-    function Seleccionar_Sugerencias_Variadas(Lista_De_Sugerencias, Maximo = 3) {
-        const Sugerencias_Unicas = [];
-        for (const Sugerencia of Lista_De_Sugerencias) {
-            if (Sugerencia && !Sugerencias_Unicas.includes(Sugerencia)) {
-                Sugerencias_Unicas.push(Sugerencia);
-            }
-        }
-
-        if (Sugerencias_Unicas.length <= Maximo) {
-            return Sugerencias_Unicas;
-        }
-
-        const Resultado = [];
-        const Inicio = Indice_De_Rotacion_Sugerencias % Sugerencias_Unicas.length;
-        for (let i = 0; i < Sugerencias_Unicas.length && Resultado.length < Maximo; i += 1) {
-            Resultado.push(Sugerencias_Unicas[(Inicio + i) % Sugerencias_Unicas.length]);
-        }
-
-        Indice_De_Rotacion_Sugerencias += 1;
-        return Resultado;
-    }
-
-    function Obtener_Sugerencias_Coherentes(Tag_Del_Bot, Accion_De_Filtro = {}) {
-        const Categoria = Accion_De_Filtro?.category || null;
-        const Color = Accion_De_Filtro?.color || null;
-        const Genero = Accion_De_Filtro?.genero || null;
-        const Talla = Accion_De_Filtro?.talla || null;
-
-        const Sugerencias = [];
-
-        if (Tag_Del_Bot === 'saludo') {
-            return Seleccionar_Sugerencias_Variadas([
-                '🛒 Cómo comprar',
-                '💳 Métodos de pago',
-                '🎧 Soporte y reclamos'
-            ]);
-        }
-
-        if (Tag_Del_Bot === 'buscar_producto' || Tag_Del_Bot === 'filtrar_categoria' || Tag_Del_Bot === 'filtrar_genero') {
-            if (Categoria === 'POLOS') {
-                Sugerencias.push(
-                    '👗 Polos para mujer',
-                    '👨 Polos para hombre',
-                    '🎨 Polos en color rojo',
-                    '📏 Polos en talla M',
-                    '💸 Polos menos de 80 soles',
-                    '🏃 Polos para entrenamiento'
-                );
-            } else if (Categoria === 'CALZADO') {
-                Sugerencias.push(
-                    '👨 Zapatillas para hombre',
-                    '👗 Zapatillas para mujer',
-                    '🎨 Zapatillas en color negro',
-                    '📏 Zapatillas en talla 42',
-                    '💸 Zapatillas menos de 150 soles',
-                    '🏃 Zapatillas para running'
-                );
-            } else if (Categoria === 'PANTALONES') {
-                Sugerencias.push(
-                    '👖 Joggers para hombre',
-                    '👗 Leggings para mujer',
-                    '🎨 Pantalones en color negro',
-                    '📏 Pantalones en talla M',
-                    '💸 Pantalones menos de 120 soles',
-                    '🏃 Shorts para running'
-                );
-            } else if (Categoria === 'OTROS') {
-                Sugerencias.push(
-                    '🎒 Muéstrame mochilas',
-                    '🧢 Quiero ver gorras',
-                    '🎨 Accesorios en color negro',
-                    '💸 Accesorios menos de 60 soles',
-                    '🏷️ Quiero ver tomatodos'
-                );
-            } else {
-                Sugerencias.push(
-                    '👟 Zapatillas negras',
-                    '👕 Polos de mujer',
-                    '👖 Pantalones de hombre',
-                    '🎒 Mochilas deportivas',
-                    '💸 Menos de 100 soles',
-                    '🎨 Color rojo'
-                );
-            }
-
-            if (Color && !Talla) {
-                Sugerencias.push(Categoria === 'CALZADO' ? '📏 En talla 42' : '📏 En talla M');
-            }
-            if (Genero && !Color) {
-                Sugerencias.push('🎨 En color negro', '🎨 En color blanco');
-            }
-            if (Talla && !Genero) {
-                Sugerencias.push('👗 Para mujer', '👨 Para hombre');
-            }
-        }
-
-        if (Tag_Del_Bot === 'consultar_precio_item') {
-            Sugerencias.push('📏 ¿Qué tallas tiene?', '🎨 ¿Qué colores hay?', '📦 ¿Hay stock disponible?', '🛍️ Muéstrame similares');
-        }
-
-        if (Tag_Del_Bot === 'consultar_stock_item') {
-            Sugerencias.push('💰 ¿Cuál es el precio?', '🎨 ¿Qué colores hay?', '🛍️ Muéstrame productos similares', '👕 Quiero otra opción');
-        }
-
-        if (Tag_Del_Bot === 'colores') {
-            Sugerencias.push('📏 ¿Hay talla M?', '💰 ¿Cuál es el precio?', '🛒 Quiero agregar al carrito', '👀 Muéstrame más opciones');
-        }
-
-        return Seleccionar_Sugerencias_Variadas(Sugerencias, 3);
-    }
-
-    function Renderizar_Sugerencias_Chat(Lista_De_Sugerencias) {
-        Limpiar_Sugerencias_Chat();
-
-        if (!Array.isArray(Lista_De_Sugerencias) || !Lista_De_Sugerencias.length) {
-            return;
-        }
-
-        const Contenedor = document.createElement('div');
-        Contenedor.className = 'chat-suggestions';
-
-        Lista_De_Sugerencias.forEach(Texto_Sugerencia => {
-            const Boton = document.createElement('button');
-            Boton.type = 'button';
-            Boton.className = 'chat-suggestion-btn';
-            Boton.innerText = Texto_Sugerencia;
-            Boton.addEventListener('click', () => {
-                Entrada_Chat.value = Texto_Sugerencia.replace(/^[^\p{L}\p{N}]+/u, '').trim();
-                Enviar_Mensaje();
-            });
-            Contenedor.appendChild(Boton);
-        });
-
-        Mensajes_Chat.appendChild(Contenedor);
-        Mensajes_Chat.scrollTop = Mensajes_Chat.scrollHeight;
-    }
-
-    // Voice recognition logic (nativo del navegador primero, Whisper como fallback)
-    const Constructor_De_Reconocimiento_Nativo = window.SpeechRecognition || window.webkitSpeechRecognition || null;
-    let Reconocedor_De_Voz_Nativo = null;
-    let Reconocimiento_Nativo_Activo = false;
-    let Reconocimiento_Nativo_Con_Resultado = false;
-    let Reconocimiento_Nativo_Fallo = false;
-    let Reconocimiento_Nativo_Cancelado_Manual = false;
-
+    // Voice recording logic
     let Grabadora_De_Medios = null;
     let Segmentos_De_Audio = [];
 
-    async function Enviar_Audio_A_Whisper(Blob_De_Audio) {
-        const Datos_De_Formulario = new FormData();
-        Datos_De_Formulario.append('audio', Blob_De_Audio, 'voice.webm');
-
-        try {
-            const Respuesta_De_Transcripcion = await fetch(`${URL_Base_API}/transcribe`, {
-                method: 'POST',
-                body: Datos_De_Formulario
-            });
-
-            if (!Respuesta_De_Transcripcion.ok) {
-                throw new Error(`HTTP ${Respuesta_De_Transcripcion.status}`);
-            }
-
-            const Datos_Transcritos = await Respuesta_De_Transcripcion.json();
-            if (Datos_Transcritos.text) {
-                Entrada_Chat.value = Datos_Transcritos.text;
-                Enviar_Mensaje();
-                return;
-            }
-
-            if (Datos_Transcritos.error) {
-                Agregar_Mensaje_Chat('Error de voz: ' + Datos_Transcritos.error, 'bot');
-                return;
-            }
-
-            Agregar_Mensaje_Chat('No pude transcribir tu audio con Whisper.', 'bot');
-        } catch (Error_De_Voz) {
-            console.error('Error al transcribir con Whisper:', Error_De_Voz);
-            Agregar_Mensaje_Chat('No pude procesar tu voz en este momento.', 'bot');
-        }
-    }
-
-    async function Iniciar_Grabacion_Con_Whisper() {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            Agregar_Mensaje_Chat('Tu navegador no soporta captura de audio.', 'bot');
-            return;
-        }
-
-        if (Grabadora_De_Medios && Grabadora_De_Medios.state === 'recording') {
-            Grabadora_De_Medios.stop();
-            Boton_Microfono.classList.remove('recording');
-            return;
-        }
-
-        try {
-            const Flujo_De_Audio = await navigator.mediaDevices.getUserMedia({ audio: true });
-            Grabadora_De_Medios = new MediaRecorder(Flujo_De_Audio);
-            Segmentos_De_Audio = [];
-
-            Grabadora_De_Medios.ondataavailable = (Evento) => {
-                Segmentos_De_Audio.push(Evento.data);
-            };
-
-            Grabadora_De_Medios.onstop = async () => {
-                const Blob_De_Audio = new Blob(Segmentos_De_Audio, { type: 'audio/webm' });
-                await Enviar_Audio_A_Whisper(Blob_De_Audio);
-                Flujo_De_Audio.getTracks().forEach(Track => Track.stop());
-            };
-
-            Grabadora_De_Medios.start();
-            Boton_Microfono.classList.add('recording');
-
-            // Evita grabaciones largas cuando el fallback se activa automaticamente.
-            setTimeout(() => {
-                if (Grabadora_De_Medios && Grabadora_De_Medios.state === 'recording') {
-                    Grabadora_De_Medios.stop();
-                    Boton_Microfono.classList.remove('recording');
-                }
-            }, 7000);
-        } catch (Error_De_Microfono) {
-            console.error('Error accediendo al microfono:', Error_De_Microfono);
-            Agregar_Mensaje_Chat('No se pudo acceder al microfono.', 'bot');
-        }
-    }
-
-    function Asegurar_Reconocedor_Nativo() {
-        if (!Constructor_De_Reconocimiento_Nativo || Reconocedor_De_Voz_Nativo) {
-            return;
-        }
-
-        Reconocedor_De_Voz_Nativo = new Constructor_De_Reconocimiento_Nativo();
-        Reconocedor_De_Voz_Nativo.lang = 'es-ES';
-        Reconocedor_De_Voz_Nativo.interimResults = false;
-        Reconocedor_De_Voz_Nativo.maxAlternatives = 1;
-        Reconocedor_De_Voz_Nativo.continuous = false;
-
-        Reconocedor_De_Voz_Nativo.onstart = () => {
-            Reconocimiento_Nativo_Activo = true;
-            Boton_Microfono.classList.add('recording');
-        };
-
-        Reconocedor_De_Voz_Nativo.onresult = (Evento) => {
-            const Texto_Transcrito = (Evento.results?.[0]?.[0]?.transcript || '').trim();
-            if (!Texto_Transcrito) {
-                return;
-            }
-
-            Reconocimiento_Nativo_Con_Resultado = true;
-            Entrada_Chat.value = Texto_Transcrito;
-            Enviar_Mensaje();
-        };
-
-        Reconocedor_De_Voz_Nativo.onerror = (Evento) => {
-            console.warn('Reconocimiento nativo fallido:', Evento.error);
-            if (Evento.error !== 'aborted') {
-                Reconocimiento_Nativo_Fallo = true;
-            }
-        };
-
-        Reconocedor_De_Voz_Nativo.onend = () => {
-            Reconocimiento_Nativo_Activo = false;
-            Boton_Microfono.classList.remove('recording');
-
-            if (!Reconocimiento_Nativo_Cancelado_Manual && (Reconocimiento_Nativo_Fallo || !Reconocimiento_Nativo_Con_Resultado)) {
-                Agregar_Mensaje_Chat('No pude captar tu voz con el navegador. Intentare con Whisper.', 'bot');
-                Iniciar_Grabacion_Con_Whisper();
-            }
-        };
-    }
-
-    function Iniciar_Reconocimiento_Nativo() {
-        Asegurar_Reconocedor_Nativo();
-
-        if (!Reconocedor_De_Voz_Nativo) {
-            Iniciar_Grabacion_Con_Whisper();
-            return;
-        }
-
-        try {
-            Reconocimiento_Nativo_Con_Resultado = false;
-            Reconocimiento_Nativo_Fallo = false;
-            Reconocimiento_Nativo_Cancelado_Manual = false;
-            Reconocedor_De_Voz_Nativo.start();
-        } catch (Error_De_Reconocimiento) {
-            console.warn('No se pudo iniciar reconocimiento nativo:', Error_De_Reconocimiento);
-            Iniciar_Grabacion_Con_Whisper();
-        }
-    }
-
     if (Boton_Microfono) {
-        Boton_Microfono.addEventListener('click', () => {
+        Boton_Microfono.addEventListener('click', async () => {
             if (Grabadora_De_Medios && Grabadora_De_Medios.state === 'recording') {
                 Grabadora_De_Medios.stop();
                 Boton_Microfono.classList.remove('recording');
                 return;
             }
 
-            if (Reconocimiento_Nativo_Activo && Reconocedor_De_Voz_Nativo) {
-                Reconocimiento_Nativo_Cancelado_Manual = true;
-                Reconocedor_De_Voz_Nativo.stop();
-                Boton_Microfono.classList.remove('recording');
-                return;
-            }
+            try {
+                const Flujo_De_Audio = await navigator.mediaDevices.getUserMedia({ audio: true });
+                Grabadora_De_Medios = new MediaRecorder(Flujo_De_Audio);
+                Segmentos_De_Audio = [];
 
-            if (Constructor_De_Reconocimiento_Nativo) {
-                Iniciar_Reconocimiento_Nativo();
-                return;
-            }
+                Grabadora_De_Medios.ondataavailable = e => {
+                    Segmentos_De_Audio.push(e.data);
+                };
 
-            Iniciar_Grabacion_Con_Whisper();
+                Grabadora_De_Medios.onstop = async () => {
+                    const Blob_De_Audio = new Blob(Segmentos_De_Audio, { type: 'audio/webm' });
+                    const Datos_De_Formulario = new FormData();
+                    Datos_De_Formulario.append('audio', Blob_De_Audio, 'voice.webm');
+
+                    try {
+                        const Respuesta_De_Transcripcion = await fetch(`${URL_Base_API}/transcribe`, {
+                            method: 'POST',
+                            body: Datos_De_Formulario
+                        });
+
+                        const Datos_Transcritos = await Respuesta_De_Transcripcion.json();
+                        if (Datos_Transcritos.text) {
+                            Entrada_Chat.value = Datos_Transcritos.text;
+                            Enviar_Mensaje();
+                        } else if (Datos_Transcritos.error) {
+                            Agregar_Mensaje_Chat('Error de voz: ' + Datos_Transcritos.error, 'bot');
+                        }
+                    } catch (Error_De_Voz) {
+                        console.error('Error al transcribir:', Error_De_Voz);
+                        Agregar_Mensaje_Chat('No pude procesar tu voz en este momento.', 'bot');
+                    }
+
+                    Flujo_De_Audio.getTracks().forEach(track => track.stop());
+                };
+
+                Grabadora_De_Medios.start();
+                Boton_Microfono.classList.add('recording');
+            } catch (Error_De_Microfono) {
+                console.error('Error accediendo al microfono:', Error_De_Microfono);
+                Agregar_Mensaje_Chat('No se pudo acceder al microfono.', 'bot');
+            }
         });
     }
 
@@ -1510,8 +1010,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Enter') Enviar_Mensaje();
         });
     }
-
-    Renderizar_Sugerencias_Chat(Obtener_Sugerencias_Coherentes('saludo'));
 
     Inicializar_Dashboard().catch((Error_De_Inicio) => {
         console.error('No se pudo inicializar el dashboard:', Error_De_Inicio);

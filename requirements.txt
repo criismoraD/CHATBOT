@@ -11,3 +11,4 @@ thefuzz
 PyQt5>=5.15.0
 sounddevice>=0.5.0
 soundfile>=0.13.0
+mysql-connector-python>=8.3.0
