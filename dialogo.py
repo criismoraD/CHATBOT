@@ -851,4 +851,9 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
 
     if Accion_De_Filtro and 'Productos_Encontrados' in locals() and Productos_Encontrados:
         Accion_De_Filtro['product_ids'] = [p['id'] for p in Productos_Encontrados]
+
+    # Si después de todo Respuesta_Final sigue siendo None (no debería pasar), ponemos un fallback
+    if Respuesta_Final is None:
+        Respuesta_Final = "Lo siento, no pude procesar tu solicitud. ¿Podrías reformularla?"
+
     return Respuesta_Final, Etiqueta_Detectada, Accion_De_Filtro
