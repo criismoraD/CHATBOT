@@ -417,51 +417,115 @@ document.addEventListener('DOMContentLoaded', () => {
         const Colores_Como_Texto = Colores_Disponibles.length ? Colores_Disponibles.join(', ') : 'No definido';
         const Genero_Producto = product.genero || 'Unisex';
         const Stock_Producto = Number.isFinite(product.stock) ? product.stock : null;
-        const Dots_Colores = Colores_Disponibles
-            .map(Color_Item => `<div class="card-color-dot" style="background-color: ${Obtener_Color_Hex(Color_Item)};" title="${Color_Item}"></div>`)
-            .join('');
         const catEmoji = Obtener_Emoji_Categoria(product.category);
         const Url_Imagen_Producto = Obtener_Imagen_Producto(product);
-        const Visual_De_Tarjeta = Url_Imagen_Producto
-            ? `<img class="card-image" src="${Url_Imagen_Producto}" alt="${product.name}" loading="lazy" referrerpolicy="no-referrer">`
-            : `<span class="card-emoji">${catEmoji}</span>`;
-        
-        div.innerHTML = `
-            <div class="card-top">
-                <div class="card-media">${Visual_De_Tarjeta}</div>
-                <div class="card-color-dots">${Dots_Colores}</div>
-            </div>
-            
-            <span class="card-cat">${product.category}</span>
-            <h3>${product.name}</h3>
-            
-            <div class="card-meta">
-                <span>Colores: ${Colores_Como_Texto}</span>
-                <br>
-                <span>Genero: ${Genero_Producto}</span>
-            </div>
-            <div class="card-tallas-visor">
-                <span class="tallas-etiqueta">Tallas disponibles</span>
-                <span class="tallas-valores">${Tallas_Como_Texto}</span>
-            </div>
 
-            <div class="card-stock">Stock: ${Stock_Producto !== null ? `${Stock_Producto} unidades` : 'No disponible'}</div>
-            
-            <div class="card-price-row">
-                <span class="card-price">S/ ${product.price.toFixed(2)}</span>
-                <div class="card-actions">
-                    <button class="card-btn consult-bot-quick" title="Preguntar" data-id="${product.id}">
-                        <i class="fa-solid fa-robot"></i>
-                    </button>
-                    <button class="card-btn add-to-cart-quick" title="Agregar al carrito" data-id="${product.id}">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-        `;
+        const cardTop = document.createElement('div');
+        cardTop.className = 'card-top';
 
-        div.querySelector('.add-to-cart-quick').addEventListener('click', () => Agregar_Al_Carrito(product));
-        div.querySelector('.consult-bot-quick').addEventListener('click', () => Consultar_Producto(product));
+        const cardMedia = document.createElement('div');
+        cardMedia.className = 'card-media';
+        if (Url_Imagen_Producto) {
+            const img = document.createElement('img');
+            img.className = 'card-image';
+            img.src = Url_Imagen_Producto;
+            img.alt = product.name;
+            img.loading = 'lazy';
+            img.referrerPolicy = 'no-referrer';
+            cardMedia.appendChild(img);
+        } else {
+            const span = document.createElement('span');
+            span.className = 'card-emoji';
+            span.textContent = catEmoji;
+            cardMedia.appendChild(span);
+        }
+
+        const cardColorDots = document.createElement('div');
+        cardColorDots.className = 'card-color-dots';
+        Colores_Disponibles.forEach(Color_Item => {
+            const dot = document.createElement('div');
+            dot.className = 'card-color-dot';
+            dot.style.backgroundColor = Obtener_Color_Hex(Color_Item);
+            dot.title = Color_Item;
+            cardColorDots.appendChild(dot);
+        });
+
+        cardTop.appendChild(cardMedia);
+        cardTop.appendChild(cardColorDots);
+
+        const cardCat = document.createElement('span');
+        cardCat.className = 'card-cat';
+        cardCat.textContent = product.category;
+
+        const cardTitle = document.createElement('h3');
+        cardTitle.textContent = product.name;
+
+        const cardMeta = document.createElement('div');
+        cardMeta.className = 'card-meta';
+        const spanColores = document.createElement('span');
+        spanColores.textContent = `Colores: ${Colores_Como_Texto}`;
+        const spanGenero = document.createElement('span');
+        spanGenero.textContent = `Genero: ${Genero_Producto}`;
+        cardMeta.appendChild(spanColores);
+        cardMeta.appendChild(document.createElement('br'));
+        cardMeta.appendChild(spanGenero);
+
+        const cardTallasVisor = document.createElement('div');
+        cardTallasVisor.className = 'card-tallas-visor';
+        const tallasEtiqueta = document.createElement('span');
+        tallasEtiqueta.className = 'tallas-etiqueta';
+        tallasEtiqueta.textContent = 'Tallas disponibles';
+        const tallasValores = document.createElement('span');
+        tallasValores.className = 'tallas-valores';
+        tallasValores.textContent = Tallas_Como_Texto;
+        cardTallasVisor.appendChild(tallasEtiqueta);
+        cardTallasVisor.appendChild(tallasValores);
+
+        const cardStock = document.createElement('div');
+        cardStock.className = 'card-stock';
+        cardStock.textContent = `Stock: ${Stock_Producto !== null ? `${Stock_Producto} unidades` : 'No disponible'}`;
+
+        const cardPriceRow = document.createElement('div');
+        cardPriceRow.className = 'card-price-row';
+        const cardPrice = document.createElement('span');
+        cardPrice.className = 'card-price';
+        cardPrice.textContent = `S/ ${product.price.toFixed(2)}`;
+
+        const cardActions = document.createElement('div');
+        cardActions.className = 'card-actions';
+
+        const btnConsult = document.createElement('button');
+        btnConsult.className = 'card-btn consult-bot-quick';
+        btnConsult.title = 'Preguntar';
+        btnConsult.dataset.id = product.id;
+        const iconBot = document.createElement('i');
+        iconBot.className = 'fa-solid fa-robot';
+        btnConsult.appendChild(iconBot);
+
+        const btnAdd = document.createElement('button');
+        btnAdd.className = 'card-btn add-to-cart-quick';
+        btnAdd.title = 'Agregar al carrito';
+        btnAdd.dataset.id = product.id;
+        const iconPlus = document.createElement('i');
+        iconPlus.className = 'fa-solid fa-plus';
+        btnAdd.appendChild(iconPlus);
+
+        cardActions.appendChild(btnConsult);
+        cardActions.appendChild(btnAdd);
+
+        cardPriceRow.appendChild(cardPrice);
+        cardPriceRow.appendChild(cardActions);
+
+        div.appendChild(cardTop);
+        div.appendChild(cardCat);
+        div.appendChild(cardTitle);
+        div.appendChild(cardMeta);
+        div.appendChild(cardTallasVisor);
+        div.appendChild(cardStock);
+        div.appendChild(cardPriceRow);
+
+        btnAdd.addEventListener('click', () => Agregar_Al_Carrito(product));
+        btnConsult.addEventListener('click', () => Consultar_Producto(product));
 
         return div;
     }
@@ -704,25 +768,69 @@ document.addEventListener('DOMContentLoaded', () => {
                 total += item.price * item.quantity;
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cart-item-row';
-                itemDiv.innerHTML = `
-                    <div class="cart-item-emoji">${Obtener_Emoji_Categoria(item.category)}</div>
-                    <div class="cart-item-info">
-                        <h4>${item.name}</h4>
-                        <div class="cart-item-qty-controls" style="display: flex; align-items: center; gap: 8px; margin: 4px 0;">
-                            <button class="qty-btn decrease-qty" data-id="${item.id}" style="width: 24px; height: 24px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">-</button>
-                            <span style="font-size: 0.9rem; font-weight: 600; min-width: 20px; text-align: center;">${item.quantity}</span>
-                            <button class="qty-btn increase-qty" data-id="${item.id}" style="width: 24px; height: 24px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
-                        </div>
-                        <p style="margin: 0; font-weight: bold; color: var(--primary-color);">S/ ${(item.price * item.quantity).toFixed(2)} <span style="font-size: 0.8em; color: #777; font-weight: normal;">(S/ ${item.price.toFixed(2)} c/u)</span></p>
-                    </div>
-                    <button class="remove-item" data-id="${item.id}">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                `;
+
+                const itemEmoji = document.createElement('div');
+                itemEmoji.className = 'cart-item-emoji';
+                itemEmoji.textContent = Obtener_Emoji_Categoria(item.category);
+
+                const itemInfo = document.createElement('div');
+                itemInfo.className = 'cart-item-info';
+
+                const itemName = document.createElement('h4');
+                itemName.textContent = item.name;
+
+                const qtyControls = document.createElement('div');
+                qtyControls.className = 'cart-item-qty-controls';
+                qtyControls.style.cssText = 'display: flex; align-items: center; gap: 8px; margin: 4px 0;';
+
+                const btnDecrease = document.createElement('button');
+                btnDecrease.className = 'qty-btn decrease-qty';
+                btnDecrease.dataset.id = item.id;
+                btnDecrease.style.cssText = 'width: 24px; height: 24px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;';
+                btnDecrease.textContent = '-';
+
+                const qtySpan = document.createElement('span');
+                qtySpan.style.cssText = 'font-size: 0.9rem; font-weight: 600; min-width: 20px; text-align: center;';
+                qtySpan.textContent = item.quantity;
+
+                const btnIncrease = document.createElement('button');
+                btnIncrease.className = 'qty-btn increase-qty';
+                btnIncrease.dataset.id = item.id;
+                btnIncrease.style.cssText = 'width: 24px; height: 24px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;';
+                btnIncrease.textContent = '+';
+
+                qtyControls.appendChild(btnDecrease);
+                qtyControls.appendChild(qtySpan);
+                qtyControls.appendChild(btnIncrease);
+
+                const pricePara = document.createElement('p');
+                pricePara.style.cssText = 'margin: 0; font-weight: bold; color: var(--primary-color);';
+                pricePara.textContent = `S/ ${(item.price * item.quantity).toFixed(2)} `;
+                const unitPriceSpan = document.createElement('span');
+                unitPriceSpan.style.cssText = 'font-size: 0.8em; color: #777; font-weight: normal;';
+                unitPriceSpan.textContent = `(S/ ${item.price.toFixed(2)} c/u)`;
+                pricePara.appendChild(unitPriceSpan);
+
+                itemInfo.appendChild(itemName);
+                itemInfo.appendChild(qtyControls);
+                itemInfo.appendChild(pricePara);
+
+                const btnRemove = document.createElement('button');
+                btnRemove.className = 'remove-item';
+                btnRemove.dataset.id = item.id;
+                const iconTrash = document.createElement('i');
+                iconTrash.className = 'fa-solid fa-trash-can';
+                btnRemove.appendChild(iconTrash);
+
+                itemDiv.appendChild(itemEmoji);
+                itemDiv.appendChild(itemInfo);
+                itemDiv.appendChild(btnRemove);
+
                 Lista_Items_Carrito.appendChild(itemDiv);
-                itemDiv.querySelector('.remove-item').addEventListener('click', () => Quitar_Del_Carrito(item.id));
-                itemDiv.querySelector('.increase-qty').addEventListener('click', () => Aumentar_Cantidad(item.id));
-                itemDiv.querySelector('.decrease-qty').addEventListener('click', () => Disminuir_Cantidad(item.id));
+
+                btnRemove.addEventListener('click', () => Quitar_Del_Carrito(item.id));
+                btnIncrease.addEventListener('click', () => Aumentar_Cantidad(item.id));
+                btnDecrease.addEventListener('click', () => Disminuir_Cantidad(item.id));
             });
             Monto_Total_Carrito.innerText = `S/ ${total.toFixed(2)}`;
         }
