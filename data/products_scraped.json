@@ -1,0 +1,4880 @@
+[
+  {
+    "id": 1,
+    "name": "Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7",
+    "price": 131.66,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "38",
+      "39",
+      "40",
+      "41",
+      "43"
+    ],
+    "stock": 56,
+    "rating": 4.7,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/348F7-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6",
+    "price": 183.7,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "39",
+      "40",
+      "42"
+    ],
+    "stock": 17,
+    "rating": 4.2,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/348F6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7",
+    "price": 63.76,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Azul",
+    "colores": [
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 12,
+    "rating": 4.4,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474F7-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6",
+    "price": 171.03,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Azul",
+    "colores": [
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "43",
+      "44"
+    ],
+    "stock": 15,
+    "rating": 4.4,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474F6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5",
+    "price": 69.97,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 30,
+    "rating": 4.9,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474F5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 6,
+    "name": "Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (2)",
+    "price": 169.12,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul"
+    ],
+    "tallas": [
+      "40"
+    ],
+    "stock": 29,
+    "rating": 4.6,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/348F7-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 7,
+    "name": "Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (2)",
+    "price": 125.96,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 16,
+    "rating": 4.1,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/348F6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 8,
+    "name": "Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (2)",
+    "price": 145.38,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "39",
+      "40"
+    ],
+    "stock": 55,
+    "rating": 4.1,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474F7-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (2)",
+    "price": 70.26,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "38",
+      "39",
+      "40",
+      "44"
+    ],
+    "stock": 18,
+    "rating": 4.9,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474F6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 10,
+    "name": "Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (2)",
+    "price": 96.59,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Gris"
+    ],
+    "tallas": [
+      "37",
+      "39",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 28,
+    "rating": 4.3,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474F5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 11,
+    "name": "Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (3)",
+    "price": 139.81,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Azul",
+    "colores": [
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "38",
+      "39",
+      "41",
+      "42",
+      "44"
+    ],
+    "stock": 50,
+    "rating": 4.8,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474F7-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 12,
+    "name": "Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (3)",
+    "price": 115.96,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul"
+    ],
+    "tallas": [
+      "36",
+      "38",
+      "40",
+      "41",
+      "42",
+      "44"
+    ],
+    "stock": 40,
+    "rating": 4.1,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474F6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 13,
+    "name": "Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (3)",
+    "price": 159.47,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "38",
+      "39",
+      "41",
+      "44"
+    ],
+    "stock": 49,
+    "rating": 5.0,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474F5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 14,
+    "name": "Zapatillas Urbanas para Mujer I-Run GRIMAULD 291F8",
+    "price": 72.35,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "41",
+      "42"
+    ],
+    "stock": 9,
+    "rating": 3.9,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/291F8-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 15,
+    "name": "Zapatillas Urbanas para Mujer I-Run GRIMAULD 291F6",
+    "price": 145.08,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "40"
+    ],
+    "stock": 6,
+    "rating": 5.0,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/291F6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 16,
+    "name": "Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (3)",
+    "price": 63.9,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul"
+    ],
+    "tallas": [
+      "37",
+      "39",
+      "40",
+      "41",
+      "43",
+      "44"
+    ],
+    "stock": 40,
+    "rating": 3.9,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/348F7-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 17,
+    "name": "Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (3)",
+    "price": 152.16,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "40",
+      "41",
+      "42"
+    ],
+    "stock": 67,
+    "rating": 4.7,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/348F6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 18,
+    "name": "Zapatillas Outdoor Para Mujer I-RUN MYTHTRAIL 410F9",
+    "price": 169.44,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "40"
+    ],
+    "stock": 9,
+    "rating": 4.8,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/410F9-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 19,
+    "name": "Zapatillas Outdoor Para Mujer I-RUN MYTHTRAIL 410F8",
+    "price": 124.91,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul"
+    ],
+    "tallas": [
+      "36",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 31,
+    "rating": 4.5,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/410F8-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 20,
+    "name": "Zapatillas Outdoor Para Mujer I-Run I-RUN CHESTNUT 316F9",
+    "price": 103.4,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "40",
+      "41",
+      "42",
+      "43"
+    ],
+    "stock": 53,
+    "rating": 4.7,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/316F9-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 21,
+    "name": "Zapatillas Running Para Mujer I-Run RUNBBOST 288F8",
+    "price": 74.76,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "40",
+      "41",
+      "44"
+    ],
+    "stock": 78,
+    "rating": 4.1,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/288F8-web-1-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 22,
+    "name": "Zapatillas Running Para Mujer I-Run RUNBBOST 288F6",
+    "price": 162.97,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "38",
+      "39",
+      "40",
+      "41",
+      "43",
+      "44"
+    ],
+    "stock": 42,
+    "rating": 4.7,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/288F6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 23,
+    "name": "Zapatillas Running Para Mujer I-Run GRADIENT 336F8",
+    "price": 105.22,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Azul"
+    ],
+    "tallas": [
+      "36",
+      "41",
+      "44"
+    ],
+    "stock": 70,
+    "rating": 4.7,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/336F8-web-1-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 24,
+    "name": "Zapatillas Running Para Mujer I-Run GRADIENT 336F7",
+    "price": 108.22,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "41",
+      "43",
+      "44"
+    ],
+    "stock": 48,
+    "rating": 4.5,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/336F7-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 25,
+    "name": "Zapatillas Running Para Mujer I-Run GRADIENT 336F6",
+    "price": 153.77,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "38",
+      "39",
+      "40",
+      "41"
+    ],
+    "stock": 73,
+    "rating": 4.7,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/336F6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 26,
+    "name": "Zapatillas Urbanas Para Mujer Irun Cadwell 501 341F5",
+    "price": 144.47,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Azul",
+    "colores": [
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 10,
+    "rating": 4.2,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/341F5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 27,
+    "name": "Zapatillas Running Para Mujer I-Run Zephyr 329F7",
+    "price": 85.07,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "38",
+      "39",
+      "40",
+      "44"
+    ],
+    "stock": 35,
+    "rating": 4.9,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/329F7-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 28,
+    "name": "Zapatillas Running Juvenil I-Run KALIBUR 310J3",
+    "price": 61.41,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "39",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 75,
+    "rating": 4.6,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/310M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 29,
+    "name": "Zapatillas Running Para Mujer I-Run Fynx 337F8",
+    "price": 155.06,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "38",
+      "40",
+      "41"
+    ],
+    "stock": 34,
+    "rating": 3.9,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/337F8-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 30,
+    "name": "Zapatillas Running Para Mujer I-RUN SPEEDCORE X 309F8",
+    "price": 129.1,
+    "category": "CALZADO",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "39",
+      "42",
+      "44"
+    ],
+    "stock": 15,
+    "rating": 4.4,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/309F8-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 31,
+    "name": "TOP DEPORTIVO SAILOR PARA MUJER MTP6525 AZUL",
+    "price": 63.14,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "XS"
+    ],
+    "stock": 8,
+    "rating": 4.2,
+    "description": "Costuras planas para evitar rozaduras en carreras largas.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MTP6525_AZUL-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 32,
+    "name": "TOP DEPORTIVO SAILOR PARA MUJER MTP6525 BLANCO",
+    "price": 66.53,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "S",
+      "XS",
+      "XXL"
+    ],
+    "stock": 48,
+    "rating": 4.3,
+    "description": "Proteccion UV 50+ para entrenamientos al aire libre.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MTP6525_BLANCO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 33,
+    "name": "TOP DEPORTIVO SAILOR PARA MUJER MTP6525 NEGRO",
+    "price": 37.07,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 7,
+    "rating": 4.6,
+    "description": "Proteccion UV 50+ para entrenamientos al aire libre.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MTP6525_NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 34,
+    "name": "FALDA SHORT MYSTIC PARA MUJER MSR4225 BLANCO",
+    "price": 50.78,
+    "category": "PANTALONES",
+    "genero": "Mujer",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XS"
+    ],
+    "stock": 41,
+    "rating": 3.9,
+    "description": "Bolsillos con cierre para llevar tu celular de forma segura.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MSR4225_BLANCO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 35,
+    "name": "FALDA SHORT MYSTIC PARA MUJER MSR4225 NEGRO",
+    "price": 52.7,
+    "category": "PANTALONES",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "XXL"
+    ],
+    "stock": 41,
+    "rating": 4.0,
+    "description": "Material resistente al agua para entrenar bajo lluvia.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MSR4225_NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 36,
+    "name": "CASACA IMPERMEABLE I-RUN MUJER REBEL MXD7002P MORADO",
+    "price": 102.15,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Gris"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 79,
+    "rating": 4.9,
+    "description": "Ajuste personalizado para maximo confort durante el entrenamiento.",
+    "image": "https://irun.pe/wp-content/uploads/2025/12/MXD7002P-DEEP-PURPLE-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 37,
+    "name": "CORTAVIENTO BLEND I-RUN MCT106CV MORADO",
+    "price": 42.55,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 28,
+    "rating": 4.6,
+    "description": "Ajuste personalizado para maximo confort durante el entrenamiento.",
+    "image": "https://irun.pe/wp-content/uploads/2025/10/MCT106CV-BURGUNDY-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 38,
+    "name": "CASACA IMPERMEABLE ANALA I-RUN MXD7001P KHAKI",
+    "price": 90.92,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 23,
+    "rating": 5.0,
+    "description": "Material premium resistente al desgaste diario.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/MXD7001P-KHAKI-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru.jpg"
+  },
+  {
+    "id": 39,
+    "name": "CASACA IMPERMEABLE ANALA I-RUN MXD7001P NEGRO",
+    "price": 91.51,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Azul"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 48,
+    "rating": 4.3,
+    "description": "Material premium resistente al desgaste diario.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/MXD7001P-NEGRO-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru.jpg"
+  },
+  {
+    "id": 40,
+    "name": "CASACA NEBULA I-RUN MXD7005P KHAKI",
+    "price": 74.4,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 24,
+    "rating": 4.1,
+    "description": "Ajuste personalizado para maximo confort durante el entrenamiento.",
+    "image": "https://irun.pe/wp-content/uploads/2025/07/MXD7005P-KHAKI-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 41,
+    "name": "Conjunto Deportivo Nylon I-Run para Mujer MBD-1324 ROSADO",
+    "price": 53.9,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 6,
+    "rating": 4.5,
+    "description": "Material premium resistente al desgaste diario.",
+    "image": "https://irun.pe/wp-content/uploads/2025/10/MBD-1324-ROSADO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 42,
+    "name": "Conjunto Deportivo Frizado I-Run para Mujer NBD-627 MORADO",
+    "price": 87.92,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 47,
+    "rating": 4.0,
+    "description": "Tecnologia de monitoreo de actividad y ritmo cardiaco.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/NBD-627-VIOLETA-web-0-irun-tienda-online-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru.jpg"
+  },
+  {
+    "id": 43,
+    "name": "Conjunto Deportivo Nylon I-Run para Mujer MBD-1324 ACERO",
+    "price": 29.8,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 48,
+    "rating": 4.8,
+    "description": "Diseno ergonomico pensado para el deportista exigente.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/MBD-1324-ACEROweb-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 44,
+    "name": "Conjunto Deportivo Brindy I-Run para Mujer FCD008 NEGRO",
+    "price": 18.16,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 71,
+    "rating": 4.4,
+    "description": "Diseno ergonomico pensado para el deportista exigente.",
+    "image": "https://irun.pe/wp-content/uploads/2025/07/FCD008-NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora2-scaled.jpg"
+  },
+  {
+    "id": 45,
+    "name": "Conjunto Deportivo Brindy I-Run para Mujer FCD008 PALO ROSA",
+    "price": 32.19,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 59,
+    "rating": 4.4,
+    "description": "Diseno ergonomico pensado para el deportista exigente.",
+    "image": "https://irun.pe/wp-content/uploads/2025/07/FCD008-PALO-ROSA-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 46,
+    "name": "Leggins Deportivo I-Run Training Dalay para Mujer MLG0324 CAFE",
+    "price": 53.4,
+    "category": "PANTALONES",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "XL",
+      "XS"
+    ],
+    "stock": 34,
+    "rating": 4.7,
+    "description": "Bolsillos con cierre para llevar tu celular de forma segura.",
+    "image": "https://irun.pe/wp-content/uploads/2025/02/MLG0324-CAFE-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 47,
+    "name": "Leggins Deportivo I-Run Training Dalay para Mujer MLG0324 VERDE",
+    "price": 83.2,
+    "category": "PANTALONES",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "L"
+    ],
+    "stock": 34,
+    "rating": 4.8,
+    "description": "Corte ergonomico que se adapta a tu cuerpo en cada movimiento.",
+    "image": "https://irun.pe/wp-content/uploads/2025/02/MLG0324-VERDE-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 48,
+    "name": "Leggins Deportivo I-Run Training Dalay para Mujer MLG0324 DUSTY",
+    "price": 81.38,
+    "category": "PANTALONES",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Azul"
+    ],
+    "tallas": [
+      "L",
+      "S",
+      "XS"
+    ],
+    "stock": 46,
+    "rating": 4.9,
+    "description": "Libertad de movimiento total para entrenamientos intensos.",
+    "image": "https://irun.pe/wp-content/uploads/2025/02/MLG0324-DUSTY-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 49,
+    "name": "Leggins Deportivo I-Run Training Jennifer para Mujer TLOI204F VIOLETA",
+    "price": 89.05,
+    "category": "PANTALONES",
+    "genero": "Mujer",
+    "color": "Gris",
+    "colores": [
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "XL",
+      "XS"
+    ],
+    "stock": 6,
+    "rating": 3.8,
+    "description": "Material resistente al agua para entrenar bajo lluvia.",
+    "image": "https://irun.pe/wp-content/uploads/2024/10/TLOI204F-VIOLETA-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 50,
+    "name": "Leggins Deportivo I-Run Training Tahal para Mujer MLL1027 MORADO",
+    "price": 88.01,
+    "category": "PANTALONES",
+    "genero": "Mujer",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Verde"
+    ],
+    "tallas": [
+      "S",
+      "XXL"
+    ],
+    "stock": 54,
+    "rating": 4.1,
+    "description": "Material resistente al agua para entrenar bajo lluvia.",
+    "image": "https://irun.pe/wp-content/uploads/2024/10/MLL-1027-MORADO-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 51,
+    "name": "POLO DEPORTIVO M/C KALY PARA MUJER MSD4125 ROSADO",
+    "price": 75.9,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "XS"
+    ],
+    "stock": 63,
+    "rating": 3.8,
+    "description": "Proteccion UV 50+ para entrenamientos al aire libre.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MSD4125_ROSADO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 52,
+    "name": "POLO DEPORTIVO M/C KALY PARA MUJER MSD4125 CELESTE",
+    "price": 35.25,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XL",
+      "XS"
+    ],
+    "stock": 19,
+    "rating": 4.5,
+    "description": "Tejido antibacterial que elimina olores tras entrenamientos intensos.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MSD4125_CELESTE-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 53,
+    "name": "POLO DEPORTIVO M/C KALY PARA MUJER MSD4125 LILA",
+    "price": 39.9,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "M",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 80,
+    "rating": 4.4,
+    "description": "Tela ultra transpirable con tecnologia de secado rapido.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MSD4125_LILA-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 54,
+    "name": "Top Deportivo I-Run Odelys para Mujer MTT1524 NEGRO",
+    "price": 77.2,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "S",
+      "XL"
+    ],
+    "stock": 28,
+    "rating": 4.0,
+    "description": "Compresion muscular para mejorar la circulacion durante el ejercicio.",
+    "image": "https://irun.pe/wp-content/uploads/2025/04/MTT1524-NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 55,
+    "name": "Top Deportivo I-Run Odelys para Mujer MTT1524 NARANJA",
+    "price": 58.18,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Azul"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 66,
+    "rating": 4.3,
+    "description": "Compresion muscular para mejorar la circulacion durante el ejercicio.",
+    "image": "https://irun.pe/wp-content/uploads/2025/04/MTT1524-NARANJA-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 56,
+    "name": "FALDA SHORT MYSTIC PARA MUJER MSR4225 BLANCO (2)",
+    "price": 37.21,
+    "category": "PANTALONES",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "XS",
+      "XXL"
+    ],
+    "stock": 47,
+    "rating": 4.9,
+    "description": "Bolsillos con cierre para llevar tu celular de forma segura.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MSR4225_BLANCO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 57,
+    "name": "FALDA SHORT MYSTIC PARA MUJER MSR4225 NEGRO (2)",
+    "price": 85.73,
+    "category": "PANTALONES",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul"
+    ],
+    "tallas": [
+      "XS",
+      "XXL"
+    ],
+    "stock": 66,
+    "rating": 4.5,
+    "description": "Corte ergonomico que se adapta a tu cuerpo en cada movimiento.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MSR4225_NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 58,
+    "name": "FALDA SHORT MYSTIC PARA MUJER MSR4225 ROSADO",
+    "price": 89.95,
+    "category": "PANTALONES",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Gris"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XS",
+      "XXL"
+    ],
+    "stock": 43,
+    "rating": 4.7,
+    "description": "Tejido elastico en 4 direcciones con cintura ajustable.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MSR4225_ROSADO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 59,
+    "name": "TOP DEPORTIVO SAILOR PARA MUJER MTP6525 AZUL (2)",
+    "price": 72.8,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 51,
+    "rating": 4.4,
+    "description": "Proteccion UV 50+ para entrenamientos al aire libre.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MTP6525_AZUL-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 60,
+    "name": "TOP DEPORTIVO SAILOR PARA MUJER MTP6525 BLANCO (2)",
+    "price": 52.9,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Azul",
+    "colores": [
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "S",
+      "XS"
+    ],
+    "stock": 67,
+    "rating": 4.7,
+    "description": "Tela ultra transpirable con tecnologia de secado rapido.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MTP6525_BLANCO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 61,
+    "name": "TOP DEPORTIVO SAILOR PARA MUJER MTP6525 NEGRO (2)",
+    "price": 62.95,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "M",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 35,
+    "rating": 4.4,
+    "description": "Compresion muscular para mejorar la circulacion durante el ejercicio.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/MTP6525_NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 62,
+    "name": "Top Deportivo I-Run Training Danae para Mujer MTP0224 Verde",
+    "price": 56.68,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Gris"
+    ],
+    "tallas": [
+      "L",
+      "S",
+      "XS",
+      "XXL"
+    ],
+    "stock": 64,
+    "rating": 4.5,
+    "description": "Costuras planas para evitar rozaduras en carreras largas.",
+    "image": "https://irun.pe/wp-content/uploads/2025/03/MTP0224-VERDE-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 63,
+    "name": "Top Deportivo I-Run Training Danae para Mujer MTP0224 Negro",
+    "price": 69.02,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 8,
+    "rating": 4.3,
+    "description": "Proteccion UV 50+ para entrenamientos al aire libre.",
+    "image": "https://irun.pe/wp-content/uploads/2025/03/MTP0224-NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 64,
+    "name": "Zapatillas Urbanas para Hombre I-Run NIMBUS 2000 474M4",
+    "price": 61.79,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "43",
+      "44"
+    ],
+    "stock": 54,
+    "rating": 4.0,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474M4-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 65,
+    "name": "Zapatillas Urbanas para Hombre I-Run NIMBUS 2000 474M3",
+    "price": 82.58,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Gris",
+    "colores": [
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 6,
+    "rating": 4.1,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 66,
+    "name": "Zapatillas Urbanas para Hombre I-Run NIMBUS 2000 474M2",
+    "price": 178.21,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "38",
+      "44"
+    ],
+    "stock": 6,
+    "rating": 3.9,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 67,
+    "name": "Zapatillas Urbanas para Hombre I-Run NIMBUS 2000 474M1",
+    "price": 76.21,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 23,
+    "rating": 4.9,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 68,
+    "name": "Zapatillas Outdoor Para Hombre I-RUN RUGGEDX P20 348M4",
+    "price": 159.17,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "38",
+      "39",
+      "40",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 45,
+    "rating": 4.3,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/348M4-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 69,
+    "name": "Zapatillas Urbanas para Hombre I-Run NIMBUS 2000 474M4 (2)",
+    "price": 112.42,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Azul"
+    ],
+    "tallas": [
+      "43"
+    ],
+    "stock": 38,
+    "rating": 4.7,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474M4-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 70,
+    "name": "Zapatillas Urbanas para Hombre I-Run NIMBUS 2000 474M3 (2)",
+    "price": 120.25,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 35,
+    "rating": 4.6,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 71,
+    "name": "Zapatillas Urbanas para Hombre I-Run NIMBUS 2000 474M2 (2)",
+    "price": 158.58,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "43",
+      "44"
+    ],
+    "stock": 6,
+    "rating": 4.4,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 72,
+    "name": "Zapatillas Urbanas para Hombre I-Run NIMBUS 2000 474M1 (2)",
+    "price": 75.08,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "39",
+      "41",
+      "42",
+      "44"
+    ],
+    "stock": 10,
+    "rating": 4.8,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 73,
+    "name": "Zapatillas Outdoor Para Hombre I-RUN RUGGEDX P20 348M4 (2)",
+    "price": 82.95,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "40",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 43,
+    "rating": 4.2,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/348M4-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 74,
+    "name": "Zapatillas Basquet Para Hombre I-Run Raveneer 282M5",
+    "price": 91.15,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "44"
+    ],
+    "stock": 7,
+    "rating": 4.5,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/282M5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 75,
+    "name": "Zapatillas Basquet Para Hombre I-Run Raveneer 282M4",
+    "price": 138.62,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "39",
+      "43",
+      "44"
+    ],
+    "stock": 60,
+    "rating": 4.7,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/282M4-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 76,
+    "name": "Zapatillas Basquet Para Hombre I-Run GRINGOTTS 281M5",
+    "price": 144.79,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "40",
+      "41",
+      "42",
+      "44"
+    ],
+    "stock": 58,
+    "rating": 4.5,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/281M5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 77,
+    "name": "Zapatillas Basquet Para Hombre I-Run GRINGOTTS 281M4",
+    "price": 179.83,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "43"
+    ],
+    "stock": 76,
+    "rating": 4.3,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/281M4-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 78,
+    "name": "Zapatillas Basquet Para Hombre I-Run GRINGOTTS 281M3",
+    "price": 108.2,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Gris"
+    ],
+    "tallas": [
+      "37",
+      "39",
+      "40",
+      "41",
+      "42"
+    ],
+    "stock": 80,
+    "rating": 4.3,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/281m3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 79,
+    "name": "Zapatillas Futbol Para Hombre I-Run Carmelo E030M1",
+    "price": 105.52,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "40",
+      "43"
+    ],
+    "stock": 53,
+    "rating": 4.2,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/E030M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahoraa.jpg"
+  },
+  {
+    "id": 80,
+    "name": "Zapatillas Futbol Para Hombre I-Run Aguila E029M2",
+    "price": 167.45,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "43"
+    ],
+    "stock": 25,
+    "rating": 4.6,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/E029M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 81,
+    "name": "Zapatillas Futbol Para Hombre I-Run Aguila E029M1",
+    "price": 97.16,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "44"
+    ],
+    "stock": 80,
+    "rating": 4.5,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/E029M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 82,
+    "name": "Zapatillas Futbol Para Hombre I-Run Predattor E028M3",
+    "price": 168.53,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 57,
+    "rating": 5.0,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/E028M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 83,
+    "name": "Zapatillas Futbol Para Hombre I-Run Predattor E028M1",
+    "price": 146.8,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "40"
+    ],
+    "stock": 30,
+    "rating": 4.3,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/E028M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 84,
+    "name": "Zapatillas Urbanas para Hombre I-Run NIMBUS 2000 474M4 (3)",
+    "price": 144.41,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43"
+    ],
+    "stock": 52,
+    "rating": 4.3,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474M4-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 85,
+    "name": "Zapatillas Urbanas para Hombre I-Run NIMBUS 2000 474M3 (3)",
+    "price": 177.91,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Azul",
+    "colores": [
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 73,
+    "rating": 4.5,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 86,
+    "name": "Zapatillas Urbanas para Hombre I-Run NIMBUS 2000 474M2 (3)",
+    "price": 96.48,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "44"
+    ],
+    "stock": 80,
+    "rating": 4.7,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 87,
+    "name": "Zapatillas Urbanas para Hombre I-Run NIMBUS 2000 474M1 (3)",
+    "price": 132.95,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "40",
+      "41",
+      "42",
+      "43"
+    ],
+    "stock": 45,
+    "rating": 3.8,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 88,
+    "name": "Zapatillas Urbanas Para Hombre I-RUN CLUB STREET25 322M5",
+    "price": 165.05,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 36,
+    "rating": 4.5,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/322M5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 89,
+    "name": "Zapatillas Outdoor Para Hombre I-RUN RUGGEDX P20 348M4 (3)",
+    "price": 66.91,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 66,
+    "rating": 4.3,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/348M4-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 90,
+    "name": "Zapatillas Outdoor Para Hombre I-RUN RUGGEDX P20 348M3",
+    "price": 141.98,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "38",
+      "40",
+      "42",
+      "43"
+    ],
+    "stock": 29,
+    "rating": 4.6,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/348M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 91,
+    "name": "Zapatillas Outdoor Para Hombre I-RUN RUGGEDX P20 348M2",
+    "price": 83.98,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "41"
+    ],
+    "stock": 6,
+    "rating": 4.5,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/348M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 92,
+    "name": "Zapatillas Outdoor Para Hombre I-RUN RUGGEDX P20 348M1",
+    "price": 151.81,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "38",
+      "39",
+      "41",
+      "42",
+      "43"
+    ],
+    "stock": 78,
+    "rating": 4.0,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/348M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 93,
+    "name": "Zapatillas Outdoor Para Hombre I-RUN TERRAMAX 312M5",
+    "price": 92.58,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "44"
+    ],
+    "stock": 70,
+    "rating": 3.8,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/312M5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 94,
+    "name": "Zapatillas Running Para Hombre I-Run RUNBBOST 288M5",
+    "price": 151.04,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 52,
+    "rating": 4.9,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/288M5-web-1-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 95,
+    "name": "Zapatillas Running Para Hombre I-Run GRADIENT 336M4",
+    "price": 128.08,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 63,
+    "rating": 4.9,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/336M4-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 96,
+    "name": "Zapatillas Running Para Hombre I-Run GRADIENT 336M3",
+    "price": 106.22,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "38",
+      "41",
+      "42",
+      "44"
+    ],
+    "stock": 14,
+    "rating": 4.7,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/336M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 97,
+    "name": "Zapatillas Running Para Hombre I-Run GRADIENT 336M2",
+    "price": 61.29,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "38",
+      "41"
+    ],
+    "stock": 24,
+    "rating": 4.9,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/336M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 98,
+    "name": "Zapatillas Running Para Hombre Irun Kalibur 200 310M4",
+    "price": 116.63,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "40"
+    ],
+    "stock": 73,
+    "rating": 4.5,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/310M4-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 99,
+    "name": "Zapatillas Running Para Hombre I-Run KALIBUR 310M3",
+    "price": 92.97,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "41",
+      "43"
+    ],
+    "stock": 27,
+    "rating": 4.1,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/310M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 100,
+    "name": "Zapatillas Outdoor para Hombre I RUN KRONIX 314M5",
+    "price": 168.96,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "43",
+      "44"
+    ],
+    "stock": 36,
+    "rating": 4.9,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/309M5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 101,
+    "name": "Zapatillas Running Para Hombre I-RUN SPEEDCORE X 309M4",
+    "price": 158.85,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Azul"
+    ],
+    "tallas": [
+      "38",
+      "39",
+      "40",
+      "41",
+      "43"
+    ],
+    "stock": 22,
+    "rating": 4.9,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/309M4-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 102,
+    "name": "Zapatillas Running Para Hombre I-RUN SPEEDCORE X 309M3",
+    "price": 169.03,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Azul",
+    "colores": [
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "44"
+    ],
+    "stock": 31,
+    "rating": 4.8,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/309M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 103,
+    "name": "Zapatillas Running Para Hombre I-RUN SPEEDCORE X 309M2",
+    "price": 143.5,
+    "category": "CALZADO",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "44"
+    ],
+    "stock": 49,
+    "rating": 4.2,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/309M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 104,
+    "name": "SHORT FRENCH TERRY SHELDON PARA HOMBRE HSU6425 AZUL",
+    "price": 30.41,
+    "category": "PANTALONES",
+    "genero": "Hombre",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "M",
+      "S",
+      "XL",
+      "XS"
+    ],
+    "stock": 63,
+    "rating": 4.4,
+    "description": "Libertad de movimiento total para entrenamientos intensos.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/HSU6425-AZUL-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 105,
+    "name": "SHORT FRENCH TERRY SHELDON PARA HOMBRE HSU6425 NEGRO",
+    "price": 85.94,
+    "category": "PANTALONES",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Gris"
+    ],
+    "tallas": [
+      "L",
+      "S",
+      "XS"
+    ],
+    "stock": 77,
+    "rating": 4.5,
+    "description": "Tejido elastico en 4 direcciones con cintura ajustable.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/HSU6425-NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 106,
+    "name": "POLO DEPORTIVO M/C COREFIT PARA HOMBRE HSD2126 NEGRO",
+    "price": 68.26,
+    "category": "POLOS",
+    "genero": "Hombre",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "XL"
+    ],
+    "stock": 29,
+    "rating": 4.6,
+    "description": "Proteccion UV 50+ para entrenamientos al aire libre.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/HSD2126-NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 107,
+    "name": "POLO DEPORTIVO M/C COREFIT PARA HOMBRE HSD2126 BLANCO",
+    "price": 53.16,
+    "category": "POLOS",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 36,
+    "rating": 4.2,
+    "description": "Proteccion UV 50+ para entrenamientos al aire libre.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/HSD2126-BLANCO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 108,
+    "name": "POLO DEPORTIVO M/C COREFIT PARA HOMBRE HSD2126 AZUL",
+    "price": 39.58,
+    "category": "POLOS",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "XS",
+      "XXL"
+    ],
+    "stock": 32,
+    "rating": 5.0,
+    "description": "Proteccion UV 50+ para entrenamientos al aire libre.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/HSD2126-AZUL-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 109,
+    "name": "POLO DEPORTIVO M/C COREFIT PARA HOMBRE HSD2126 NEGRO (2)",
+    "price": 62.0,
+    "category": "POLOS",
+    "genero": "Hombre",
+    "color": "Gris",
+    "colores": [
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 64,
+    "rating": 3.9,
+    "description": "Tejido antibacterial que elimina olores tras entrenamientos intensos.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/HSD2126-NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 110,
+    "name": "POLO DEPORTIVO M/C COREFIT PARA HOMBRE HSD2126 BLANCO (2)",
+    "price": 74.8,
+    "category": "POLOS",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 17,
+    "rating": 4.8,
+    "description": "Tela ultra transpirable con tecnologia de secado rapido.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/HSD2126-BLANCO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 111,
+    "name": "POLO DEPORTIVO M/C COREFIT PARA HOMBRE HSD2126 AZUL (2)",
+    "price": 27.46,
+    "category": "POLOS",
+    "genero": "Hombre",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "M"
+    ],
+    "stock": 28,
+    "rating": 4.2,
+    "description": "Costuras planas para evitar rozaduras en carreras largas.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/HSD2126-AZUL-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 112,
+    "name": "POLO BASICO RUSSELL PARA HOMBRE HSD1524 BLANCO",
+    "price": 57.6,
+    "category": "POLOS",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "M",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 35,
+    "rating": 4.5,
+    "description": "Compresion muscular para mejorar la circulacion durante el ejercicio.",
+    "image": "https://irun.pe/wp-content/uploads/2025/03/HSD1524-BLANCO-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 113,
+    "name": "POLO DEPORTIVO MOTIVATE I-RUN PARA HOMBRE HSD3824 BLANCO",
+    "price": 74.43,
+    "category": "POLOS",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "M"
+    ],
+    "stock": 45,
+    "rating": 4.6,
+    "description": "Tela ultra transpirable con tecnologia de secado rapido.",
+    "image": "https://irun.pe/wp-content/uploads/2025/04/HSD3824-BLANCO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 114,
+    "name": "CASACA IMPERMEABLE RUFUS I-RUN MXH5009P BLANCO",
+    "price": 16.6,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 5,
+    "rating": 5.0,
+    "description": "Diseno ergonomico pensado para el deportista exigente.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/MXH5009P-IVORY-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru.jpg"
+  },
+  {
+    "id": 115,
+    "name": "CASACA IMPERMEABLE RUFUS I-RUN MXH5009P AZUL",
+    "price": 34.2,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 41,
+    "rating": 4.1,
+    "description": "Material premium resistente al desgaste diario.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/MXH5009P-NAVY-BLUE-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte.jpg"
+  },
+  {
+    "id": 116,
+    "name": "CASACA IMPERMEABLE RUFUS I-RUN MXH5009P GRIS",
+    "price": 77.86,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Gris",
+    "colores": [
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 69,
+    "rating": 4.1,
+    "description": "Diseno ergonomico pensado para el deportista exigente.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/MXH5009P-ARMY-GREY-web-1-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte.jpg"
+  },
+  {
+    "id": 117,
+    "name": "CASACA IMPERMEABLE JAKE I-RUN MXH5005P AZUL",
+    "price": 57.23,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Azul",
+    "colores": [
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 61,
+    "rating": 4.4,
+    "description": "Material premium resistente al desgaste diario.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/MXH5005P-NAVY-BLUE-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promo.jpg"
+  },
+  {
+    "id": 118,
+    "name": "CASACA IMPERMEABLE JAKE I-RUN MXH5005P VERDE MILITAR",
+    "price": 21.23,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 59,
+    "rating": 4.7,
+    "description": "Ajuste personalizado para maximo confort durante el entrenamiento.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/MXH5005P-MILITARY-G-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte.jpg"
+  },
+  {
+    "id": 119,
+    "name": "CONJUNTO DEPORTIVO RUFS I-RUN JFH-505 AZUL MARINO",
+    "price": 84.24,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 44,
+    "rating": 4.1,
+    "description": "Ajuste personalizado para maximo confort durante el entrenamiento.",
+    "image": "https://irun.pe/wp-content/uploads/2025/12/JFH-505-AZUL-MARINO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora-scaled.jpg"
+  },
+  {
+    "id": 120,
+    "name": "CONJUNTO DEPORTIVO NYLON I-RUN – WZMT1857-1 GUINDA",
+    "price": 44.07,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 47,
+    "rating": 4.0,
+    "description": "Tecnologia de monitoreo de actividad y ritmo cardiaco.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/WZMT1857-1-GUINDA-1c-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 121,
+    "name": "CONJUNTO DEPORTIVO NYLON I-RUN – HBD3924 VERDE",
+    "price": 15.08,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 5,
+    "rating": 4.3,
+    "description": "Diseno ergonomico pensado para el deportista exigente.",
+    "image": "https://irun.pe/wp-content/uploads/2025/09/HBD3924-VERDE-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 122,
+    "name": "CONJUNTO DEPORTIVO NYLON I-RUN – HBD3924 NEGRO",
+    "price": 26.64,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 11,
+    "rating": 5.0,
+    "description": "Material premium resistente al desgaste diario.",
+    "image": "https://irun.pe/wp-content/uploads/2025/09/HBD3924-NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 123,
+    "name": "CONJUNTO DEPORTIVO NYLON I-RUN HBD2724 NEGRO",
+    "price": 102.04,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 31,
+    "rating": 4.3,
+    "description": "Material premium resistente al desgaste diario.",
+    "image": "https://irun.pe/wp-content/uploads/2025/06/HBD2724-NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 124,
+    "name": "POLO DEPORTIVO PARA HOMBRE I-RUN ULTIMATE HSD1324 JADE",
+    "price": 41.45,
+    "category": "POLOS",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "L",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 43,
+    "rating": 4.9,
+    "description": "Tejido antibacterial que elimina olores tras entrenamientos intensos.",
+    "image": "https://irun.pe/wp-content/uploads/2025/03/HSD1324-JADE-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 125,
+    "name": "POLO DEPORTIVO PARA HOMBRE I-RUN ULTIMATE HSD1324 ATLANTIC",
+    "price": 33.17,
+    "category": "POLOS",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 74,
+    "rating": 4.9,
+    "description": "Costuras planas para evitar rozaduras en carreras largas.",
+    "image": "https://irun.pe/wp-content/uploads/2025/03/HSD1324-ATLANTIC-web-2-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 126,
+    "name": "SHORT FRENCH TERRY SHELDON PARA HOMBRE HSU6425 AZUL (2)",
+    "price": 80.99,
+    "category": "PANTALONES",
+    "genero": "Hombre",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 13,
+    "rating": 3.8,
+    "description": "Corte ergonomico que se adapta a tu cuerpo en cada movimiento.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/HSU6425-AZUL-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 127,
+    "name": "SHORT FRENCH TERRY SHELDON PARA HOMBRE HSU6425 NEGRO (2)",
+    "price": 48.82,
+    "category": "PANTALONES",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 57,
+    "rating": 4.7,
+    "description": "Material resistente al agua para entrenar bajo lluvia.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/HSU6425-NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 128,
+    "name": "SHORT URBANO I-RUN REX YAM-001 NEGRO",
+    "price": 68.36,
+    "category": "PANTALONES",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XXL"
+    ],
+    "stock": 37,
+    "rating": 4.5,
+    "description": "Bolsillos con cierre para llevar tu celular de forma segura.",
+    "image": "https://irun.pe/wp-content/uploads/2025/03/YAM-001-NEGRO-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 129,
+    "name": "SHORT DEPORTIVO I-RUN MAX PARA HOMBRE HSR3224 MARRON",
+    "price": 50.24,
+    "category": "PANTALONES",
+    "genero": "Hombre",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XL",
+      "XS",
+      "XXL"
+    ],
+    "stock": 36,
+    "rating": 4.8,
+    "description": "Tejido elastico en 4 direcciones con cintura ajustable.",
+    "image": "https://irun.pe/wp-content/uploads/2025/03/HSR3224-VERDE-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 130,
+    "name": "SHORT DEPORTIVO I-RUN MAX PARA HOMBRE HSR3224 NEGRO",
+    "price": 41.35,
+    "category": "PANTALONES",
+    "genero": "Hombre",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Gris"
+    ],
+    "tallas": [
+      "L",
+      "M",
+      "S",
+      "XS",
+      "XXL"
+    ],
+    "stock": 29,
+    "rating": 4.6,
+    "description": "Bolsillos con cierre para llevar tu celular de forma segura.",
+    "image": "https://irun.pe/wp-content/uploads/2025/03/HSR3224-NEGRO-web-0-casaca-convertible-negro-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 131,
+    "name": "Zapatillas Urbanas Juvenil I-Run GLYTSH 428J2",
+    "price": 186.14,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "38",
+      "42",
+      "43"
+    ],
+    "stock": 49,
+    "rating": 5.0,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/428M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 132,
+    "name": "Zapatillas Urbanas Juvenil I-RUN CADWELL 341J3",
+    "price": 61.52,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "40",
+      "42"
+    ],
+    "stock": 35,
+    "rating": 4.6,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/341M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 133,
+    "name": "Zapatillas Outdoor Juvenil I-RUN TACTICKAL 317J5",
+    "price": 189.72,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "38"
+    ],
+    "stock": 47,
+    "rating": 3.9,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/317M5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 134,
+    "name": "Zapatillas Running Juvenil I-Run KALIBUR 310J3 (2)",
+    "price": 138.03,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "37",
+      "39",
+      "42",
+      "43"
+    ],
+    "stock": 64,
+    "rating": 4.3,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/310M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 135,
+    "name": "Zapatillas Urbanas Juvenil I-RUN ASPARGUS 334J1",
+    "price": 133.74,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "44"
+    ],
+    "stock": 75,
+    "rating": 4.2,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/334M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 136,
+    "name": "Zapatillas Urbanas Juvenil I-Run GLYTSH 428J2 (2)",
+    "price": 156.3,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul"
+    ],
+    "tallas": [
+      "36",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 73,
+    "rating": 3.8,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/428M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 137,
+    "name": "Zapatillas Urbanas Juvenil I-RUN CADWELL 341J3 (2)",
+    "price": 90.56,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "39",
+      "42",
+      "44"
+    ],
+    "stock": 51,
+    "rating": 3.8,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/341M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 138,
+    "name": "Zapatillas Outdoor Juvenil I-RUN TACTICKAL 317J5 (2)",
+    "price": 123.27,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 33,
+    "rating": 4.8,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/317M5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 139,
+    "name": "Zapatillas Running Juvenil I-Run KALIBUR 310J3 (3)",
+    "price": 136.5,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Azul"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 28,
+    "rating": 3.9,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/310M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 140,
+    "name": "Zapatillas Urbanas Juvenil I-RUN ASPARGUS 334J1 (2)",
+    "price": 114.15,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "39",
+      "44"
+    ],
+    "stock": 14,
+    "rating": 4.6,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/334M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 141,
+    "name": "Zapatillas Urbanas Juvenil I-Run GLYTSH 428J2 (3)",
+    "price": 150.14,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "39",
+      "41"
+    ],
+    "stock": 11,
+    "rating": 4.7,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/428M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 142,
+    "name": "Zapatillas Urbanas Juvenil I-RUN CADWELL 341J3 (3)",
+    "price": 160.06,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 25,
+    "rating": 4.0,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/341M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 143,
+    "name": "Zapatillas Urbanas Juvenil I-RUN ASPARGUS 334J1 (3)",
+    "price": 188.24,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "39"
+    ],
+    "stock": 49,
+    "rating": 4.8,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/334M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 144,
+    "name": "Zapatillas Urbanas Unisex I-Run STARNOVA 412J2",
+    "price": 164.43,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "38"
+    ],
+    "stock": 65,
+    "rating": 4.1,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/412M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 145,
+    "name": "Zapatillas Urbanas Juvenil I-RUN BOOM STREET 300J2",
+    "price": 182.59,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 24,
+    "rating": 4.5,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/300M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 146,
+    "name": "Zapatillas Outdoor Juvenil I-RUN TACTICKAL 317J5 (3)",
+    "price": 69.17,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "41",
+      "44"
+    ],
+    "stock": 66,
+    "rating": 4.2,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/317M5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 147,
+    "name": "Zapatillas Outdoor Juvenil I-Run Trailway 098J9",
+    "price": 104.87,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Gris"
+    ],
+    "tallas": [
+      "39",
+      "40",
+      "41",
+      "43"
+    ],
+    "stock": 38,
+    "rating": 3.9,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/098M9-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 148,
+    "name": "Zapatillas Outdoor Juvenil I RUN KRONIX 314J2",
+    "price": 64.81,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "39",
+      "43"
+    ],
+    "stock": 21,
+    "rating": 4.4,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2025/11/314M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 149,
+    "name": "Zapatillas Outdoor Juvenil I RUN KRONIX 314J1",
+    "price": 104.69,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 31,
+    "rating": 4.6,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2025/11/314M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 150,
+    "name": "Zapatillas Outdoor Juvenil I RUN FURYTREK 014FS",
+    "price": 140.05,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "39",
+      "40"
+    ],
+    "stock": 35,
+    "rating": 4.8,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2025/08/014MS-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 151,
+    "name": "Zapatillas Running Juvenil I-Run KALIBUR 310J3 (4)",
+    "price": 172.01,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Gris"
+    ],
+    "tallas": [
+      "37",
+      "38",
+      "40",
+      "43",
+      "44"
+    ],
+    "stock": 22,
+    "rating": 4.7,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/310M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 152,
+    "name": "Zapatillas Running Juvenil I-RUN NEPTUN DASH 331J3",
+    "price": 125.94,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "44"
+    ],
+    "stock": 38,
+    "rating": 4.9,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/331M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 153,
+    "name": "Zapatillas Running Juvenil I-RUN NEPTUN DASH 331J1",
+    "price": 80.66,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "42",
+      "43"
+    ],
+    "stock": 57,
+    "rating": 4.7,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/331M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 154,
+    "name": "Zapatillas Running Juvenil I-RUN SPEEDCORE X 309J2",
+    "price": 82.41,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Azul"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "39",
+      "42"
+    ],
+    "stock": 48,
+    "rating": 4.9,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/309M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 155,
+    "name": "Zapatillas Running Juvenil I-RUN SPEEDCORE X 309J1",
+    "price": 149.53,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 35,
+    "rating": 4.3,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/309M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 156,
+    "name": "Zapatillas Running Juvenil I-Run KALIBUR 310J3 (5)",
+    "price": 80.39,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "43"
+    ],
+    "stock": 51,
+    "rating": 4.9,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/02/310M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 157,
+    "name": "Zapatillas Running Juvenil I-RUN NEPTUN DASH 331J3 (2)",
+    "price": 62.0,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "41",
+      "43"
+    ],
+    "stock": 80,
+    "rating": 4.3,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/331M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 158,
+    "name": "Zapatillas Running Juvenil I-RUN NEPTUN DASH 331J1 (2)",
+    "price": 171.86,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul"
+    ],
+    "tallas": [
+      "38",
+      "43"
+    ],
+    "stock": 25,
+    "rating": 4.4,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/331M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 159,
+    "name": "Zapatillas Running Juvenil I-RUN SPEEDCORE X 309J2 (2)",
+    "price": 153.8,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "43"
+    ],
+    "stock": 76,
+    "rating": 4.7,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/309M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 160,
+    "name": "Zapatillas Running Juvenil I-RUN SPEEDCORE X 309J1 (2)",
+    "price": 73.58,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Gris",
+    "colores": [
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 21,
+    "rating": 4.1,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/01/309M1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 161,
+    "name": "Zapatillas Urbanas para Niñas I-Run NIMBUS 2000 474N6",
+    "price": 169.39,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Azul"
+    ],
+    "tallas": [
+      "40",
+      "43",
+      "44"
+    ],
+    "stock": 44,
+    "rating": 4.3,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474N6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 162,
+    "name": "Zapatillas Urbanas para Niñas I-Run NIMBUS 2000 474N5",
+    "price": 129.06,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Gris",
+    "colores": [
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "40"
+    ],
+    "stock": 44,
+    "rating": 4.0,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474N5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 163,
+    "name": "Zapatillas Urbanas para Niños I-Run NIMBUS 2000 474N1",
+    "price": 128.08,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "38",
+      "39",
+      "41",
+      "42"
+    ],
+    "stock": 55,
+    "rating": 4.0,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474N1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 164,
+    "name": "Zapatillas Urbanas para Niños I-Run KOVAK 438N9",
+    "price": 154.11,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "41",
+      "42"
+    ],
+    "stock": 56,
+    "rating": 4.9,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/438N9-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 165,
+    "name": "Zapatillas Urbanas para Niños I-Run KOVAK 438N7",
+    "price": 131.99,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul"
+    ],
+    "tallas": [
+      "42",
+      "44"
+    ],
+    "stock": 21,
+    "rating": 4.3,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/438N7-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 166,
+    "name": "Zapatillas Urbanas para Niñas I-Run NIMBUS 2000 474N6 (2)",
+    "price": 121.14,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 63,
+    "rating": 4.7,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474N6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 167,
+    "name": "Zapatillas Urbanas para Niñas I-Run NIMBUS 2000 474N5 (2)",
+    "price": 63.07,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "43"
+    ],
+    "stock": 79,
+    "rating": 4.2,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474N5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 168,
+    "name": "Zapatillas Urbanas para Niños I-Run NIMBUS 2000 474N1 (2)",
+    "price": 77.91,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43"
+    ],
+    "stock": 70,
+    "rating": 4.6,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474N1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 169,
+    "name": "Zapatillas Urbanas para Niños I-Run KOVAK 438N9 (2)",
+    "price": 77.54,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "40"
+    ],
+    "stock": 51,
+    "rating": 4.6,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/438N9-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 170,
+    "name": "Zapatillas Urbanas para Niños I-Run KOVAK 438N7 (2)",
+    "price": 124.32,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 8,
+    "rating": 4.8,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/438N7-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 171,
+    "name": "Zapatillas Fútbol para Niño I-RUN PRO SPACE E165N6",
+    "price": 98.75,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Gris"
+    ],
+    "tallas": [
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 37,
+    "rating": 4.9,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2025/06/E165M6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 172,
+    "name": "Zapatillas Fútbol para Niño I-RUN PRO SPACE E165N4",
+    "price": 155.47,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43"
+    ],
+    "stock": 18,
+    "rating": 4.7,
+    "description": "Diseno aerodinamico con suela de respuesta rapida.",
+    "image": "https://irun.pe/wp-content/uploads/2025/06/E165M4-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 173,
+    "name": "Zapatillas Fútbol para Niños I-RUN PRO ADVANCED E164N6",
+    "price": 115.98,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "42",
+      "44"
+    ],
+    "stock": 30,
+    "rating": 4.7,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2025/06/E164M6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 174,
+    "name": "Zapatillas Fútbol para Niños I-RUN ADVANTAGE E167N2",
+    "price": 181.13,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Azul",
+    "colores": [
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "36",
+      "39"
+    ],
+    "stock": 65,
+    "rating": 4.3,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2025/06/E167M2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 175,
+    "name": "Zapatillas Fútbol para Niños I-RUN THUNDER E156N3",
+    "price": 144.69,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 41,
+    "rating": 4.3,
+    "description": "Amortiguacion reactiva para maximo rendimiento en cada zancada.",
+    "image": "https://irun.pe/wp-content/uploads/2025/04/E156M3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 176,
+    "name": "Zapatillas Urbanas Para Bebés Irun Vandal Z10 536B3",
+    "price": 78.09,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "37"
+    ],
+    "stock": 53,
+    "rating": 4.5,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/536B3-web-0-bostep-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 177,
+    "name": "Zapatillas Urbanas Para Bebés Irun Vandal Z10 536B2",
+    "price": 176.48,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "38"
+    ],
+    "stock": 11,
+    "rating": 4.6,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/536B2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 178,
+    "name": "Zapatillas Urbanas Para Bebés Irun Vandal Z10 536B1",
+    "price": 109.32,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Verde"
+    ],
+    "tallas": [
+      "37",
+      "38",
+      "39",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 61,
+    "rating": 4.2,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/536B1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 179,
+    "name": "Zapatillas Urbanas Para Bebés Irun Vandal 535B3",
+    "price": 103.01,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "38",
+      "40",
+      "41",
+      "43",
+      "44"
+    ],
+    "stock": 23,
+    "rating": 4.5,
+    "description": "Tecnologia de absorcion de impacto para proteger tus articulaciones.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/535B3-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 180,
+    "name": "Zapatillas Urbanas Para Bebés Irun Vandal 535B2",
+    "price": 163.61,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "38",
+      "41",
+      "42"
+    ],
+    "stock": 29,
+    "rating": 3.8,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/535B2-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 181,
+    "name": "Zapatillas Urbanas para Niñas I-Run NIMBUS 2000 474N6 (3)",
+    "price": 140.33,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "38",
+      "41"
+    ],
+    "stock": 72,
+    "rating": 4.4,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474N6-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 182,
+    "name": "Zapatillas Urbanas para Niñas I-Run NIMBUS 2000 474N5 (3)",
+    "price": 124.07,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "stock": 54,
+    "rating": 4.6,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474N5-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 183,
+    "name": "Zapatillas Urbanas para Niños I-Run NIMBUS 2000 474N1 (3)",
+    "price": 150.36,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "38",
+      "39",
+      "41",
+      "43",
+      "44"
+    ],
+    "stock": 42,
+    "rating": 4.3,
+    "description": "Traccion superior en cualquier superficie para un control total.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/474N1-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 184,
+    "name": "Zapatillas Urbanas para Niños I-Run KOVAK 438N9 (3)",
+    "price": 117.16,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "39",
+      "40",
+      "42",
+      "44"
+    ],
+    "stock": 18,
+    "rating": 3.9,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/438N9-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 185,
+    "name": "Zapatillas Urbanas para Niños I-Run KOVAK 438N7 (3)",
+    "price": 183.48,
+    "category": "CALZADO",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul"
+    ],
+    "tallas": [
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "44"
+    ],
+    "stock": 8,
+    "rating": 5.0,
+    "description": "Malla transpirable con soporte lateral reforzado.",
+    "image": "https://irun.pe/wp-content/uploads/2026/03/438N7-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 186,
+    "name": "MALETIN DEPORTIVO CONVERTIBLE 2 EN 1 KISSIN 7535 KHAKI",
+    "price": 72.82,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 9,
+    "rating": 4.3,
+    "description": "Material premium resistente al desgaste diario.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/7535-KHAKI-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 187,
+    "name": "MALETIN DEPORTIVO ANNET 7533 BLUE",
+    "price": 74.68,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 22,
+    "rating": 4.2,
+    "description": "Diseno ergonomico pensado para el deportista exigente.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/7533-BLUE-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 188,
+    "name": "MALETIN DEPORTIVO KELAIN PARA MUJER 7506 PURPLE",
+    "price": 42.85,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Rojo",
+    "colores": [
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 80,
+    "rating": 4.3,
+    "description": "Tecnologia de monitoreo de actividad y ritmo cardiaco.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/7506-PURPLE-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 189,
+    "name": "MALETIN DEPORTIVO KELAIN PARA MUJER 7506 BLACK",
+    "price": 59.52,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 65,
+    "rating": 3.9,
+    "description": "Material premium resistente al desgaste diario.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/7506-BLACK-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 190,
+    "name": "MOCHILA VIAJERA POTALAPTOP HALEY PARA MUJER H910 LILA",
+    "price": 60.9,
+    "category": "POLOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "L",
+      "S",
+      "XS"
+    ],
+    "stock": 23,
+    "rating": 4.5,
+    "description": "Costuras planas para evitar rozaduras en carreras largas.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/H910_LILA-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 191,
+    "name": "MALETIN DEPORTIVO CONVERTIBLE 2 EN 1 KISSIN 7535 KHAKI (2)",
+    "price": 88.67,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 66,
+    "rating": 4.0,
+    "description": "Material premium resistente al desgaste diario.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/7535-KHAKI-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 192,
+    "name": "MALETIN DEPORTIVO ANNET 7533 BLUE (2)",
+    "price": 25.47,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 36,
+    "rating": 4.3,
+    "description": "Diseno ergonomico pensado para el deportista exigente.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/7533-BLUE-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 193,
+    "name": "MALETIN DEPORTIVO KELAIN PARA MUJER 7506 PURPLE (2)",
+    "price": 75.16,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Azul",
+    "colores": [
+      "Azul",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 42,
+    "rating": 4.0,
+    "description": "Diseno ergonomico pensado para el deportista exigente.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/7506-PURPLE-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 194,
+    "name": "MALETIN DEPORTIVO KELAIN PARA MUJER 7506 BLACK (2)",
+    "price": 74.58,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 23,
+    "rating": 4.9,
+    "description": "Material premium resistente al desgaste diario.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/7506-BLACK-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 195,
+    "name": "MOCHILA VIAJERA POTALAPTOP HALEY PARA MUJER H910 LILA (2)",
+    "price": 52.55,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 52,
+    "rating": 4.6,
+    "description": "Diseno ergonomico pensado para el deportista exigente.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/H910_LILA-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 196,
+    "name": "MALETIN DEPORTIVO CONVERTIBLE 2 EN 1 KISSIN 7535 KHAKI (3)",
+    "price": 35.78,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 58,
+    "rating": 4.9,
+    "description": "Ajuste personalizado para maximo confort durante el entrenamiento.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/7535-KHAKI-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 197,
+    "name": "MALETIN DEPORTIVO ANNET 7533 BLUE (3)",
+    "price": 61.63,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 64,
+    "rating": 4.7,
+    "description": "Ajuste personalizado para maximo confort durante el entrenamiento.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/7533-BLUE-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 198,
+    "name": "MALETIN DEPORTIVO KELAIN PARA MUJER 7506 PURPLE (3)",
+    "price": 36.96,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Blanco",
+    "colores": [
+      "Blanco",
+      "Rojo",
+      "Azul"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 75,
+    "rating": 4.6,
+    "description": "Ajuste personalizado para maximo confort durante el entrenamiento.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/7506-PURPLE-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 199,
+    "name": "MALETIN DEPORTIVO KELAIN PARA MUJER 7506 BLACK (3)",
+    "price": 65.71,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 28,
+    "rating": 4.5,
+    "description": "Ajuste personalizado para maximo confort durante el entrenamiento.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/7506-BLACK-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 200,
+    "name": "MOCHILA VIAJERA POTALAPTOP HALEY PARA MUJER H910 LILA (3)",
+    "price": 76.18,
+    "category": "ACCESORIOS",
+    "genero": "Mujer",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 62,
+    "rating": 4.7,
+    "description": "Aislamiento termico que mantiene tu bebida fria por 24 horas.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/H910_LILA-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 201,
+    "name": "MOCHILA PORTALAPTOP BONNE H943 GRIS",
+    "price": 41.72,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 20,
+    "rating": 4.4,
+    "description": "Ajuste personalizado para maximo confort durante el entrenamiento.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/H943_GRIS-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora-2.jpg"
+  },
+  {
+    "id": 202,
+    "name": "MOCHILA PORTALAPTOP  BONNE H943 NEGRO",
+    "price": 63.86,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 27,
+    "rating": 4.2,
+    "description": "Diseno ergonomico pensado para el deportista exigente.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/H943_MARINO.jpg"
+  },
+  {
+    "id": 203,
+    "name": "MOCHILA PORTALAPTOP BIGGEST H942 AZUL MARINO",
+    "price": 21.17,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Rojo",
+      "Azul",
+      "Gris"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 36,
+    "rating": 5.0,
+    "description": "Aislamiento termico que mantiene tu bebida fria por 24 horas.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/H942_AZUL-MARINO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  },
+  {
+    "id": 204,
+    "name": "MOCHILA ESCOLAR DRUMS I-RUN H1000 NEGRO",
+    "price": 15.71,
+    "category": "ACCESORIOS",
+    "genero": "Unisex",
+    "color": "Negro",
+    "colores": [
+      "Negro",
+      "Rojo",
+      "Gris",
+      "Verde"
+    ],
+    "tallas": [
+      "Unico"
+    ],
+    "stock": 54,
+    "rating": 3.9,
+    "description": "Diseno ergonomico pensado para el deportista exigente.",
+    "image": "https://irun.pe/wp-content/uploads/2026/04/H1000-NEGRO-web-0-irun-tienda-online-deporte-las-mejores-zapatillas-accesorios-deportivos-hombre-mujer-ninos-futbol-deporte-promocion-peru-compra-ahora.jpg"
+  }
+]
