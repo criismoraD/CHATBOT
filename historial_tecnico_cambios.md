@@ -5,7 +5,7 @@
 - [28/04] **Tablas Ventas, Admin y Reportes Ficticios:**
     - Creadas tablas `administradores`, `ventas` y `venta_detalle` directamente en MySQL.
     - Insertadas 80 ventas de prueba con fechas aleatorias (Marzo-Abril 2026) para validar panel administrativo.
-    - Añadidas cláusulas `CREATE DATABASE IF NOT EXISTS` y `USE` en `esquema_base_datos_tienda.sql`.
+    - Añadidas cláusulas `CREATE DATABASE IF NOT EXISTS` y `USE` en `chatbot_tienda.sql`.
 
 - [24/04] **Rediseño: Layout de Dos Columnas (Catálogo + Chatbot):**
 
@@ -37,7 +37,7 @@
 - [24/04] **Hotfix: Migración de generación PDF al Backend (ReportLab):**
     - Eliminado el uso de la librería CDN `jsPDF` en el frontend (`interfaz_chatbot.html`) que causaba errores por red bloqueada ("El generador de PDF está cargando").
     - Instalada librería `reportlab` en Python.
-    - Creado endpoint `/generate_pdf` en `servidor_principal.py` que recibe el carrito en JSON y genera la factura PDF.
+    - Creado endpoint `/generate_pdf` en `app.py` que recibe el carrito en JSON y genera la factura PDF.
     - `boleta_compra.pdf` se guarda físicamente en la raíz del proyecto y se devuelve directamente al navegador para su apertura automática.
 
 - [24/04] **Hotfix: Carga lenta al iniciar y dar F5 (Iconos SVG):**
@@ -58,7 +58,7 @@
     - El frontend ahora filtra estrictamente por texto dentro de la categoría.
 
 - [23/04] **Hotfix: Sincronización Backend-Frontend (Sinónimos y Conteo):**
-    - Añadidos sinónimos (`leggin`, `jogger`, `buzo`) para `pantalon` en `js/main.js` y `catalogo.py`.
+    - Añadidos sinónimos (`leggin`, `jogger`, `buzo`) para `pantalon` en `js/interfaz_principal.js` y `catalogo.py`.
     - Eliminado `Producto.category` de `Texto_Buscable` en `catalogo.py` (`Buscar_Productos_Por_Coincidencia_Lexica`).
     - El chatbot ahora cuenta exactamente lo mismo que el frontend y entiende que "pantalones" incluye "leggins".
 
@@ -79,8 +79,8 @@
     - Esto garantiza que los botones de Enviar y Micrófono siempre sean visibles incluso si el CDN de fuentes falla o es bloqueado por el navegador/adblock.
 
 - [24/04] **Mejora: Eliminación de Memoria Persistente Zombie:**
-    - Se eliminó el uso de `shelve` en `bot/memoria.py`. Ahora la memoria del bot vive exclusivamente en RAM y se destruye al reiniciar el servidor (`servidor_principal.py`).
-    - En el frontend (`js/main.js`), se reemplazó el `session_id` estático (`user_local`) por un `Session_ID_Unico` generado aleatoriamente en cada recarga de página (F5).
+    - Se eliminó el uso de `shelve` en `bot/memoria.py`. Ahora la memoria del bot vive exclusivamente en RAM y se destruye al reiniciar el servidor (`app.py`).
+    - En el frontend (`js/interfaz_principal.js`), se reemplazó el `session_id` estático (`user_local`) por un `Session_ID_Unico` generado aleatoriamente en cada recarga de página (F5).
     - Esto asegura que cada vez que recargas el navegador o reinicias el bot, empiezas con una memoria 100% limpia sin filtros arrastrados.
 
 - [24/04] **Hotfix: Pérdida de contexto en precios cortos:**
@@ -89,7 +89,7 @@
 
 - [24/04] **Mejora UI y Exportación PDF:**
     - Reemplazados los iconos caídos de FontAwesome (`fa-robot` y `fa-plus`) por vectores SVG en línea en las tarjetas de producto en `main.js`.
-    - Creado endpoint `/save_pdf` en `servidor_principal.py` para guardar físicamente el archivo generado en la raíz del proyecto como `boleta_compra.pdf`.
+    - Creado endpoint `/save_pdf` en `app.py` para guardar físicamente el archivo generado en la raíz del proyecto como `boleta_compra.pdf`.
     - El frontend ahora envía el PDF al backend, lo guarda, y luego lo abre en el navegador al finalizar compra.
 
 - [23/04] **Hotfix: Mapeo de columnas SQL en catalogo.py:**
@@ -103,16 +103,16 @@
 
 - [23/04] **Migración Backend: Integración completa de MySQL:**
     - `catalogo.py` actualizado. `Cargar_Lista_De_Productos_Desde_BD` reemplaza lectura JSON, conectando con `db.py`.
-    - `js/main.js` actualizado. Eliminada ruta local `data/products_scraped.json` para forzar consumo API.
+    - `js/interfaz_principal.js` actualizado. Eliminada ruta local `data/products_scraped.json` para forzar consumo API.
     - Archivo `products_scraped.json` eliminado definitivamente.
 
 - [23/04] **BD: Limpieza SQL (Opción JSON retenida):**
-    - `esquema_base_datos_tienda.sql` depurado. Eliminadas tablas `intenciones`, `patrones`, `respuestas` y `vista_intents_completa`.
-    - `intents.json` conservado para entrenamiento directo de la IA neuronal.
+    - `chatbot_tienda.sql` depurado. Eliminadas tablas `intenciones`, `patrones`, `respuestas` y `vista_intents_completa`.
+    - `intenciones_chatbot.json` conservado para entrenamiento directo de la IA neuronal.
     - Base de datos 100% enfocada en Catálogo, Usuarios e Historial.
 
 - [23/04] **BD: Revisión y Validación Estructura MySQL:**
-    - Revisado `esquema_base_datos_tienda.sql` (Relacional completo, FKs, vistas, índices, Fulltext).
+    - Revisado `chatbot_tienda.sql` (Relacional completo, FKs, vistas, índices, Fulltext).
     - Añadidos `db.py` (Pooling de conexión) y `README_MYSQL.md`.
     - BD apta para reemplazar JSON.
 
@@ -126,7 +126,7 @@
     - Cambios aplicados en 20 archivos (Lógica de diálogo, entrenamiento modelo, estilos CSS, etc.).
 
 - [19/04] **🔒 Seguridad: Mitigación de Vulnerabilidad XSS en Frontend:**
-    - `js/main.js`: Eliminado `innerHTML`. Implementado `createElement` y `textContent`.
+    - `js/interfaz_principal.js`: Eliminado `innerHTML`. Implementado `createElement` y `textContent`.
 
 ## Resumen de Tareas Anteriores (Compresión Activa)
 

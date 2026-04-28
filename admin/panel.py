@@ -9,7 +9,7 @@ Provee rutas Flask para:
   - Stock de productos
   - Registrar ventas desde el carrito
 
-Uso: importar y registrar en servidor_principal.py:
+Uso: importar y registrar en app.py:
     from admin import Inicializar_Admin
     Inicializar_Admin(app)
 """
@@ -946,7 +946,7 @@ def Admin_Reporte_PDF():
 def Inicializar_Admin(app):
     """
     Registra el blueprint de administración y configura la sesión.
-    Llamar desde servidor_principal.py: admin.Inicializar_Admin(app)
+    Llamar desde app.py: admin.Inicializar_Admin(app)
     """
     if not app.secret_key:
         app.secret_key = os.getenv("FLASK_SECRET_KEY", "senati_admin_secret_2024")

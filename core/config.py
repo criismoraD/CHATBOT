@@ -9,8 +9,8 @@ import os
 
 # ─── Rutas de Archivos ────────────────────────────────────────────────────────
 
-Ruta_Modelo_Pytorch = "data/model.pth"
-Ruta_Intents = "data/intents.json"
+Ruta_Modelo_Pytorch = "data/modelo_lstm.pth"
+Ruta_Intents = "data/intenciones_chatbot.json"
 Ruta_Productos_Scrapeados = "data/products_scraped.json"
 Ruta_Memoria_Del_Chat = "data/chat_memory"
 

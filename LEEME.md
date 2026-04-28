@@ -8,7 +8,7 @@ Proyecto completo integrado: chatbot de tienda + módulo de administración.
 
 ```
 proyecto/
-├── servidor_principal.py                        ← Servidor principal (ya integrado con admin)
+├── app.py                        ← Servidor principal (ya integrado con admin)
 ├── admin.py                      ← Módulo de administración (backend)
 ├── panel_administracion.html                    ← Panel de administración (frontend)
 ├── chatbot_tienda_completo.sql   ← Base de datos COMPLETA (importar solo este)
@@ -50,7 +50,7 @@ pip install -r dependencias_python.txt
 ### 3. Ejecutar el servidor
 
 ```bash
-python servidor_principal.py
+python app.py
 ```
 
 ---

@@ -55,8 +55,8 @@ class NeuralNet(nn.Module):
 
 
 # --- CONFIGURACION ---
-Ruta_Intents = Path("data/intents.json")
-Ruta_Modelo = Path("data/model.pth")
+Ruta_Intents = Path("data/intenciones_chatbot.json")
+Ruta_Modelo = Path("data/modelo_lstm.pth")
 Semilla_Global = 100
 
 Tamano_Lote = 32

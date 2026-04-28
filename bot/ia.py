@@ -51,7 +51,7 @@ def _Cargar_Modelo_Pytorch():
     global Modelo_IA, Todas_Las_Palabras, Etiquetas_De_Intencion, Longitud_Maxima_Secuencia
 
     if not os.path.exists(config.Ruta_Modelo_Pytorch):
-        print("[WARN] No se encontro model.pth. Ejecuta entrenar_modelo_lstm.py primero.")
+        print("[WARN] No se encontro modelo_lstm.pth. Ejecuta app.py primero.")
         return
 
     try:

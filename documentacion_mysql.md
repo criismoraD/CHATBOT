@@ -8,7 +8,7 @@
 | `config.py` | Agrega `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_FUENTE_CATALOGO` |
 | `catalogo.py` | Carga productos desde MySQL; respaldo automático al JSON si MySQL no está disponible |
 | `memoria.py` | Guarda historial de chat en tabla `sesiones_chat`; respaldo a shelve si no hay MySQL |
-| `esquema_base_datos_tienda.sql` | **NUEVO** · Base de datos completa: 204 productos, colores, tallas, vistas y procedimientos |
+| `chatbot_tienda.sql` | **NUEVO** · Base de datos completa: 204 productos, colores, tallas, vistas y procedimientos |
 | `dependencias_python.txt` | Agrega `mysql-connector-python>=8.3.0` |
 
 ---
@@ -22,7 +22,7 @@ pip install -r dependencias_python.txt
 
 ### 2. Importar la base de datos
 ```bash
-mysql -u root -p < esquema_base_datos_tienda.sql
+mysql -u root -p < chatbot_tienda.sql
 ```
 
 ### 3. Configurar credenciales
@@ -38,7 +38,7 @@ O usa variables de entorno: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_
 
 ### 4. Ejecutar
 ```bash
-python servidor_principal.py
+python app.py
 ```
 
 ---

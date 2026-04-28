@@ -522,20 +522,20 @@
 pip install -r requirements.txt
 
 # 2) Iniciar servidor (API + Frontend en el mismo puerto)
-python servidor_principal.py
+python app.py
 
 # 3) Abrir en el navegador
 http://localhost:5000/
                 </pre>
 
                 <div class="highlight-box">
-                    <strong>Nota importante:</strong> El archivo data/model.pth ya viene entrenado. Solo debes ejecutar entrenar_modelo_lstm.py si cambiaste data/intents.json y quieres que el bot aprenda esos cambios.
+                    <strong>Nota importante:</strong> El archivo data/modelo_lstm.pth ya viene entrenado. Solo debes ejecutar entrenar_modelo_lstm.py si cambiaste data/intenciones_chatbot.json y quieres que el bot aprenda esos cambios.
                 </div>
 
                 <div class="help-box">
                     <strong>Si algo falla al iniciar:</strong>
                     <ul>
-                        <li>Revisa que exista la carpeta data con intents.json, model.pth y products_scraped.json.</li>
+                        <li>Revisa que exista la carpeta data con intenciones_chatbot.json, modelo_lstm.pth y products_scraped.json.</li>
                         <li>Verifica que el puerto 5000 no este siendo usado por otro programa.</li>
                         <li>Si spaCy pide modelo de idioma, el propio proyecto intentara descargarlo automaticamente.</li>
                     </ul>
@@ -550,7 +550,7 @@ http://localhost:5000/
                 <p>Aqui tienes la estructura completa del proyecto.</p>
 
                 <div class="tree">CHATBOT/
-├── servidor_principal.py
+├── app.py
 ├── catalogo.py
 ├── config.py
 ├── bot/dialogo.py
@@ -563,12 +563,12 @@ http://localhost:5000/
 ├── requirements.txt
 ├── Historial_Tecnico.md
 ├── css/
-│   └── style.css
+│   └── estilos_principales.css
 ├── js/
-│   └── main.js
+│   └── interfaz_principal.js
 ├── data/
-│   ├── intents.json
-│   ├── model.pth
+│   ├── intenciones_chatbot.json
+│   ├── modelo_lstm.pth
 │   ├── products_scraped.json
 │   └── chat_memory
 └── documentacion/
@@ -615,14 +615,14 @@ http://localhost:5000/
                 </div>
 
                 <div class="help-box">
-                    <strong>Lectura rapida del grafico:</strong> el frontend no decide por su cuenta la logica del bot. Siempre pasa por servidor_principal.py y bot/dialogo.py, y desde ahi se consulta IA, catalogo y memoria para construir una respuesta coherente.
+                    <strong>Lectura rapida del grafico:</strong> el frontend no decide por su cuenta la logica del bot. Siempre pasa por app.py y bot/dialogo.py, y desde ahi se consulta IA, catalogo y memoria para construir una respuesta coherente.
                 </div>
 
                 <div class="architecture-group">
                     <h3>Bloque 1: Backend y logica del asistente (Python)</h3>
                     <div class="file-list">
                         <div class="file-item">
-                            <h4>servidor_principal.py</h4>
+                            <h4>app.py</h4>
                             <p><strong>Puerta principal del sistema.</strong> Crea el servidor Flask y publica rutas como /chat, /search, /products, /transcribe y /status. En terminos simples, aqui entra todo lo que llega desde el navegador y aqui tambien sale la respuesta final. Tambien sirve los archivos web para que no necesites otro servidor adicional.</p>
                         </div>
                         <div class="file-item" style="border-left-color: var(--primary);">
@@ -631,7 +631,7 @@ http://localhost:5000/
                         </div>
                         <div class="file-item" style="border-left-color: var(--accent);">
                             <h4>ia.py</h4>
-                            <p><strong>Motor de inferencia.</strong> Carga el modelo de PyTorch desde data/model.pth y calcula que intencion tiene el mensaje del usuario. Adicionalmente inicializa el modelo de voz Whisper para transcribir audios enviados desde el frontend.</p>
+                            <p><strong>Motor de inferencia.</strong> Carga el modelo de PyTorch desde data/modelo_lstm.pth y calcula que intencion tiene el mensaje del usuario. Adicionalmente inicializa el modelo de voz Whisper para transcribir audios enviados desde el frontend.</p>
                         </div>
                         <div class="file-item">
                             <h4>catalogo.py</h4>
@@ -668,11 +668,11 @@ http://localhost:5000/
                             <p><strong>Estructura visual de la tienda.</strong> Define layout general: panel de catalogo, filtros, chat, carrito y controles de busqueda. Es la base de la interfaz que ve el usuario final.</p>
                         </div>
                         <div class="file-item" style="border-left-color: var(--primary);">
-                            <h4>css/style.css</h4>
+                            <h4>css/estilos_principales.css</h4>
                             <p><strong>Estilos y diseno responsive.</strong> Da apariencia moderna al dashboard, define tarjetas de producto, animaciones, panel de chat y version movil. Sin este archivo la web funcionaria, pero se veria sin formato y dificil de usar.</p>
                         </div>
                         <div class="file-item" style="border-left-color: var(--accent);">
-                            <h4>js/main.js</h4>
+                            <h4>js/interfaz_principal.js</h4>
                             <p><strong>Comportamiento dinamico de la web.</strong> Carga productos, aplica filtros, sincroniza carrito, envia mensajes al endpoint /chat, procesa filter_action del backend y maneja la grabacion de audio para transcripcion. Es el puente principal entre interfaz y API.</p>
                         </div>
                     </div>
@@ -682,11 +682,11 @@ http://localhost:5000/
                     <h3>Bloque 3: Datos, modelo entrenado y persistencia</h3>
                     <div class="file-list">
                         <div class="file-item">
-                            <h4>data/intents.json</h4>
+                            <h4>data/intenciones_chatbot.json</h4>
                             <p><strong>Base de conocimiento conversacional.</strong> Contiene intenciones (tags), ejemplos de frases (patterns) y posibles respuestas. Es la materia prima para entrenar la IA y tambien una referencia de comportamiento del bot.</p>
                         </div>
                         <div class="file-item" style="border-left-color: var(--primary);">
-                            <h4>data/model.pth</h4>
+                            <h4>data/modelo_lstm.pth</h4>
                             <p><strong>Modelo ya entrenado.</strong> Guarda pesos y metadatos de la red neuronal. Gracias a este archivo el bot puede arrancar en segundos sin volver a entrenar cada vez.</p>
                         </div>
                         <div class="file-item" style="border-left-color: var(--accent);">
@@ -728,7 +728,7 @@ http://localhost:5000/
                 
                 <div class="desc-block">
                     <h4>Etapa 1: Captura desde la interfaz</h4>
-                    <p>El frontend (js/main.js) envia el texto al endpoint /chat junto con session_id y, si aplica, context_product_id. Esto permite que el backend sepa quien habla y sobre que producto se esta consultando.</p>
+                    <p>El frontend (js/interfaz_principal.js) envia el texto al endpoint /chat junto con session_id y, si aplica, context_product_id. Esto permite que el backend sepa quien habla y sobre que producto se esta consultando.</p>
                 </div>
 
                 <div class="diagram">
@@ -1020,23 +1020,23 @@ http://localhost:5000/
                     </div>
 
                     <div class="file-item" style="border-left-color: var(--primary);">
-                        <h4>chat() [servidor_principal.py]</h4>
+                        <h4>chat() [app.py]</h4>
                         <p>Es el endpoint principal del asistente. Recibe JSON, coordina contexto, llama la logica de dialogo y devuelve respuesta estructurada para el frontend.</p>
                     </div>
 
                     <div class="file-item" style="border-left-color: var(--accent);">
-                        <h4>Aplicar_Filtro_Desde_Chat(...) [js/main.js]</h4>
+                        <h4>Aplicar_Filtro_Desde_Chat(...) [js/interfaz_principal.js]</h4>
                         <p>Toma la accion que devuelve el backend y actualiza la interfaz: categoria activa, color, genero, precio y productos visibles. Es clave para que el usuario vea reflejada la conversacion en el catalogo.</p>
                     </div>
 
                     <div class="file-item">
-                        <h4>Obtener_Respuesta_Chat(...) [js/main.js]</h4>
+                        <h4>Obtener_Respuesta_Chat(...) [js/interfaz_principal.js]</h4>
                         <p>Envia el mensaje al backend, muestra indicador de escritura y dibuja la respuesta del bot en pantalla. Tambien conserva o limpia contexto de producto segun el tag recibido.</p>
                     </div>
                 </div>
 
                 <div class="help-box">
-                    <strong>Consejo para personas nuevas:</strong> si quieres modificar el comportamiento del bot, empieza por bot/dialogo.py. Si quieres cambiar visual y experiencia, empieza por interfaz_chatbot.html + css/style.css + js/main.js. Si quieres mejorar entendimiento del lenguaje, revisa intents.json y entrenar_modelo_lstm.py.
+                    <strong>Consejo para personas nuevas:</strong> si quieres modificar el comportamiento del bot, empieza por bot/dialogo.py. Si quieres cambiar visual y experiencia, empieza por interfaz_chatbot.html + css/estilos_principales.css + js/interfaz_principal.js. Si quieres mejorar entendimiento del lenguaje, revisa intenciones_chatbot.json y entrenar_modelo_lstm.py.
                 </div>
             </div>
         </section>

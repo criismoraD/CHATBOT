@@ -1,5 +1,5 @@
 """
-servidor_principal.py  ·  Punto de Entrada Principal del Chatbot SENATI Sports
+app.py  ·  Punto de Entrada Principal del Chatbot SENATI Sports
 ---------------------------------------------------------------------------------
 Servidor Flask que integra:
   - Chatbot con IA (PyTorch LSTM)
