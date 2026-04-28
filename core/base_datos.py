@@ -25,7 +25,7 @@ USO:
 import os
 import mysql.connector
 from mysql.connector import pooling, Error
-from core import config
+from core import configuracion
 
 
 # ─── Pool de Conexiones ──────────────────────────────────────────────────────
@@ -39,11 +39,11 @@ def Crear_Pool_De_Conexiones():
     _Pool_De_Conexiones = pooling.MySQLConnectionPool(
         pool_name="chatbot_pool",
         pool_size=5,
-        host      = os.getenv("DB_HOST",     config.DB_HOST),
-        port      = int(os.getenv("DB_PORT", config.DB_PORT)),
-        user      = os.getenv("DB_USER",     config.DB_USER),
-        password  = os.getenv("DB_PASSWORD", config.DB_PASSWORD),
-        database  = os.getenv("DB_NAME",     config.DB_NAME),
+        host      = os.getenv("DB_HOST",     configuracion.DB_HOST),
+        port      = int(os.getenv("DB_PORT", configuracion.DB_PORT)),
+        user      = os.getenv("DB_USER",     configuracion.DB_USER),
+        password  = os.getenv("DB_PASSWORD", configuracion.DB_PASSWORD),
+        database  = os.getenv("DB_NAME",     configuracion.DB_NAME),
         charset   = "utf8mb4",
         collation = "utf8mb4_unicode_ci",
         autocommit=True,

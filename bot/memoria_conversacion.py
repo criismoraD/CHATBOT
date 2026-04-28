@@ -29,7 +29,7 @@ ESTRUCTURA DEL CONTEXTO:
 NOTA: La memoria es volátil (RAM). Si se reinicia el servidor, se pierde.
 """
 
-from core import config
+from core import configuracion
 from bot.catalogo_productos import Fuente_Activa_De_Catalogo, Normalizar_Fuente_De_Catalogo
 
 
@@ -76,7 +76,7 @@ def Actualizar_Contexto(
         Sesion["catalog_source"] = Normalizar_Fuente_De_Catalogo(Fuente_De_Catalogo)
 
     # Limitar historial
-    if len(Sesion["history"]) > config.Maximo_Historial_Chat:
+    if len(Sesion["history"]) > configuracion.Maximo_Historial_Chat:
         Sesion["history"].pop(0)
 
 

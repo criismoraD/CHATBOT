@@ -33,7 +33,7 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from core import config
+from core import configuracion
 from core import db
 from core.procesamiento_lenguaje import Tokenizar_Y_Lematizar
 from bot.extractor_entidades import (

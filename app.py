@@ -38,7 +38,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
 from admin import Inicializar_Admin
-from core import config
+from core import configuracion
 from core.base_datos import Ejecutar_Escritura
 from bot.inteligencia_artificial import Modelo_IA, Etiquetas_De_Intencion, Obtener_Modelo_Voz
 from bot.catalogo_productos import (
@@ -55,7 +55,7 @@ from bot.motor_dialogo import Obtener_Respuesta_Principal
 Aplicacion = Flask(__name__)
 Aplicacion.secret_key = os.getenv("FLASK_SECRET_KEY", "senati_admin_2024")
 
-CORS(Aplicacion, resources={r"/*": {"origins": config.Origenes_Cors_Permitidos}})
+CORS(Aplicacion, resources={r"/*": {"origins": configuracion.Origenes_Cors_Permitidos}})
 
 Inicializar_Admin(Aplicacion)
 
@@ -151,7 +151,7 @@ def Servir_Uploads(Nombre_Archivo):
 def Estado_Del_Servidor():
     return jsonify({
         "status": "online",
-        "bot_name": config.Nombre_Del_Bot,
+        "bot_name": configuracion.Nombre_Del_Bot,
         "products_active": len(Datos_De_Productos),
         "products_auto": len(Catalogos_De_Productos.get("auto", [])),
         "products_scraped": len(Catalogos_De_Productos.get("scraped", [])),
@@ -191,7 +191,7 @@ def Chat():
                 Msg = "Claro, ¿En qué te ayudo con este producto?"
             return jsonify({
                 "response": Msg, "tag": "contexto_iniciado",
-                "bot_name": config.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
+                "bot_name": configuracion.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
             })
 
     if not Mensaje:
@@ -208,7 +208,7 @@ def Chat():
                 Actualizar_Contexto(Id_Sesion, Etiqueta=Etiqueta_Detalle, Id_De_Producto=Id_Producto_Ctx_Actual, Fuente_De_Catalogo=Fuente_Usada)
                 return jsonify({
                     "response": Respuesta_Ctx, "tag": Etiqueta_Detalle,
-                    "bot_name": config.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
+                    "bot_name": configuracion.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
                 })
 
     # Intención de carrito
@@ -221,12 +221,12 @@ def Chat():
             if isinstance(Stock, (int, float)) and int(Stock) <= 0:
                 return jsonify({
                     "response": f"Lo siento, {Nombre} está agotado en este momento. 😔",
-                    "tag": "sin_stock", "bot_name": config.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
+                    "tag": "sin_stock", "bot_name": configuracion.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
                 })
             return jsonify({
                 "response": f"¡Listo! Añadí {Nombre} (S/ {Precio:.2f}) a tu carrito. 🛒",
                 "tag": "agregar_carrito", "add_to_cart": True,
-                "product": Producto, "bot_name": config.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
+                "product": Producto, "bot_name": configuracion.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
             })
 
     # Motor de diálogo principal
@@ -234,7 +234,7 @@ def Chat():
 
     Resultado = {
         "response": Respuesta, "tag": Etiqueta,
-        "bot_name": config.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
+        "bot_name": configuracion.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
     }
     if Accion:
         Resultado["filter_action"] = Accion
@@ -269,12 +269,12 @@ def Buscar():
         except (TypeError, ValueError):
             Precio_Max = None
 
-    Limite = Datos.get('limit', config.Limite_Busqueda_Por_Defecto)
+    Limite = Datos.get('limit', configuracion.Limite_Busqueda_Por_Defecto)
     try:
         Limite = int(Limite)
     except (TypeError, ValueError):
-        Limite = config.Limite_Busqueda_Por_Defecto
-    Limite = max(1, min(config.Maximo_Limite_De_Busqueda, Limite))
+        Limite = configuracion.Limite_Busqueda_Por_Defecto
+    Limite = max(1, min(configuracion.Maximo_Limite_De_Busqueda, Limite))
 
     Resultados = Buscar_Productos(
         Categoria=Cat, Color=Color, Precio_Maximo=Precio_Max,

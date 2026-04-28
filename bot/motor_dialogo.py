@@ -37,7 +37,7 @@ MÓDULOS QUE USA:
 
 import re
 import random
-from core import config
+from core import configuracion
 from bot.inteligencia_artificial import Predecir_Tag, Datos_De_Intents
 from bot.extractor_entidades import (
     Es_Consulta_De_Seguimiento_De_Pedido, Detectar_Id_De_Producto_En_Texto,
@@ -315,8 +315,8 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
 
     Es_Fuerte = (
         Etiqueta in Etiquetas_Negocio
-        and Confianza >= config.Umbral_De_Confianza
-        and Margen >= config.Umbral_De_Margen_Base
+        and Confianza >= configuracion.Umbral_De_Confianza
+        and Margen >= configuracion.Umbral_De_Margen_Base
     )
 
     if Etiqueta not in Etiquetas_Detalle and (not Es_Fuerte or Etiqueta == "fuera_de_dominio"):

@@ -31,7 +31,7 @@ import threading
 import torch
 import numpy as np
 from entrenar_modelo_lstm import NeuralNet
-from core import config
+from core import configuracion
 from core.procesamiento_lenguaje import Tokenizar_Y_Lematizar
 
 
@@ -70,13 +70,13 @@ def _Cargar_Modelo_Pytorch():
     """Carga el modelo LSTM desde el archivo .pth si existe."""
     global Modelo_IA, Todas_Las_Palabras, Etiquetas_De_Intencion, Longitud_Maxima_Secuencia
 
-    if not os.path.exists(config.Ruta_Modelo_Pytorch):
+    if not os.path.exists(configuracion.Ruta_Modelo_Pytorch):
         print("[WARN] No se encontro modelo_lstm.pth. Ejecuta app.py primero.")
         return
 
     try:
         Datos_Del_Modelo = torch.load(
-            config.Ruta_Modelo_Pytorch,
+            configuracion.Ruta_Modelo_Pytorch,
             map_location=_Dispositivo,
             weights_only=True
         )
@@ -106,7 +106,7 @@ _Cargar_Modelo_Pytorch()
 
 # ─── Carga de Intents ────────────────────────────────────────────────────────
 
-with open(config.Ruta_Intents, 'r', encoding='utf-8') as _Archivo:
+with open(configuracion.Ruta_Intents, 'r', encoding='utf-8') as _Archivo:
     Datos_De_Intents = json.load(_Archivo)
 
 
