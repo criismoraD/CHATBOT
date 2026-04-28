@@ -1,6 +1,6 @@
 """
-app.py  ·  Punto de Entrada Principal del Chatbot SENATI Sports
-----------------------------------------------------------------
+servidor_principal.py  ·  Punto de Entrada Principal del Chatbot SENATI Sports
+---------------------------------------------------------------------------------
 Servidor Flask que integra:
   - Chatbot con IA (PyTorch LSTM)
   - Panel de administración
@@ -106,7 +106,7 @@ def Construir_Respuesta_Contextual_Rapida(Producto, Etiqueta):
 
 @Aplicacion.route('/', methods=['GET'])
 def Servir_Index():
-    return send_from_directory('.', 'index.html')
+    return send_from_directory('.', 'interfaz_chatbot.html')
 
 
 @Aplicacion.route('/css/<path:Nombre_Archivo>', methods=['GET'])

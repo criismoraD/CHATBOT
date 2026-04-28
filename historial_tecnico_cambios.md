@@ -5,7 +5,7 @@
 - [28/04] **Tablas Ventas, Admin y Reportes Ficticios:**
     - Creadas tablas `administradores`, `ventas` y `venta_detalle` directamente en MySQL.
     - Insertadas 80 ventas de prueba con fechas aleatorias (Marzo-Abril 2026) para validar panel administrativo.
-    - Añadidas cláusulas `CREATE DATABASE IF NOT EXISTS` y `USE` en `chatbot_tienda.sql`.
+    - Añadidas cláusulas `CREATE DATABASE IF NOT EXISTS` y `USE` en `esquema_base_datos_tienda.sql`.
 
 - [24/04] **Rediseño: Layout de Dos Columnas (Catálogo + Chatbot):**
 
@@ -35,13 +35,13 @@
     - Ajustado catálogo para ocupar ancho total con padding inteligente.
 
 - [24/04] **Hotfix: Migración de generación PDF al Backend (ReportLab):**
-    - Eliminado el uso de la librería CDN `jsPDF` en el frontend (`index.html`) que causaba errores por red bloqueada ("El generador de PDF está cargando").
+    - Eliminado el uso de la librería CDN `jsPDF` en el frontend (`interfaz_chatbot.html`) que causaba errores por red bloqueada ("El generador de PDF está cargando").
     - Instalada librería `reportlab` en Python.
-    - Creado endpoint `/generate_pdf` en `app.py` que recibe el carrito en JSON y genera la factura PDF.
+    - Creado endpoint `/generate_pdf` en `servidor_principal.py` que recibe el carrito en JSON y genera la factura PDF.
     - `boleta_compra.pdf` se guarda físicamente en la raíz del proyecto y se devuelve directamente al navegador para su apertura automática.
 
 - [24/04] **Hotfix: Carga lenta al iniciar y dar F5 (Iconos SVG):**
-    - Eliminado el CDN de FontAwesome en `index.html` que causaba bloqueos de renderizado de red (tiempos de carga muy altos).
+    - Eliminado el CDN de FontAwesome en `interfaz_chatbot.html` que causaba bloqueos de renderizado de red (tiempos de carga muy altos).
     - Reemplazados los últimos iconos restantes (`fa-search`, `fa-shopping-cart`, `fa-xmark`, `fa-comment-dots`) por vectores SVG inline.
     - Esto elimina la dependencia externa y hace que el arranque local y la recarga de página (F5) sean instantáneos.
 
@@ -63,7 +63,7 @@
     - El chatbot ahora cuenta exactamente lo mismo que el frontend y entiende que "pantalones" incluye "leggins".
 
 - [23/04] **Mejora: UX de Filtros Vacíos:**
-    - Modificado `dialogo.py` para reiniciar todos los filtros de forma silenciosa cuando no hay coincidencias.
+    - Modificado `bot/dialogo.py` para reiniciar todos los filtros de forma silenciosa cuando no hay coincidencias.
     - Se reemplazó "Mantenemos los filtros anteriores" por sugerencias automáticas de otras opciones del catálogo.
 
 - [23/04] **Hotfix: Precisión de Filtro por Precio:**
@@ -71,25 +71,25 @@
     - Esto evita que palabras como "menores" se traten como texto de búsqueda, impidiendo que el frontend oculte los productos, y asegurando que el precio se guarde correctamente en memoria para filtros encadenados (ej. pedir luego "para hombre").
 
 - [23/04] **Mejora: UX y Herencia de Botones Sugeridos:**
-    - Modificado `Debe_Heredar_Filtros_De_Contexto` en `dialogo.py` para permitir la herencia del precio cuando el usuario hace clic en un botón de sugerencia que contiene la misma categoría actual (Ej: "Zapatillas para hombre" estando en "CALZADO").
+    - Modificado `Debe_Heredar_Filtros_De_Contexto` en `bot/dialogo.py` para permitir la herencia del precio cuando el usuario hace clic en un botón de sugerencia que contiene la misma categoría actual (Ej: "Zapatillas para hombre" estando en "CALZADO").
     - Ajustado el mensaje de respuesta de género para que use la entidad extraída (Ej: "zapatillas") en lugar del término genérico "productos en CALZADO".
 
 - [24/04] **Hotfix: Iconos de Chat Invisibles:**
-    - Reemplazados los iconos de FontAwesome (`fa-microphone` y `fa-paper-plane`) en `index.html` por vectores SVG en línea pura.
+    - Reemplazados los iconos de FontAwesome (`fa-microphone` y `fa-paper-plane`) en `interfaz_chatbot.html` por vectores SVG en línea pura.
     - Esto garantiza que los botones de Enviar y Micrófono siempre sean visibles incluso si el CDN de fuentes falla o es bloqueado por el navegador/adblock.
 
 - [24/04] **Mejora: Eliminación de Memoria Persistente Zombie:**
-    - Se eliminó el uso de `shelve` en `memoria.py`. Ahora la memoria del bot vive exclusivamente en RAM y se destruye al reiniciar el servidor (`app.py`).
+    - Se eliminó el uso de `shelve` en `bot/memoria.py`. Ahora la memoria del bot vive exclusivamente en RAM y se destruye al reiniciar el servidor (`servidor_principal.py`).
     - En el frontend (`js/main.js`), se reemplazó el `session_id` estático (`user_local`) por un `Session_ID_Unico` generado aleatoriamente en cada recarga de página (F5).
     - Esto asegura que cada vez que recargas el navegador o reinicias el bot, empiezas con una memoria 100% limpia sin filtros arrastrados.
 
 - [24/04] **Hotfix: Pérdida de contexto en precios cortos:**
-    - Modificado `dialogo.py` para que los mensajes cortos (<= 6 palabras) que contengan un precio (ej: "y de 150?") fuercen la intención `buscar_producto`.
+    - Modificado `bot/dialogo.py` para que los mensajes cortos (<= 6 palabras) que contengan un precio (ej: "y de 150?") fuercen la intención `buscar_producto`.
     - Esto evita que el modelo PyTorch se confunda por la falta de verbos y asuma intenciones incorrectas (como `consulta_precio` o características de materiales).
 
 - [24/04] **Mejora UI y Exportación PDF:**
     - Reemplazados los iconos caídos de FontAwesome (`fa-robot` y `fa-plus`) por vectores SVG en línea en las tarjetas de producto en `main.js`.
-    - Creado endpoint `/save_pdf` en `app.py` para guardar físicamente el archivo generado en la raíz del proyecto como `boleta_compra.pdf`.
+    - Creado endpoint `/save_pdf` en `servidor_principal.py` para guardar físicamente el archivo generado en la raíz del proyecto como `boleta_compra.pdf`.
     - El frontend ahora envía el PDF al backend, lo guarda, y luego lo abre en el navegador al finalizar compra.
 
 - [23/04] **Hotfix: Mapeo de columnas SQL en catalogo.py:**
@@ -107,12 +107,12 @@
     - Archivo `products_scraped.json` eliminado definitivamente.
 
 - [23/04] **BD: Limpieza SQL (Opción JSON retenida):**
-    - `chatbot_tienda.sql` depurado. Eliminadas tablas `intenciones`, `patrones`, `respuestas` y `vista_intents_completa`.
+    - `esquema_base_datos_tienda.sql` depurado. Eliminadas tablas `intenciones`, `patrones`, `respuestas` y `vista_intents_completa`.
     - `intents.json` conservado para entrenamiento directo de la IA neuronal.
     - Base de datos 100% enfocada en Catálogo, Usuarios e Historial.
 
 - [23/04] **BD: Revisión y Validación Estructura MySQL:**
-    - Revisado `chatbot_tienda.sql` (Relacional completo, FKs, vistas, índices, Fulltext).
+    - Revisado `esquema_base_datos_tienda.sql` (Relacional completo, FKs, vistas, índices, Fulltext).
     - Añadidos `db.py` (Pooling de conexión) y `README_MYSQL.md`.
     - BD apta para reemplazar JSON.
 

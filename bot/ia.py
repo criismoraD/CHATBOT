@@ -10,7 +10,7 @@ import json
 import threading
 import torch
 import numpy as np
-from train_pytorch import NeuralNet
+from entrenar_modelo_lstm import NeuralNet
 from core import config
 from core.nlp import Tokenizar_Y_Lematizar
 
@@ -51,7 +51,7 @@ def _Cargar_Modelo_Pytorch():
     global Modelo_IA, Todas_Las_Palabras, Etiquetas_De_Intencion, Longitud_Maxima_Secuencia
 
     if not os.path.exists(config.Ruta_Modelo_Pytorch):
-        print("[WARN] No se encontro model.pth. Ejecuta train_pytorch.py primero.")
+        print("[WARN] No se encontro model.pth. Ejecuta entrenar_modelo_lstm.py primero.")
         return
 
     try:

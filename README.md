@@ -8,9 +8,9 @@ Proyecto completo integrado: chatbot de tienda + módulo de administración.
 
 ```
 proyecto/
-├── app.py                        ← Servidor principal (ya integrado con admin)
+├── servidor_principal.py                        ← Servidor principal (ya integrado con admin)
 ├── admin.py                      ← Módulo de administración (backend)
-├── admin.html                    ← Panel de administración (frontend)
+├── panel_administracion.html                    ← Panel de administración (frontend)
 ├── chatbot_tienda_completo.sql   ← Base de datos COMPLETA (importar solo este)
 ├── config.py
 ├── db.py
@@ -20,9 +20,9 @@ proyecto/
 ├── memoria.py
 ├── extractor.py
 ├── utils_nlp.py
-├── train_pytorch.py
-├── index.html
-├── requirements.txt
+├── entrenar_modelo_lstm.py
+├── interfaz_chatbot.html
+├── dependencias_python.txt
 ├── css/
 ├── js/
 └── data/
@@ -44,13 +44,13 @@ O desde phpMyAdmin: importar el archivo `chatbot_tienda_completo.sql`.
 ### 2. Instalar dependencias Python
 
 ```bash
-pip install -r requirements.txt
+pip install -r dependencias_python.txt
 ```
 
 ### 3. Ejecutar el servidor
 
 ```bash
-python app.py
+python servidor_principal.py
 ```
 
 ---
