@@ -34,7 +34,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 from core import configuracion
-from core import db
+from core import base_datos
 from core.procesamiento_lenguaje import Tokenizar_Y_Lematizar
 from bot.extractor_entidades import (
     Normalizar_Categoria_Producto, Normalizar_Texto_Base,
@@ -80,7 +80,7 @@ def _Normalizar_Producto(Producto_Original):
 def _Cargar_Productos_Desde_BD():
     """Carga todos los productos desde la vista MySQL y los normaliza."""
     try:
-        Filas = db.Ejecutar_Consulta("SELECT * FROM vista_productos_completa")
+        Filas = base_datos.Ejecutar_Consulta("SELECT * FROM vista_productos_completa")
         if not Filas:
             return []
 
