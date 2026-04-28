@@ -15,14 +15,28 @@ Uso: importar y registrar en app.py con:
 """
 
 import os
+import io
+import uuid
 import functools
+import datetime
 from flask import (
     Blueprint, request, jsonify, session,
-    send_from_directory
+    send_from_directory, send_file
 )
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from db import ejecutar_consulta, ejecutar_escritura, get_connection
 from mysql.connector import Error
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+
+UPLOADS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'uploads')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+def _ext_permitida(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ─── Blueprint ────────────────────────────────────────────────────────────────
 admin_bp = Blueprint("admin", __name__)
@@ -610,6 +624,141 @@ def Admin_Top_Productos():
     for r in rows:
         r["ingresos"] = float(r["ingresos"]) if r["ingresos"] else 0.0
     return jsonify({"top_productos": rows})
+
+
+# ─── Upload Imagen ───────────────────────────────────────────────────────────
+
+@admin_bp.route("/admin/productos/upload_imagen", methods=["POST"])
+@login_requerido
+def Admin_Upload_Imagen():
+    """Recibe un archivo imagen y lo guarda en data/uploads/. Retorna la URL."""
+    if 'imagen' not in request.files:
+        return jsonify({"error": "No se envió archivo."}), 400
+
+    archivo = request.files['imagen']
+    if archivo.filename == '':
+        return jsonify({"error": "Archivo sin nombre."}), 400
+    if not _ext_permitida(archivo.filename):
+        return jsonify({"error": "Extensión no permitida. Usa PNG, JPG, JPEG, GIF o WEBP."}), 400
+
+    os.makedirs(UPLOADS_DIR, exist_ok=True)
+    ext = archivo.filename.rsplit('.', 1)[1].lower()
+    nombre_seguro = f"{uuid.uuid4().hex}.{ext}"
+    ruta = os.path.join(UPLOADS_DIR, nombre_seguro)
+    archivo.save(ruta)
+    url = f"/uploads/{nombre_seguro}"
+    return jsonify({"ok": True, "url": url})
+
+
+# ─── Reporte PDF ──────────────────────────────────────────────────────────────
+
+@admin_bp.route("/admin/reportes/pdf", methods=["GET"])
+@login_requerido
+def Admin_Reporte_PDF():
+    """Genera y descarga un PDF con resumen de ventas y top productos."""
+    # Datos resumen
+    resumen_v = ejecutar_consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas WHERE DATE(fecha)=CURDATE()")
+    resumen_m = ejecutar_consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas WHERE MONTH(fecha)=MONTH(NOW()) AND YEAR(fecha)=YEAR(NOW())")
+    resumen_t = ejecutar_consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas")
+
+    # Ventas últimos 30 días
+    ventas_rows = ejecutar_consulta(
+        "SELECT DATE(fecha) AS dia, COUNT(*) AS cant, SUM(total) AS monto "
+        "FROM ventas WHERE fecha >= DATE_SUB(NOW(), INTERVAL 30 DAY) "
+        "GROUP BY DATE(fecha) ORDER BY dia ASC"
+    )
+
+    # Top productos
+    top_rows = ejecutar_consulta(
+        "SELECT vd.nombre_producto, SUM(vd.cantidad) AS unidades, SUM(vd.subtotal) AS ingresos "
+        "FROM venta_detalle vd GROUP BY vd.nombre_producto "
+        "ORDER BY unidades DESC LIMIT 10"
+    )
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=letter,
+                            leftMargin=40, rightMargin=40,
+                            topMargin=50, bottomMargin=40)
+    styles = getSampleStyleSheet()
+    story = []
+
+    # Título
+    story.append(Paragraph("SENATI Sports – Reporte de Ventas", styles['Title']))
+    story.append(Paragraph(f"Generado: {datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}", styles['Normal']))
+    story.append(Spacer(1, 16))
+
+    # Resumen cards
+    def _v(rows, campo):
+        return rows[0][campo] if rows else 0
+
+    resumen_data = [
+        ['Período', 'Ventas', 'Monto Total'],
+        ['Hoy',          str(_v(resumen_v,'n')), f"S/ {float(_v(resumen_v,'monto')):.2f}"],
+        ['Este mes',     str(_v(resumen_m,'n')), f"S/ {float(_v(resumen_m,'monto')):.2f}"],
+        ['Total historial', str(_v(resumen_t,'n')), f"S/ {float(_v(resumen_t,'monto')):.2f}"],
+    ]
+    t_res = Table(resumen_data, colWidths=[180, 100, 120])
+    t_res.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#6c63ff')),
+        ('TEXTCOLOR',  (0,0), (-1,0), colors.white),
+        ('FONTNAME',   (0,0), (-1,0), 'Helvetica-Bold'),
+        ('FONTSIZE',   (0,0), (-1,-1), 9),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor('#f4f4ff'), colors.white]),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#ccccdd')),
+        ('PADDING', (0,0), (-1,-1), 6),
+    ]))
+    story.append(t_res)
+    story.append(Spacer(1, 20))
+
+    # Tabla ventas diarias
+    story.append(Paragraph("Ventas últimos 30 días", styles['Heading2']))
+    story.append(Spacer(1, 8))
+    if ventas_rows:
+        v_data = [['Fecha', 'Nº Ventas', 'Monto']]
+        for r in ventas_rows:
+            v_data.append([str(r['dia']), str(r['cant']), f"S/ {float(r['monto']):.2f}"])
+        t_v = Table(v_data, colWidths=[160, 100, 120])
+        t_v.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#252840')),
+            ('TEXTCOLOR',  (0,0), (-1,0), colors.white),
+            ('FONTNAME',   (0,0), (-1,0), 'Helvetica-Bold'),
+            ('FONTSIZE',   (0,0), (-1,-1), 8),
+            ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor('#f8f8ff'), colors.white]),
+            ('GRID', (0,0), (-1,-1), 0.4, colors.HexColor('#ccccdd')),
+            ('PADDING', (0,0), (-1,-1), 5),
+        ]))
+        story.append(t_v)
+    else:
+        story.append(Paragraph("Sin ventas registradas en los últimos 30 días.", styles['Normal']))
+    story.append(Spacer(1, 20))
+
+    # Top 10
+    story.append(Paragraph("Top 10 Productos más vendidos", styles['Heading2']))
+    story.append(Spacer(1, 8))
+    if top_rows:
+        top_data = [['Producto', 'Unidades', 'Ingresos']]
+        for r in top_rows:
+            top_data.append([str(r['nombre_producto'])[:45], str(r['unidades']), f"S/ {float(r['ingresos']):.2f}"])
+        t_top = Table(top_data, colWidths=[280, 80, 100])
+        t_top.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#00d4aa')),
+            ('TEXTCOLOR',  (0,0), (-1,0), colors.HexColor('#111111')),
+            ('FONTNAME',   (0,0), (-1,0), 'Helvetica-Bold'),
+            ('FONTSIZE',   (0,0), (-1,-1), 8),
+            ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor('#f0fff8'), colors.white]),
+            ('GRID', (0,0), (-1,-1), 0.4, colors.HexColor('#aaeedd')),
+            ('PADDING', (0,0), (-1,-1), 5),
+        ]))
+        story.append(t_top)
+    else:
+        story.append(Paragraph("Sin productos vendidos aún.", styles['Normal']))
+
+    doc.build(story)
+    buf.seek(0)
+    nombre_archivo = f"reporte_ventas_{datetime.datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
+    return send_file(buf, mimetype='application/pdf',
+                     as_attachment=True,
+                     download_name=nombre_archivo)
 
 
 # ─── Inicialización ───────────────────────────────────────────────────────────

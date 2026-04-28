@@ -734,27 +734,10 @@
           <div class="section" id="section-reportes">
             <div class="section-title">📈 Reportes de Ventas</div>
             <div class="chart-controls">
-              <button
-                class="btn btn-ghost btn-sm"
-                id="rpt-diario"
-                onclick="cargarReporte('diario')"
-              >
-                Diario (30d)
-              </button>
-              <button
-                class="btn btn-ghost btn-sm"
-                id="rpt-semanal"
-                onclick="cargarReporte('semanal')"
-              >
-                Semanal (12s)
-              </button>
-              <button
-                class="btn btn-primary btn-sm"
-                id="rpt-mensual"
-                onclick="cargarReporte('mensual')"
-              >
-                Mensual (12m)
-              </button>
+              <button class="btn btn-ghost btn-sm" id="rpt-diario" onclick="cargarReporte('diario')">Diario (30d)</button>
+              <button class="btn btn-ghost btn-sm" id="rpt-semanal" onclick="cargarReporte('semanal')">Semanal (12s)</button>
+              <button class="btn btn-primary btn-sm" id="rpt-mensual" onclick="cargarReporte('mensual')">Mensual (12m)</button>
+              <button class="btn btn-success btn-sm" onclick="exportarReportePDF()" style="margin-left:auto" title="Descargar reporte PDF">📄 Exportar PDF</button>
             </div>
             <div class="chart-grid">
               <div class="chart-card" style="grid-column: 1/-1">
@@ -826,8 +809,15 @@
             <textarea id="prod-descripcion" rows="3"></textarea>
           </div>
           <div class="form-group" style="grid-column: 1/-1">
-            <label>URL de imagen</label>
-            <input type="url" id="prod-imagen" placeholder="https://..." />
+            <label>Imagen del producto</label>
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+              <input type="url" id="prod-imagen" placeholder="https://... (URL)" style="flex:1" oninput="document.getElementById('prod-img-preview').src=this.value||'';" />
+              <label class="btn btn-ghost btn-sm" style="cursor:pointer;white-space:nowrap;" title="Subir desde archivo">
+                📁 Subir
+                <input type="file" id="prod-imagen-file" accept="image/*" style="display:none" onchange="uploadImagenProducto(this)" />
+              </label>
+            </div>
+            <img id="prod-img-preview" src="" alt="" style="max-height:80px;border-radius:8px;border:1px solid var(--border);display:none;" onerror="this.style.display='none'" onload="this.style.display=this.src?'block':'none'" />
           </div>
           <div class="form-group">
             <label>Estado</label>
@@ -1151,22 +1141,75 @@
         cargarProductos();
       }
 
+      /* ═══════════════════════════════════════════════════════════
+   UPLOAD IMAGEN PRODUCTO
+═══════════════════════════════════════════════════════════ */
+      async function uploadImagenProducto(input) {
+        if (!input.files || !input.files[0]) return;
+        const file = input.files[0];
+        const formData = new FormData();
+        formData.append('imagen', file);
+        try {
+          const res = await fetch('/admin/productos/upload_imagen', {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: formData
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Error al subir imagen');
+          document.getElementById('prod-imagen').value = data.url;
+          const prev = document.getElementById('prod-img-preview');
+          prev.src = data.url;
+          prev.style.display = 'block';
+          toast('Imagen subida correctamente', 'ok');
+        } catch(e) {
+          toast(e.message, 'err');
+        }
+        input.value = '';
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   EXPORTAR REPORTE PDF
+═══════════════════════════════════════════════════════════ */
+      async function exportarReportePDF() {
+        try {
+          toast('Generando PDF...', 'ok');
+          const res = await fetch('/admin/reportes/pdf', {
+            method: 'GET',
+            credentials: 'same-origin'
+          });
+          if (!res.ok) {
+            const d = await res.json();
+            throw new Error(d.error || 'Error al generar PDF');
+          }
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          const fecha = new Date().toISOString().slice(0,16).replace('T','_').replace(':','');
+          a.href = url;
+          a.download = `reporte_ventas_${fecha}.pdf`;
+          a.click();
+          URL.revokeObjectURL(url);
+          toast('PDF descargado', 'ok');
+        } catch(e) {
+          toast(e.message, 'err');
+        }
+      }
+
       async function abrirModalProducto() {
         document.getElementById("prod-id").value = "";
-        document.getElementById("modal-prod-titulo").textContent =
-          "Nuevo Producto";
+        document.getElementById("modal-prod-titulo").textContent = "Nuevo Producto";
         [
-          "prod-nombre",
-          "prod-precio",
-          "prod-color",
-          "prod-descripcion",
-          "prod-imagen",
+          "prod-nombre", "prod-precio", "prod-color",
+          "prod-descripcion", "prod-imagen",
         ].forEach((id) => (document.getElementById(id).value = ""));
         document.getElementById("prod-stock").value = "0";
         document.getElementById("prod-rating").value = "";
         document.getElementById("prod-genero").value = "";
         document.getElementById("prod-activo").value = "1";
         document.getElementById("modal-prod-msg").className = "msg";
+        const prev = document.getElementById('prod-img-preview');
+        prev.src = ''; prev.style.display = 'none';
         await cargarSelectCategorias("prod-categoria");
         abrirModal("modal-producto");
       }

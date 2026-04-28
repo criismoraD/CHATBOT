@@ -11,7 +11,8 @@ import config
 from ia import Modelo_IA, Etiquetas_De_Intencion, Obtener_Modelo_Voz
 from catalogo import (
     Datos_De_Productos, Catalogos_De_Productos, Fuente_Activa_De_Catalogo,
-    Cambiar_Fuente_De_Catalogo, Buscar_Productos, Obtener_Producto_Por_Id
+    Cambiar_Fuente_De_Catalogo, Buscar_Productos, Obtener_Producto_Por_Id,
+    Decrementar_Stock_En_Cache
 )
 from memoria import Obtener_Contexto, Actualizar_Contexto
 from dialogo import Obtener_Respuesta_Principal
@@ -42,6 +43,17 @@ def Detectar_Intencion_De_Detalle_Contextual(Mensaje_Usuario):
         return "colores"
 
     return None
+
+
+def Detectar_Intencion_Carrito(Mensaje_Usuario):
+    """Detecta si el usuario quiere añadir el producto en contexto al carrito."""
+    Texto = str(Mensaje_Usuario or "").strip().lower()
+    Palabras_Carrito = (
+        "carrito", "añadir", "añadelo", "agregar", "agregalo",
+        "comprar", "comprarlo", "quiero", "llevar", "llevarlo",
+        "pedir", "pedirlo", "adquirir",
+    )
+    return any(p in Texto for p in Palabras_Carrito)
 
 
 def Construir_Respuesta_Contextual_Rapida(Producto, Etiqueta_Detalle):
@@ -171,6 +183,29 @@ def chat():
                     "bot_name": config.Nombre_Del_Bot,
                     "catalog_source": Fuente_Usada,
                 })
+
+    # ── Intento de añadir al carrito desde el chat ──
+    if Id_De_Producto_Contextual and Detectar_Intencion_Carrito(mensaje):
+        Producto_Para_Carrito = Obtener_Producto_Por_Id(Id_De_Producto_Contextual)
+        if Producto_Para_Carrito:
+            Nombre = Producto_Para_Carrito.get("name", "el producto")
+            Precio = Producto_Para_Carrito.get("price", 0)
+            Stock = Producto_Para_Carrito.get("stock", 0)
+            if isinstance(Stock, (int, float)) and int(Stock) <= 0:
+                return jsonify({
+                    "response": f"Lo siento, {Nombre} está agotado en este momento. 😔",
+                    "tag": "sin_stock",
+                    "bot_name": config.Nombre_Del_Bot,
+                    "catalog_source": Fuente_Usada,
+                })
+            return jsonify({
+                "response": f"¡Listo! Añadí {Nombre} (S/ {Precio:.2f}) a tu carrito. 🛒",
+                "tag": "agregar_carrito",
+                "add_to_cart": True,
+                "product": Producto_Para_Carrito,
+                "bot_name": config.Nombre_Del_Bot,
+                "catalog_source": Fuente_Usada,
+            })
 
     Respuesta_Bot, Etiqueta_Bot, Accion_De_Filtro = Obtener_Respuesta_Principal(Id_De_Sesion_Actual, mensaje)
 
@@ -365,6 +400,7 @@ def Generate_Pdf():
                         "UPDATE productos SET stock = GREATEST(0, stock - %s) WHERE id = %s",
                         (cantidad, prod_id)
                     )
+                    Decrementar_Stock_En_Cache(prod_id, cantidad)
                 print(f"[ADMIN] Venta #{venta_id} registrada automáticamente.")
         except Exception as e_venta:
             print(f"[ADMIN] No se pudo registrar la venta: {e_venta}")
@@ -375,11 +411,18 @@ def Generate_Pdf():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route('/uploads/<path:filename>', methods=['GET'])
+def Servir_Uploads(filename):
+    uploads_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'uploads')
+    return send_from_directory(uploads_dir, filename)
+
+
 if __name__ == '__main__':
     server_port = int(os.getenv('SENATI_PORT', '5000'))
     debug_mode = True
     print(f">>> Frontend listo en http://localhost:{server_port}/")
     print(f">>> Estado API en http://localhost:{server_port}/status")
     print(f">>> Chat API en http://localhost:{server_port}/chat")
+    print(f">>> Admin Panel en http://localhost:{server_port}/admin")
     print(f">>> Debug: {debug_mode}")
     app.run(port=server_port, debug=debug_mode)

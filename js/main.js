@@ -812,7 +812,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const itemEmoji = document.createElement('div');
                 itemEmoji.className = 'cart-item-emoji';
-                itemEmoji.textContent = Obtener_Emoji_Categoria(item.category);
+                const imgUrl = Obtener_Imagen_Producto(item);
+                if (imgUrl) {
+                    const imgEl = document.createElement('img');
+                    imgEl.src = imgUrl;
+                    imgEl.alt = item.name;
+                    imgEl.style.cssText = 'width:52px;height:52px;object-fit:cover;border-radius:8px;display:block;';
+                    imgEl.referrerPolicy = 'no-referrer';
+                    imgEl.onerror = () => { imgEl.style.display='none'; itemEmoji.textContent = Obtener_Emoji_Categoria(item.category); };
+                    itemEmoji.appendChild(imgEl);
+                } else {
+                    itemEmoji.textContent = Obtener_Emoji_Categoria(item.category);
+                }
 
                 const itemInfo = document.createElement('div');
                 itemInfo.className = 'cart-item-info';
@@ -1050,7 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(`${URL_Base_API}/generate_pdf`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ carrito: Carrito_Actual })
+            body: JSON.stringify({ carrito: Carrito_Actual, session_id: Session_ID_Unico })
         })
         .then(response => {
             if (!response.ok) throw new Error('Error en el servidor');
@@ -1159,6 +1170,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const Sugerencias_Coherentes = Obtener_Sugerencias_Coherentes(data.tag, data.filter_action || {});
             Renderizar_Sugerencias_Chat(Sugerencias_Coherentes);
             
+            // Si el bot indica añadir al carrito
+            if (data.add_to_cart && data.product) {
+                Agregar_Al_Carrito(data.product);
+            }
+
             // Si hay filter_action, aplicar el filtro en el catálogo
             if (data.filter_action) {
                 setTimeout(() => {

@@ -3,12 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-04-2026 a las 21:27:40
+-- Tiempo de generación: 28-04-2026 a las 21:47:06
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
-
-CREATE DATABASE IF NOT EXISTS `chatbot_tienda`;
-USE `chatbot_tienda`;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -23,6 +20,9 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `chatbot_tienda`
 --
+CREATE DATABASE IF NOT EXISTS `chatbot_tienda`;
+USE `chatbot_tienda`;
+
 
 DELIMITER $$
 --
@@ -77,6 +77,27 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `administradores`
+--
+
+CREATE TABLE `administradores` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `usuario` varchar(50) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `nombre` varchar(100) DEFAULT 'Admin',
+  `creado_en` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `administradores`
+--
+
+INSERT INTO `administradores` (`id`, `usuario`, `password_hash`, `nombre`, `creado_en`) VALUES
+(1, 'admin', 'scrypt:32768:8:1$mSCxgXb9SbGfSsU7$8f4e7cdf3b8dc5d49fca0a45fe4b35ad40c0356c4fd888cd8349aa343732dde74bee7714c5619de2a2f1fac49d40f987982a51aeba8b993dd8601101726c7075', 'Administrador', '2026-04-28 19:46:07');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `categorias`
 --
 
@@ -97,10 +118,6 @@ INSERT INTO `categorias` (`id`, `nombre`) VALUES
 
 -- --------------------------------------------------------
 
---
---
---
---
 --
 -- Estructura de tabla para la tabla `productos`
 --
@@ -1982,8 +1999,364 @@ INSERT INTO `producto_tallas` (`producto_id`, `talla`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `ventas`
 --
+
+CREATE TABLE `ventas` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `sesion_id` varchar(100) DEFAULT 'anonimo',
+  `total` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `cantidad_items` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
+-- Volcado de datos para la tabla `ventas`
+--
+
+INSERT INTO `ventas` (`id`, `sesion_id`, `total`, `cantidad_items`, `fecha`) VALUES
+(1, 'fake_session_7852', 1342.94, 5, '2026-04-02 20:43:25'),
+(2, 'fake_session_2290', 1053.09, 4, '2026-04-06 15:11:08'),
+(3, 'fake_session_4850', 224.28, 1, '2026-04-07 14:17:27'),
+(4, 'fake_session_7270', 603.66, 2, '2026-04-08 18:29:14'),
+(5, 'fake_session_9808', 342.06, 1, '2026-04-20 17:59:40'),
+(6, 'fake_session_3078', 1350.95, 5, '2026-04-26 18:41:11'),
+(7, 'fake_session_8604', 991.97, 5, '2026-04-02 15:52:27'),
+(8, 'fake_session_9566', 105.22, 1, '2026-04-13 15:36:41'),
+(9, 'fake_session_6540', 145.08, 1, '2026-04-07 14:28:26'),
+(10, 'fake_session_3778', 420.97, 3, '2026-04-21 16:49:40'),
+(11, 'fake_session_4024', 476.66, 3, '2026-04-17 00:28:33'),
+(12, 'fake_session_1889', 145.38, 1, '2026-03-29 14:04:00'),
+(13, 'fake_session_4794', 849.39, 3, '2026-04-28 01:30:06'),
+(14, 'fake_session_9479', 1401.99, 5, '2026-04-15 01:16:41'),
+(15, 'fake_session_6618', 180.57, 2, '2026-04-27 16:09:48'),
+(16, 'fake_session_2329', 747.11, 2, '2026-04-18 20:31:05'),
+(17, 'fake_session_6009', 395.01, 2, '2026-04-24 16:37:24'),
+(18, 'fake_session_9918', 506.60, 2, '2026-04-03 20:03:46'),
+(19, 'fake_session_8433', 1143.53, 5, '2026-04-05 20:07:18'),
+(20, 'fake_session_3343', 1148.22, 4, '2026-04-13 21:23:23'),
+(21, 'fake_session_6321', 735.16, 3, '2026-04-28 19:19:10'),
+(22, 'fake_session_2762', 1116.72, 5, '2026-04-15 16:55:16'),
+(23, 'fake_session_4933', 1086.36, 3, '2026-04-12 18:42:42'),
+(24, 'fake_session_7607', 1269.24, 5, '2026-04-18 18:18:35'),
+(25, 'fake_session_7301', 743.86, 4, '2026-04-16 14:20:46'),
+(26, 'fake_session_6474', 1370.33, 5, '2026-04-13 17:30:58'),
+(27, 'fake_session_8657', 1091.41, 3, '2026-03-31 19:26:40'),
+(28, 'fake_session_4373', 436.14, 1, '2026-04-07 00:50:07'),
+(29, 'fake_session_6367', 1361.63, 5, '2026-04-24 23:49:17'),
+(30, 'fake_session_6406', 404.54, 3, '2026-04-18 16:59:20'),
+(31, 'fake_session_7567', 351.80, 2, '2026-04-15 17:43:36'),
+(32, 'fake_session_3120', 715.12, 2, '2026-04-21 16:11:56'),
+(33, 'fake_session_3269', 976.98, 5, '2026-04-14 18:06:52'),
+(34, 'fake_session_7995', 578.07, 3, '2026-04-20 13:48:29'),
+(35, 'fake_session_8267', 965.53, 5, '2026-04-18 16:15:57'),
+(36, 'fake_session_1321', 433.41, 1, '2026-04-02 22:09:12'),
+(37, 'fake_session_5993', 773.03, 3, '2026-04-17 19:48:15'),
+(38, 'fake_session_3375', 1041.86, 5, '2026-04-24 18:41:32'),
+(39, 'fake_session_3850', 922.08, 4, '2026-04-06 16:43:43'),
+(40, 'fake_session_3665', 854.06, 3, '2026-04-16 22:50:39'),
+(41, 'fake_session_2403', 183.70, 1, '2026-03-30 16:21:35'),
+(42, 'fake_session_3300', 853.58, 4, '2026-04-27 14:20:52'),
+(43, 'fake_session_3420', 585.70, 3, '2026-04-28 20:00:00'),
+(44, 'fake_session_4729', 1159.43, 4, '2026-04-01 01:52:39'),
+(45, 'fake_session_6347', 215.18, 2, '2026-04-06 17:06:23'),
+(46, 'fake_session_1820', 184.23, 1, '2026-03-31 01:10:45'),
+(47, 'fake_session_4331', 377.88, 1, '2026-04-28 16:13:40'),
+(48, 'fake_session_7998', 1979.06, 5, '2026-04-17 21:09:59'),
+(49, 'fake_session_5980', 131.66, 1, '2026-04-10 20:45:05'),
+(50, 'fake_session_7055', 958.61, 4, '2026-03-29 21:25:08'),
+(51, 'fake_session_8084', 516.48, 3, '2026-04-12 14:04:44'),
+(52, 'fake_session_2323', 772.14, 2, '2026-04-09 23:27:51'),
+(53, 'fake_session_5504', 593.98, 2, '2026-04-13 21:58:20'),
+(54, 'fake_session_4672', 686.60, 3, '2026-03-29 15:08:21'),
+(55, 'fake_session_3501', 105.22, 1, '2026-04-28 23:44:31'),
+(56, 'fake_session_4266', 676.38, 3, '2026-04-10 13:44:51'),
+(57, 'fake_session_4173', 1244.82, 5, '2026-04-17 19:31:15'),
+(58, 'fake_session_7312', 1359.27, 5, '2026-03-31 19:34:56'),
+(59, 'fake_session_5594', 155.06, 1, '2026-03-31 23:21:06'),
+(60, 'fake_session_3479', 468.11, 2, '2026-04-09 16:23:01'),
+(61, 'fake_session_5525', 947.66, 3, '2026-04-14 01:25:39'),
+(62, 'fake_session_6453', 263.32, 1, '2026-04-16 19:25:32'),
+(63, 'fake_session_7568', 210.78, 1, '2026-04-04 15:40:54'),
+(64, 'fake_session_8773', 648.32, 3, '2026-04-18 21:57:50'),
+(65, 'fake_session_7819', 548.77, 4, '2026-04-16 22:53:31'),
+(66, 'fake_session_2759', 521.21, 2, '2026-04-05 22:42:53'),
+(67, 'fake_session_4402', 488.91, 1, '2026-04-03 16:33:55'),
+(68, 'fake_session_5895', 1584.36, 5, '2026-04-11 15:12:56'),
+(69, 'fake_session_4146', 1200.72, 4, '2026-04-06 18:16:21'),
+(70, 'fake_session_8773', 1220.87, 4, '2026-04-04 22:36:03'),
+(71, 'fake_session_5430', 1123.79, 3, '2026-04-25 00:59:24'),
+(72, 'fake_session_7893', 1761.20, 5, '2026-04-24 22:39:51'),
+(73, 'fake_session_9545', 377.41, 2, '2026-04-20 23:39:22'),
+(74, 'fake_session_7104', 298.40, 2, '2026-04-16 20:32:38'),
+(75, 'fake_session_4897', 69.97, 1, '2026-04-05 23:38:16'),
+(76, 'fake_session_2167', 1411.21, 5, '2026-04-29 01:12:15'),
+(77, 'fake_session_6833', 989.59, 5, '2026-04-18 20:26:54'),
+(78, 'fake_session_2923', 415.98, 2, '2026-04-06 20:14:10'),
+(79, 'fake_session_7396', 802.03, 2, '2026-04-25 23:47:21'),
+(80, 'fake_session_5805', 551.97, 2, '2026-04-17 15:34:11');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `venta_detalle`
+--
+
+CREATE TABLE `venta_detalle` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `venta_id` int(11) UNSIGNED NOT NULL,
+  `producto_id` smallint(5) UNSIGNED NOT NULL,
+  `nombre_producto` varchar(255) NOT NULL,
+  `precio_unitario` decimal(10,2) NOT NULL,
+  `cantidad` smallint(5) UNSIGNED NOT NULL DEFAULT 1,
+  `subtotal` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `venta_detalle`
+--
+
+INSERT INTO `venta_detalle` (`id`, `venta_id`, `producto_id`, `nombre_producto`, `precio_unitario`, `cantidad`, `subtotal`) VALUES
+(1, 1, 26, 'Zapatillas Urbanas Para Mujer Irun Cadwell 501 341F5', 144.47, 1, 144.47),
+(2, 1, 30, 'Zapatillas Running Para Mujer I-RUN SPEEDCORE X 309F8', 129.10, 3, 387.30),
+(3, 1, 13, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (3)', 159.47, 3, 478.41),
+(4, 1, 7, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (2)', 125.96, 1, 125.96),
+(5, 1, 20, 'Zapatillas Outdoor Para Mujer I-Run I-RUN CHESTNUT 316F9', 103.40, 2, 206.80),
+(6, 2, 22, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F6', 162.97, 2, 325.94),
+(7, 2, 9, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (2)', 70.26, 2, 140.52),
+(8, 2, 13, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (3)', 159.47, 3, 478.41),
+(9, 2, 24, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F7', 108.22, 1, 108.22),
+(10, 3, 21, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F8', 74.76, 3, 224.28),
+(11, 4, 28, 'Zapatillas Running Juvenil I-Run KALIBUR 310J3', 61.41, 3, 184.23),
+(12, 4, 11, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (3)', 139.81, 3, 419.43),
+(13, 5, 4, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6', 171.03, 2, 342.06),
+(14, 6, 21, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F8', 74.76, 2, 149.52),
+(15, 6, 6, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (2)', 169.12, 1, 169.12),
+(16, 6, 2, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6', 183.70, 1, 183.70),
+(17, 6, 25, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F6', 153.77, 3, 461.31),
+(18, 6, 30, 'Zapatillas Running Para Mujer I-RUN SPEEDCORE X 309F8', 129.10, 3, 387.30),
+(19, 7, 9, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (2)', 70.26, 1, 70.26),
+(20, 7, 13, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (3)', 159.47, 2, 318.94),
+(21, 7, 23, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F8', 105.22, 1, 105.22),
+(22, 7, 28, 'Zapatillas Running Juvenil I-Run KALIBUR 310J3', 61.41, 1, 61.41),
+(23, 7, 8, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (2)', 145.38, 3, 436.14),
+(24, 8, 23, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F8', 105.22, 1, 105.22),
+(25, 9, 15, 'Zapatillas Urbanas para Mujer I-Run GRIMAULD 291F6', 145.08, 1, 145.08),
+(26, 10, 30, 'Zapatillas Running Para Mujer I-RUN SPEEDCORE X 309F8', 129.10, 1, 129.10),
+(27, 10, 27, 'Zapatillas Running Para Mujer I-Run Zephyr 329F7', 85.07, 1, 85.07),
+(28, 10, 20, 'Zapatillas Outdoor Para Mujer I-Run I-RUN CHESTNUT 316F9', 103.40, 2, 206.80),
+(29, 11, 23, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F8', 105.22, 1, 105.22),
+(30, 11, 16, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (3)', 63.90, 1, 63.90),
+(31, 11, 25, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F6', 153.77, 2, 307.54),
+(32, 12, 8, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (2)', 145.38, 1, 145.38),
+(33, 13, 21, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F8', 74.76, 3, 224.28),
+(34, 13, 26, 'Zapatillas Urbanas Para Mujer Irun Cadwell 501 341F5', 144.47, 3, 433.41),
+(35, 13, 16, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (3)', 63.90, 3, 191.70),
+(36, 14, 11, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (3)', 139.81, 1, 139.81),
+(37, 14, 1, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7', 131.66, 2, 263.32),
+(38, 14, 17, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (3)', 152.16, 3, 456.48),
+(39, 14, 24, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F7', 108.22, 2, 216.44),
+(40, 14, 22, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F6', 162.97, 2, 325.94),
+(41, 15, 14, 'Zapatillas Urbanas para Mujer I-Run GRIMAULD 291F8', 72.35, 1, 72.35),
+(42, 15, 24, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F7', 108.22, 1, 108.22),
+(43, 16, 30, 'Zapatillas Running Para Mujer I-RUN SPEEDCORE X 309F8', 129.10, 2, 258.20),
+(44, 16, 22, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F6', 162.97, 3, 488.91),
+(45, 17, 9, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (2)', 70.26, 3, 210.78),
+(46, 17, 28, 'Zapatillas Running Juvenil I-Run KALIBUR 310J3', 61.41, 3, 184.23),
+(47, 18, 15, 'Zapatillas Urbanas para Mujer I-Run GRIMAULD 291F6', 145.08, 2, 290.16),
+(48, 18, 24, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F7', 108.22, 2, 216.44),
+(49, 19, 27, 'Zapatillas Running Para Mujer I-Run Zephyr 329F7', 85.07, 2, 170.14),
+(50, 19, 28, 'Zapatillas Running Juvenil I-Run KALIBUR 310J3', 61.41, 3, 184.23),
+(51, 19, 4, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6', 171.03, 2, 342.06),
+(52, 19, 18, 'Zapatillas Outdoor Para Mujer I-RUN MYTHTRAIL 410F9', 169.44, 2, 338.88),
+(53, 19, 24, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F7', 108.22, 1, 108.22),
+(54, 20, 12, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (3)', 115.96, 3, 347.88),
+(55, 20, 28, 'Zapatillas Running Juvenil I-Run KALIBUR 310J3', 61.41, 2, 122.82),
+(56, 20, 2, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6', 183.70, 2, 367.40),
+(57, 20, 29, 'Zapatillas Running Para Mujer I-Run Fynx 337F8', 155.06, 2, 310.12),
+(58, 21, 4, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6', 171.03, 1, 171.03),
+(59, 21, 11, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (3)', 139.81, 3, 419.43),
+(60, 21, 14, 'Zapatillas Urbanas para Mujer I-Run GRIMAULD 291F8', 72.35, 2, 144.70),
+(61, 22, 13, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (3)', 159.47, 1, 159.47),
+(62, 22, 20, 'Zapatillas Outdoor Para Mujer I-Run I-RUN CHESTNUT 316F9', 103.40, 2, 206.80),
+(63, 22, 22, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F6', 162.97, 3, 488.91),
+(64, 22, 9, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (2)', 70.26, 1, 70.26),
+(65, 22, 3, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7', 63.76, 3, 191.28),
+(66, 23, 6, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (2)', 169.12, 3, 507.36),
+(67, 23, 30, 'Zapatillas Running Para Mujer I-RUN SPEEDCORE X 309F8', 129.10, 3, 387.30),
+(68, 23, 16, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (3)', 63.90, 3, 191.70),
+(69, 24, 24, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F7', 108.22, 2, 216.44),
+(70, 24, 19, 'Zapatillas Outdoor Para Mujer I-RUN MYTHTRAIL 410F8', 124.91, 1, 124.91),
+(71, 24, 15, 'Zapatillas Urbanas para Mujer I-Run GRIMAULD 291F6', 145.08, 3, 435.24),
+(72, 24, 18, 'Zapatillas Outdoor Para Mujer I-RUN MYTHTRAIL 410F9', 169.44, 2, 338.88),
+(73, 24, 25, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F6', 153.77, 1, 153.77),
+(74, 25, 19, 'Zapatillas Outdoor Para Mujer I-RUN MYTHTRAIL 410F8', 124.91, 1, 124.91),
+(75, 25, 23, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F8', 105.22, 3, 315.66),
+(76, 25, 25, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F6', 153.77, 1, 153.77),
+(77, 25, 21, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F8', 74.76, 2, 149.52),
+(78, 26, 24, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F7', 108.22, 3, 324.66),
+(79, 26, 8, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (2)', 145.38, 3, 436.14),
+(80, 26, 13, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (3)', 159.47, 1, 159.47),
+(81, 26, 29, 'Zapatillas Running Para Mujer I-Run Fynx 337F8', 155.06, 2, 310.12),
+(82, 26, 5, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5', 69.97, 2, 139.94),
+(83, 27, 12, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (3)', 115.96, 3, 347.88),
+(84, 27, 26, 'Zapatillas Urbanas Para Mujer Irun Cadwell 501 341F5', 144.47, 3, 433.41),
+(85, 27, 29, 'Zapatillas Running Para Mujer I-Run Fynx 337F8', 155.06, 2, 310.12),
+(86, 28, 8, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (2)', 145.38, 3, 436.14),
+(87, 29, 23, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F8', 105.22, 1, 105.22),
+(88, 29, 12, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (3)', 115.96, 1, 115.96),
+(89, 29, 6, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (2)', 169.12, 3, 507.36),
+(90, 29, 7, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (2)', 125.96, 3, 377.88),
+(91, 29, 27, 'Zapatillas Running Para Mujer I-Run Zephyr 329F7', 85.07, 3, 255.21),
+(92, 30, 16, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (3)', 63.90, 2, 127.80),
+(93, 30, 1, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7', 131.66, 1, 131.66),
+(94, 30, 15, 'Zapatillas Urbanas para Mujer I-Run GRIMAULD 291F6', 145.08, 1, 145.08),
+(95, 31, 10, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (2)', 96.59, 1, 96.59),
+(96, 31, 27, 'Zapatillas Running Para Mujer I-Run Zephyr 329F7', 85.07, 3, 255.21),
+(97, 32, 18, 'Zapatillas Outdoor Para Mujer I-RUN MYTHTRAIL 410F9', 169.44, 3, 508.32),
+(98, 32, 20, 'Zapatillas Outdoor Para Mujer I-Run I-RUN CHESTNUT 316F9', 103.40, 2, 206.80),
+(99, 33, 11, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (3)', 139.81, 2, 279.62),
+(100, 33, 16, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (3)', 63.90, 2, 127.80),
+(101, 33, 21, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F8', 74.76, 1, 74.76),
+(102, 33, 27, 'Zapatillas Running Para Mujer I-Run Zephyr 329F7', 85.07, 2, 170.14),
+(103, 33, 24, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F7', 108.22, 3, 324.66),
+(104, 34, 14, 'Zapatillas Urbanas para Mujer I-Run GRIMAULD 291F8', 72.35, 3, 217.05),
+(105, 34, 8, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (2)', 145.38, 2, 290.76),
+(106, 34, 9, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (2)', 70.26, 1, 70.26),
+(107, 35, 17, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (3)', 152.16, 1, 152.16),
+(108, 35, 13, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (3)', 159.47, 1, 159.47),
+(109, 35, 18, 'Zapatillas Outdoor Para Mujer I-RUN MYTHTRAIL 410F9', 169.44, 2, 338.88),
+(110, 35, 24, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F7', 108.22, 1, 108.22),
+(111, 35, 20, 'Zapatillas Outdoor Para Mujer I-Run I-RUN CHESTNUT 316F9', 103.40, 2, 206.80),
+(112, 36, 26, 'Zapatillas Urbanas Para Mujer Irun Cadwell 501 341F5', 144.47, 3, 433.41),
+(113, 37, 21, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F8', 74.76, 3, 224.28),
+(114, 37, 25, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F6', 153.77, 1, 153.77),
+(115, 37, 1, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7', 131.66, 3, 394.98),
+(116, 38, 25, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F6', 153.77, 1, 153.77),
+(117, 38, 10, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (2)', 96.59, 3, 289.77),
+(118, 38, 2, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6', 183.70, 2, 367.40),
+(119, 38, 20, 'Zapatillas Outdoor Para Mujer I-Run I-RUN CHESTNUT 316F9', 103.40, 1, 103.40),
+(120, 38, 3, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7', 63.76, 2, 127.52),
+(121, 39, 29, 'Zapatillas Running Para Mujer I-Run Fynx 337F8', 155.06, 1, 155.06),
+(122, 39, 30, 'Zapatillas Running Para Mujer I-RUN SPEEDCORE X 309F8', 129.10, 3, 387.30),
+(123, 39, 16, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (3)', 63.90, 2, 127.80),
+(124, 39, 7, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (2)', 125.96, 2, 251.92),
+(125, 40, 11, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (3)', 139.81, 3, 419.43),
+(126, 40, 26, 'Zapatillas Urbanas Para Mujer Irun Cadwell 501 341F5', 144.47, 1, 144.47),
+(127, 40, 15, 'Zapatillas Urbanas para Mujer I-Run GRIMAULD 291F6', 145.08, 2, 290.16),
+(128, 41, 2, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6', 183.70, 1, 183.70),
+(129, 42, 13, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (3)', 159.47, 2, 318.94),
+(130, 42, 21, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F8', 74.76, 1, 74.76),
+(131, 42, 6, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (2)', 169.12, 1, 169.12),
+(132, 42, 8, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (2)', 145.38, 2, 290.76),
+(133, 43, 21, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F8', 74.76, 3, 224.28),
+(134, 43, 3, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7', 63.76, 3, 191.28),
+(135, 43, 27, 'Zapatillas Running Para Mujer I-Run Zephyr 329F7', 85.07, 2, 170.14),
+(136, 44, 14, 'Zapatillas Urbanas para Mujer I-Run GRIMAULD 291F8', 72.35, 3, 217.05),
+(137, 44, 25, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F6', 153.77, 1, 153.77),
+(138, 44, 20, 'Zapatillas Outdoor Para Mujer I-Run I-RUN CHESTNUT 316F9', 103.40, 3, 310.20),
+(139, 44, 13, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (3)', 159.47, 3, 478.41),
+(140, 45, 25, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F6', 153.77, 1, 153.77),
+(141, 45, 28, 'Zapatillas Running Juvenil I-Run KALIBUR 310J3', 61.41, 1, 61.41),
+(142, 46, 28, 'Zapatillas Running Juvenil I-Run KALIBUR 310J3', 61.41, 3, 184.23),
+(143, 47, 7, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (2)', 125.96, 3, 377.88),
+(144, 48, 6, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (2)', 169.12, 3, 507.36),
+(145, 48, 20, 'Zapatillas Outdoor Para Mujer I-Run I-RUN CHESTNUT 316F9', 103.40, 3, 310.20),
+(146, 48, 30, 'Zapatillas Running Para Mujer I-RUN SPEEDCORE X 309F8', 129.10, 2, 258.20),
+(147, 48, 18, 'Zapatillas Outdoor Para Mujer I-RUN MYTHTRAIL 410F9', 169.44, 3, 508.32),
+(148, 48, 1, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7', 131.66, 3, 394.98),
+(149, 49, 1, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7', 131.66, 1, 131.66),
+(150, 50, 10, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (2)', 96.59, 3, 289.77),
+(151, 50, 26, 'Zapatillas Urbanas Para Mujer Irun Cadwell 501 341F5', 144.47, 2, 288.94),
+(152, 50, 6, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (2)', 169.12, 1, 169.12),
+(153, 50, 9, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (2)', 70.26, 3, 210.78),
+(154, 51, 27, 'Zapatillas Running Para Mujer I-Run Zephyr 329F7', 85.07, 2, 170.14),
+(155, 51, 29, 'Zapatillas Running Para Mujer I-Run Fynx 337F8', 155.06, 1, 155.06),
+(156, 51, 3, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7', 63.76, 3, 191.28),
+(157, 52, 23, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F8', 105.22, 3, 315.66),
+(158, 52, 17, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (3)', 152.16, 3, 456.48),
+(159, 53, 7, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (2)', 125.96, 2, 251.92),
+(160, 53, 4, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6', 171.03, 2, 342.06),
+(161, 54, 29, 'Zapatillas Running Para Mujer I-Run Fynx 337F8', 155.06, 1, 155.06),
+(162, 54, 11, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (3)', 139.81, 2, 279.62),
+(163, 54, 7, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (2)', 125.96, 2, 251.92),
+(164, 55, 23, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F8', 105.22, 1, 105.22),
+(165, 56, 30, 'Zapatillas Running Para Mujer I-RUN SPEEDCORE X 309F8', 129.10, 2, 258.20),
+(166, 56, 22, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F6', 162.97, 1, 162.97),
+(167, 56, 27, 'Zapatillas Running Para Mujer I-Run Zephyr 329F7', 85.07, 3, 255.21),
+(168, 57, 3, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7', 63.76, 3, 191.28),
+(169, 57, 9, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (2)', 70.26, 1, 70.26),
+(170, 57, 8, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (2)', 145.38, 3, 436.14),
+(171, 57, 1, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7', 131.66, 3, 394.98),
+(172, 57, 17, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (3)', 152.16, 1, 152.16),
+(173, 58, 26, 'Zapatillas Urbanas Para Mujer Irun Cadwell 501 341F5', 144.47, 1, 144.47),
+(174, 58, 9, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (2)', 70.26, 1, 70.26),
+(175, 58, 8, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (2)', 145.38, 3, 436.14),
+(176, 58, 17, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (3)', 152.16, 3, 456.48),
+(177, 58, 7, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (2)', 125.96, 2, 251.92),
+(178, 59, 29, 'Zapatillas Running Para Mujer I-Run Fynx 337F8', 155.06, 1, 155.06),
+(179, 60, 5, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5', 69.97, 3, 209.91),
+(180, 60, 30, 'Zapatillas Running Para Mujer I-RUN SPEEDCORE X 309F8', 129.10, 2, 258.20),
+(181, 61, 30, 'Zapatillas Running Para Mujer I-RUN SPEEDCORE X 309F8', 129.10, 2, 258.20),
+(182, 61, 29, 'Zapatillas Running Para Mujer I-Run Fynx 337F8', 155.06, 3, 465.18),
+(183, 61, 21, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F8', 74.76, 3, 224.28),
+(184, 62, 1, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7', 131.66, 2, 263.32),
+(185, 63, 9, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (2)', 70.26, 3, 210.78),
+(186, 64, 16, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (3)', 63.90, 3, 191.70),
+(187, 64, 20, 'Zapatillas Outdoor Para Mujer I-Run I-RUN CHESTNUT 316F9', 103.40, 2, 206.80),
+(188, 64, 19, 'Zapatillas Outdoor Para Mujer I-RUN MYTHTRAIL 410F8', 124.91, 2, 249.82),
+(189, 65, 9, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (2)', 70.26, 2, 140.52),
+(190, 65, 7, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (2)', 125.96, 1, 125.96),
+(191, 65, 28, 'Zapatillas Running Juvenil I-Run KALIBUR 310J3', 61.41, 2, 122.82),
+(192, 65, 13, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (3)', 159.47, 1, 159.47),
+(193, 66, 8, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (2)', 145.38, 3, 436.14),
+(194, 66, 27, 'Zapatillas Running Para Mujer I-Run Zephyr 329F7', 85.07, 1, 85.07),
+(195, 67, 22, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F6', 162.97, 3, 488.91),
+(196, 68, 25, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F6', 153.77, 1, 153.77),
+(197, 68, 24, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F7', 108.22, 2, 216.44),
+(198, 68, 11, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (3)', 139.81, 3, 419.43),
+(199, 68, 17, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (3)', 152.16, 3, 456.48),
+(200, 68, 6, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (2)', 169.12, 2, 338.24),
+(201, 69, 20, 'Zapatillas Outdoor Para Mujer I-Run I-RUN CHESTNUT 316F9', 103.40, 3, 310.20),
+(202, 69, 22, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F6', 162.97, 3, 488.91),
+(203, 69, 16, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (3)', 63.90, 3, 191.70),
+(204, 69, 5, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5', 69.97, 3, 209.91),
+(205, 70, 12, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (3)', 115.96, 2, 231.92),
+(206, 70, 22, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F6', 162.97, 3, 488.91),
+(207, 70, 8, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (2)', 145.38, 3, 436.14),
+(208, 70, 16, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (3)', 63.90, 1, 63.90),
+(209, 71, 6, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (2)', 169.12, 3, 507.36),
+(210, 71, 3, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7', 63.76, 2, 127.52),
+(211, 71, 22, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F6', 162.97, 3, 488.91),
+(212, 72, 6, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (2)', 169.12, 3, 507.36),
+(213, 72, 29, 'Zapatillas Running Para Mujer I-Run Fynx 337F8', 155.06, 1, 155.06),
+(214, 72, 4, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6', 171.03, 1, 171.03),
+(215, 72, 11, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (3)', 139.81, 3, 419.43),
+(216, 72, 18, 'Zapatillas Outdoor Para Mujer I-RUN MYTHTRAIL 410F9', 169.44, 3, 508.32),
+(217, 73, 10, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (2)', 96.59, 2, 193.18),
+(218, 73, 28, 'Zapatillas Running Juvenil I-Run KALIBUR 310J3', 61.41, 3, 184.23),
+(219, 74, 10, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (2)', 96.59, 2, 193.18),
+(220, 74, 23, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F8', 105.22, 1, 105.22),
+(221, 75, 5, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5', 69.97, 1, 69.97),
+(222, 76, 30, 'Zapatillas Running Para Mujer I-RUN SPEEDCORE X 309F8', 129.10, 3, 387.30),
+(223, 76, 13, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (3)', 159.47, 3, 478.41),
+(224, 76, 25, 'Zapatillas Running Para Mujer I-Run GRADIENT 336F6', 153.77, 1, 153.77),
+(225, 76, 7, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F6 (2)', 125.96, 2, 251.92),
+(226, 76, 11, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7 (3)', 139.81, 1, 139.81),
+(227, 77, 13, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5 (3)', 159.47, 1, 159.47),
+(228, 77, 20, 'Zapatillas Outdoor Para Mujer I-Run I-RUN CHESTNUT 316F9', 103.40, 1, 103.40),
+(229, 77, 29, 'Zapatillas Running Para Mujer I-Run Fynx 337F8', 155.06, 3, 465.18),
+(230, 77, 9, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6 (2)', 70.26, 1, 70.26),
+(231, 77, 3, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F7', 63.76, 3, 191.28),
+(232, 78, 16, 'Zapatillas Outdoor Para Mujer I-RUN RUGGEDX P20 348F7 (3)', 63.90, 3, 191.70),
+(233, 78, 21, 'Zapatillas Running Para Mujer I-Run RUNBBOST 288F8', 74.76, 3, 224.28),
+(234, 79, 4, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6', 171.03, 3, 513.09),
+(235, 79, 26, 'Zapatillas Urbanas Para Mujer Irun Cadwell 501 341F5', 144.47, 2, 288.94),
+(236, 80, 5, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F5', 69.97, 3, 209.91),
+(237, 80, 4, 'Zapatillas Urbanas para Mujer I-Run NIMBUS 2000 474F6', 171.03, 2, 342.06);
+
+-- --------------------------------------------------------
+
 --
 -- Estructura Stand-in para la vista `vista_productos_completa`
 -- (Véase abajo para la vista actual)
@@ -2006,7 +2379,6 @@ CREATE TABLE `vista_productos_completa` (
 -- --------------------------------------------------------
 
 --
---
 -- Estructura para la vista `vista_productos_completa`
 --
 DROP TABLE IF EXISTS `vista_productos_completa`;
@@ -2016,6 +2388,13 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `administradores`
+--
+ALTER TABLE `administradores`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_usuario` (`usuario`);
 
 --
 -- Indices de la tabla `categorias`
@@ -2048,14 +2427,47 @@ ALTER TABLE `producto_tallas`
   ADD PRIMARY KEY (`producto_id`,`talla`);
 
 --
+-- Indices de la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_fecha` (`fecha`);
+
+--
+-- Indices de la tabla `venta_detalle`
+--
+ALTER TABLE `venta_detalle`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_venta` (`venta_id`),
+  ADD KEY `fk_producto_venta` (`producto_id`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
+
+--
+-- AUTO_INCREMENT de la tabla `administradores`
+--
+ALTER TABLE `administradores`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
   MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+
+--
+-- AUTO_INCREMENT de la tabla `venta_detalle`
+--
+ALTER TABLE `venta_detalle`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=238;
 
 --
 -- Restricciones para tablas volcadas
@@ -2078,49 +2490,8 @@ ALTER TABLE `producto_colores`
 --
 ALTER TABLE `producto_tallas`
   ADD CONSTRAINT `fk_pt_prod` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- ============================================================
--- TABLAS DEL MÓDULO DE ADMINISTRACIÓN
--- ============================================================
-
--- Tabla de administradores (login del panel)
-CREATE TABLE IF NOT EXISTS `administradores` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `usuario` varchar(50) NOT NULL UNIQUE,
-  `password_hash` varchar(255) NOT NULL,
-  `nombre` varchar(100) DEFAULT NULL,
-  `creado_en` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Tabla de ventas/pedidos (para reportes de ventas)
-CREATE TABLE IF NOT EXISTS `ventas` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `sesion_id` varchar(64) DEFAULT NULL,
-  `total` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `cantidad_items` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
-  `fecha` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `idx_fecha` (`fecha`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Detalle de cada venta
-CREATE TABLE IF NOT EXISTS `venta_detalle` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `venta_id` int(11) UNSIGNED NOT NULL,
-  `producto_id` smallint(5) UNSIGNED NOT NULL,
-  `nombre_producto` varchar(255) NOT NULL,
-  `precio_unitario` decimal(10,2) NOT NULL,
-  `cantidad` smallint(5) UNSIGNED NOT NULL DEFAULT 1,
-  `subtotal` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_venta` (`venta_id`),
-  KEY `fk_producto_venta` (`producto_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Insertar admin por defecto: usuario=admin / contraseña=admin123
--- (el hash real se genera al arrancar el servidor automáticamente)
-INSERT IGNORE INTO `administradores` (`usuario`, `password_hash`, `nombre`)
-VALUES ('admin', 'pbkdf2:sha256:600000$placeholder$placeholder', 'Administrador');
-
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

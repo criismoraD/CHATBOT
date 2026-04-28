@@ -2,7 +2,13 @@
 
 ## Tareas Recientes (Detalladas)
 
+- [28/04] **Tablas Ventas, Admin y Reportes Ficticios:**
+    - Creadas tablas `administradores`, `ventas` y `venta_detalle` directamente en MySQL.
+    - Insertadas 80 ventas de prueba con fechas aleatorias (Marzo-Abril 2026) para validar panel administrativo.
+    - Añadidas cláusulas `CREATE DATABASE IF NOT EXISTS` y `USE` en `chatbot_tienda.sql`.
+
 - [24/04] **Rediseño: Layout de Dos Columnas (Catálogo + Chatbot):**
+
     - Eliminado el modo flotante (`position: fixed`) que tapaba productos.
     - Migrado el chatbot a una **columna derecha real** (`<aside class="dashboard-chat">`) dentro del layout flex de `.dashboard-app`.
     - `.dashboard-left` ocupa el ancho restante (`flex: 1`). `.dashboard-chat` tiene `width: 420px`, `position: sticky`, `top: 0`, `height: 100vh`.

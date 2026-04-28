@@ -349,6 +349,19 @@ def Obtener_Detalle_De_Inventario(Producto):
     return Texto_De_Tallas, Texto_De_Genero, Texto_De_Stock, Stock_Entero
 
 
+def Decrementar_Stock_En_Cache(prod_id, cantidad):
+    """Reduce el stock en memoria tras una compra.
+    Las 3 estructuras comparten los mismos objetos dict,
+    por lo que basta modificar en Datos_De_Productos.
+    """
+    for prod in Datos_De_Productos:
+        if prod.get('id') == prod_id:
+            stock_actual = prod.get('stock')
+            if isinstance(stock_actual, (int, float)):
+                prod['stock'] = max(0, int(stock_actual) - cantidad)
+            break
+
+
 # Inicialización al cargar el módulo
 Catalogos_De_Productos["scraped"] = Cargar_Lista_De_Productos_Desde_BD()
 
