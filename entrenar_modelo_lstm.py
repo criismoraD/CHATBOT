@@ -14,7 +14,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score, f1_score
 from sklearn.utils.class_weight import compute_class_weight
 
-from core.nlp import Tokenizar_Y_Lematizar as tokenizar
+from core.procesamiento_lenguaje import Tokenizar_Y_Lematizar as tokenizar
 
 # --- DE model_arch.py ---
 class NeuralNet(nn.Module):

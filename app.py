@@ -19,15 +19,15 @@ from reportlab.pdfgen import canvas
 
 from admin import Inicializar_Admin
 from core import config
-from core.db import Ejecutar_Escritura
-from bot.ia import Modelo_IA, Etiquetas_De_Intencion, Obtener_Modelo_Voz
-from bot.catalogo import (
+from core.base_datos import Ejecutar_Escritura
+from bot.inteligencia_artificial import Modelo_IA, Etiquetas_De_Intencion, Obtener_Modelo_Voz
+from bot.catalogo_productos import (
     Datos_De_Productos, Catalogos_De_Productos, Fuente_Activa_De_Catalogo,
     Cambiar_Fuente_De_Catalogo, Buscar_Productos, Obtener_Producto_Por_Id,
     Decrementar_Stock_En_Cache
 )
-from bot.memoria import Obtener_Contexto, Actualizar_Contexto
-from bot.dialogo import Obtener_Respuesta_Principal
+from bot.memoria_conversacion import Obtener_Contexto, Actualizar_Contexto
+from bot.motor_dialogo import Obtener_Respuesta_Principal
 
 
 # ─── Inicialización de Flask ─────────────────────────────────────────────────

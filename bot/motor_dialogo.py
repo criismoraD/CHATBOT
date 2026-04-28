@@ -9,21 +9,21 @@ Es el cerebro conversacional del chatbot.
 import re
 import random
 from core import config
-from bot.ia import Predecir_Tag, Datos_De_Intents
-from bot.extractor import (
+from bot.inteligencia_artificial import Predecir_Tag, Datos_De_Intents
+from bot.extractor_entidades import (
     Es_Consulta_De_Seguimiento_De_Pedido, Detectar_Id_De_Producto_En_Texto,
     Extraer_Filtros, Extraer_Palabras_Clave_De_Mensaje,
     Es_Solicitud_De_Reinicio_De_Filtros, Normalizar_Texto_Base,
     Inferir_Etiqueta_De_Detalle
 )
-from bot.catalogo import (
+from bot.catalogo_productos import (
     Datos_De_Productos, Buscar_Productos, Obtener_Producto_Por_Id,
     Obtener_Colores_De_Producto, Obtener_Detalle_De_Inventario,
     Categorias_Dinamicas, Indice_De_Nombres_De_Producto,
     Frecuencia_De_Tokens_De_Producto, Obtener_Colores_Por_Categoria,
     Obtener_Colores_Dinamicos
 )
-from bot.memoria import Obtener_Contexto, Actualizar_Contexto
+from bot.memoria_conversacion import Obtener_Contexto, Actualizar_Contexto
 
 
 # ─── Respuestas de Intents ───────────────────────────────────────────────────

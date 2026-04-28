@@ -12,14 +12,14 @@ proyecto/
 ├── admin.py                      ← Módulo de administración (backend)
 ├── panel_administracion.html                    ← Panel de administración (frontend)
 ├── chatbot_tienda_completo.sql   ← Base de datos COMPLETA (importar solo este)
-├── config.py
-├── db.py
-├── catalogo.py
-├── dialogo.py
-├── ia.py
-├── memoria.py
-├── extractor.py
-├── utils_nlp.py
+├── core/configuracion.py
+├── core/base_datos.py
+├── bot/catalogo_productos.py
+├── bot/motor_dialogo.py
+├── bot/inteligencia_artificial.py
+├── bot/memoria_conversacion.py
+├── bot/extractor_entidades.py
+├── core/procesamiento_lenguaje.py
 ├── entrenar_modelo_lstm.py
 ├── interfaz_chatbot.html
 ├── dependencias_python.txt

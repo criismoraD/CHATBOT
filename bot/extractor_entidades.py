@@ -15,7 +15,7 @@ Detecta del mensaje del usuario:
 import re
 import unicodedata
 from thefuzz import process
-from core.nlp import Normalizar_Texto as _Normalizar_Texto_Base_NLP
+from core.procesamiento_lenguaje import Normalizar_Texto as _Normalizar_Texto_Base_NLP
 
 
 # ─── Mapas de Correspondencia ────────────────────────────────────────────────

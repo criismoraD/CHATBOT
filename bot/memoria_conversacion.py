@@ -9,7 +9,7 @@ Mantiene el contexto de cada sesión de chat:
 """
 
 from core import config
-from bot.catalogo import Fuente_Activa_De_Catalogo, Normalizar_Fuente_De_Catalogo
+from bot.catalogo_productos import Fuente_Activa_De_Catalogo, Normalizar_Fuente_De_Catalogo
 
 
 # ─── Almacenamiento en Memoria ───────────────────────────────────────────────

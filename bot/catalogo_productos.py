@@ -14,8 +14,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 from core import config
 from core import db
-from core.nlp import Tokenizar_Y_Lematizar
-from bot.extractor import (
+from core.procesamiento_lenguaje import Tokenizar_Y_Lematizar
+from bot.extractor_entidades import (
     Normalizar_Categoria_Producto, Normalizar_Texto_Base,
     Palabras_Vacias_Entidad_Producto, Extraer_Palabras_Clave_De_Mensaje
 )
