@@ -461,7 +461,8 @@ def Admin_Actualizar_Stock(producto_id):
 @Admin_Blueprint.route("/admin/ventas/registrar", methods=["POST"])
 def Admin_Registrar_Venta():
     """
-    Registra una venta con su detalle.
+    Registra una venta con su detalle dentro de una transacción.
+    Si cualquier paso falla, se revierte todo (ROLLBACK).
     Body: { "sesion_id": "...", "carrito": [ {id, nombre, precio, cantidad}, ... ] }
     """
     datos   = request.get_json(silent=True) or {}
@@ -489,33 +490,44 @@ def Admin_Registrar_Venta():
         return jsonify({"error": "No se pudo procesar ningún item del carrito."}), 400
 
     sesion_id = str(datos.get("sesion_id", "anon"))
+    Conexion = None
 
-    # Insertar cabecera de venta
-    venta_id = Ejecutar_Escritura(
-        "INSERT INTO ventas (sesion_id, total, cantidad_items) VALUES (%s, %s, %s)",
-        (sesion_id, round(total_venta, 2), len(items_validos))
-    )
+    try:
+        Conexion = Obtener_Conexion()
+        Cursor = Conexion.cursor()
+        Conexion.start_transaction()
 
-    if venta_id is None:
-        return jsonify({"error": "No se pudo registrar la venta."}), 500
-
-    # Insertar detalle y descontar stock
-    for prod_id, nombre, precio, cantidad, subtotal in items_validos:
-        Ejecutar_Escritura(
-            """
-            INSERT INTO venta_detalle
-                (venta_id, producto_id, nombre_producto, precio_unitario, cantidad, subtotal)
-            VALUES (%s, %s, %s, %s, %s, %s)
-            """,
-            (venta_id, prod_id, nombre, precio, cantidad, round(subtotal, 2))
+        # Cabecera de venta
+        Cursor.execute(
+            "INSERT INTO ventas (sesion_id, total, cantidad_items) VALUES (%s, %s, %s)",
+            (sesion_id, round(total_venta, 2), len(items_validos))
         )
-        # Descontar stock (no bajar de 0)
-        Ejecutar_Escritura(
-            "UPDATE productos SET stock = GREATEST(0, stock - %s) WHERE id = %s",
-            (cantidad, prod_id)
-        )
+        venta_id = Cursor.lastrowid
 
-    return jsonify({"ok": True, "venta_id": venta_id, "total": round(total_venta, 2)})
+        # Detalle + descuento de stock
+        for prod_id, nombre, precio, cantidad, subtotal in items_validos:
+            Cursor.execute(
+                """INSERT INTO venta_detalle
+                    (venta_id, producto_id, nombre_producto, precio_unitario, cantidad, subtotal)
+                VALUES (%s, %s, %s, %s, %s, %s)""",
+                (venta_id, prod_id, nombre, precio, cantidad, round(subtotal, 2))
+            )
+            Cursor.execute(
+                "UPDATE productos SET stock = GREATEST(0, stock - %s) WHERE id = %s",
+                (cantidad, prod_id)
+            )
+
+        Conexion.commit()
+        return jsonify({"ok": True, "venta_id": venta_id, "total": round(total_venta, 2)})
+
+    except Exception as Error:
+        if Conexion:
+            Conexion.rollback()
+        print(f"[ERROR] Venta revertida: {Error}")
+        return jsonify({"error": "No se pudo registrar la venta. Transacción revertida."}), 500
+    finally:
+        if Conexion and Conexion.is_connected():
+            Conexion.close()
 
 
 # ─── Reportes ─────────────────────────────────────────────────────────────────
@@ -607,23 +619,191 @@ def Admin_Resumen():
 @Admin_Blueprint.route("/admin/reportes/top_productos", methods=["GET"])
 @login_requerido
 def Admin_Top_Productos():
-    """Top 10 productos más vendidos."""
-    rows = Ejecutar_Consulta(
-        """
+    """
+    Top 10 productos más vendidos.
+    Parámetros opcionales:
+        ?desde=2026-01-01  → fecha inicio (YYYY-MM-DD)
+        ?hasta=2026-04-30  → fecha fin (YYYY-MM-DD)
+    Sin parámetros: histórico completo.
+    """
+    desde = request.args.get("desde", "").strip()
+    hasta = request.args.get("hasta", "").strip()
+
+    where_extra = ""
+    params = []
+
+    if desde:
+        where_extra += " AND v.fecha >= %s"
+        params.append(desde)
+    if hasta:
+        where_extra += " AND v.fecha <= %s"
+        params.append(hasta + " 23:59:59")
+
+    sql = f"""
         SELECT
             vd.producto_id,
             vd.nombre_producto,
             SUM(vd.cantidad)  AS unidades_vendidas,
             SUM(vd.subtotal)  AS ingresos
         FROM venta_detalle vd
+        JOIN ventas v ON vd.venta_id = v.id
+        WHERE 1=1 {where_extra}
         GROUP BY vd.producto_id, vd.nombre_producto
         ORDER BY unidades_vendidas DESC
         LIMIT 10
-        """
-    )
+    """
+    rows = Ejecutar_Consulta(sql, tuple(params))
     for r in rows:
         r["ingresos"] = float(r["ingresos"]) if r["ingresos"] else 0.0
-    return jsonify({"top_productos": rows})
+    return jsonify({"top_productos": rows, "desde": desde or None, "hasta": hasta or None})
+
+
+@Admin_Blueprint.route("/admin/reportes/por_categoria", methods=["GET"])
+@login_requerido
+def Admin_Reporte_Por_Categoria():
+    """
+    Reporte de ventas agrupado por categoría.
+    Parámetros opcionales: ?desde=YYYY-MM-DD&hasta=YYYY-MM-DD
+    """
+    desde = request.args.get("desde", "").strip()
+    hasta = request.args.get("hasta", "").strip()
+
+    where_extra = ""
+    params = []
+
+    if desde:
+        where_extra += " AND v.fecha >= %s"
+        params.append(desde)
+    if hasta:
+        where_extra += " AND v.fecha <= %s"
+        params.append(hasta + " 23:59:59")
+
+    sql = f"""
+        SELECT
+            c.nombre AS categoria,
+            COUNT(DISTINCT v.id) AS cantidad_ventas,
+            SUM(vd.cantidad)     AS unidades_vendidas,
+            SUM(vd.subtotal)     AS monto_total
+        FROM venta_detalle vd
+        JOIN ventas v     ON vd.venta_id = v.id
+        JOIN productos p  ON vd.producto_id = p.id
+        JOIN categorias c ON p.categoria_id = c.id
+        WHERE 1=1 {where_extra}
+        GROUP BY c.nombre
+        ORDER BY monto_total DESC
+    """
+    rows = Ejecutar_Consulta(sql, tuple(params))
+    for r in rows:
+        r["monto_total"] = float(r["monto_total"]) if r["monto_total"] else 0.0
+    return jsonify({"por_categoria": rows})
+
+
+@Admin_Blueprint.route("/admin/reportes/rotacion_stock", methods=["GET"])
+@login_requerido
+def Admin_Reporte_Rotacion_Stock():
+    """
+    Reporte de rotación: productos con más stock vs. más vendidos.
+    Útil para detectar sobrestock y productos de alta demanda.
+    """
+    # Productos con más stock (top 10)
+    sobrestock = Ejecutar_Consulta("""
+        SELECT p.id, p.nombre, p.stock, c.nombre AS categoria
+        FROM productos p
+        JOIN categorias c ON p.categoria_id = c.id
+        WHERE p.activo = 1 AND p.stock > 0
+        ORDER BY p.stock DESC
+        LIMIT 10
+    """)
+
+    # Productos más vendidos (top 10)
+    mas_vendidos = Ejecutar_Consulta("""
+        SELECT
+            vd.producto_id AS id,
+            vd.nombre_producto AS nombre,
+            SUM(vd.cantidad) AS unidades_vendidas,
+            COALESCE(p.stock, 0) AS stock_actual
+        FROM venta_detalle vd
+        LEFT JOIN productos p ON vd.producto_id = p.id
+        GROUP BY vd.producto_id, vd.nombre_producto, p.stock
+        ORDER BY unidades_vendidos DESC
+        LIMIT 10
+    """)
+
+    # Productos con stock pero sin ventas
+    sin_ventas = Ejecutar_Consulta("""
+        SELECT p.id, p.nombre, p.stock, c.nombre AS categoria
+        FROM productos p
+        JOIN categorias c ON p.categoria_id = c.id
+        LEFT JOIN venta_detalle vd ON vd.producto_id = p.id
+        WHERE p.activo = 1 AND p.stock > 5 AND vd.id IS NULL
+        ORDER BY p.stock DESC
+        LIMIT 10
+    """)
+
+    return jsonify({
+        "sobrestock": sobrestock,
+        "mas_vendidos": mas_vendidos,
+        "sin_ventas": sin_ventas,
+    })
+
+
+# ─── Exportar CSV ────────────────────────────────────────────────────────────
+
+@Admin_Blueprint.route("/admin/reportes/csv", methods=["GET"])
+@login_requerido
+def Admin_Reporte_CSV():
+    """
+    Exporta ventas en formato CSV.
+    Parámetros: ?periodo=diario|semanal|mensual (default: diario)
+    """
+    import csv
+    import io
+
+    periodo = request.args.get("periodo", "diario").lower()
+
+    if periodo == "diario":
+        sql = """
+            SELECT DATE(fecha) AS fecha, COUNT(*) AS ventas,
+                   SUM(total) AS monto, SUM(cantidad_items) AS items
+            FROM ventas WHERE fecha >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+            GROUP BY DATE(fecha) ORDER BY fecha ASC
+        """
+    elif periodo == "semanal":
+        sql = """
+            SELECT CONCAT(YEAR(fecha), '-S', LPAD(WEEK(fecha,1), 2, '0')) AS fecha,
+                   COUNT(*) AS ventas, SUM(total) AS monto, SUM(cantidad_items) AS items
+            FROM ventas WHERE fecha >= DATE_SUB(NOW(), INTERVAL 12 WEEK)
+            GROUP BY YEAR(fecha), WEEK(fecha,1) ORDER BY YEAR(fecha), WEEK(fecha,1)
+        """
+    else:
+        sql = """
+            SELECT DATE_FORMAT(fecha, '%Y-%m') AS fecha, COUNT(*) AS ventas,
+                   SUM(total) AS monto, SUM(cantidad_items) AS items
+            FROM ventas WHERE fecha >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+            GROUP BY DATE_FORMAT(fecha, '%Y-%m') ORDER BY fecha ASC
+        """
+
+    rows = Ejecutar_Consulta(sql)
+
+    buf = io.StringIO()
+    Writer = csv.writer(buf)
+    Writer.writerow(["Período", "Ventas", "Monto Total (S/)", "Items Vendidos"])
+    for r in rows:
+        Writer.writerow([
+            str(r["fecha"]),
+            r["ventas"],
+            f"{float(r['monto'] or 0):.2f}",
+            r["items"]
+        ])
+
+    buf.seek(0)
+    nombre = f"reporte_ventas_{periodo}_{datetime.datetime.now().strftime('%Y%m%d')}.csv"
+    return send_file(
+        io.BytesIO(buf.getvalue().encode('utf-8-sig')),
+        mimetype='text/csv',
+        as_attachment=True,
+        download_name=nombre
+    )
 
 
 # ─── Upload Imagen ───────────────────────────────────────────────────────────

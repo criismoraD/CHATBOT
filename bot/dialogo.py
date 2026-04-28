@@ -449,7 +449,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             else:
                 Respuesta = "No encontre productos con esas caracteristicas. Prueba otra busqueda."
         else:
-            Respuesta = _Obtener_Respuesta_Aleatoria(Etiqueta) or "Puedes pedirme precios por categoria o color."
+            Respuesta = _Obtener_Respuesta_Aleatoria("consulta_precio") or "Puedes pedirme precios por categoria o color."
 
     # ── pedidos ──
     elif Etiqueta == "pedidos":
@@ -481,7 +481,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             else:
                 Respuesta = f"No encontré colores registrados para la categoría {Cat}."
         else:
-            Respuesta = "Nuestros productos estan disponibles en: Negro, Blanco, Rojo, Azul, Gris y Verde."
+            Respuesta = _Obtener_Respuesta_Aleatoria("colores") or "Nuestros productos estan disponibles en: Negro, Blanco, Rojo, Azul, Gris y Verde."
 
     # ── disponibilidad ──
     elif Etiqueta == "disponibilidad":
@@ -506,7 +506,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             else:
                 Respuesta = "Actualmente no tenemos stock con esas especificaciones."
         else:
-            Respuesta = _Obtener_Respuesta_Aleatoria(Etiqueta) or "Claro, dime color o categoria para revisar stock."
+            Respuesta = _Obtener_Respuesta_Aleatoria("disponibilidad") or "Claro, dime color o categoria para revisar stock."
 
     # ── consultar_precio_item ──
     elif Etiqueta == "consultar_precio_item":
@@ -576,7 +576,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
         if not Respuesta:
             Respuesta = _Obtener_Respuesta_Aleatoria(Etiqueta) or "No entiendo tu consulta. puedes repetirla?."
     elif Etiqueta == "fuera_de_dominio":
-        Respuesta = "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
+        Respuesta = _Obtener_Respuesta_Aleatoria("fuera_de_dominio") or "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
 
     # ── Fallback general ──
     if not Respuesta:
@@ -612,12 +612,12 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 Respuesta = f"Ya identifique el producto {Prod['name']}. ¿Quieres que te diga precio, colores o stock?"
                 Etiqueta = "buscar_producto"
             else:
-                Respuesta = "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
+                Respuesta = _Obtener_Respuesta_Aleatoria("fuera_de_dominio") or "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
         else:
             if Etiqueta == "buscar_producto":
-                Respuesta = "¡Claro! Dime qué buscas y te muestro las opciones."
+                Respuesta = _Obtener_Respuesta_Aleatoria("buscar_producto") or "¡Claro! Dime qué buscas y te muestro las opciones."
             else:
-                Respuesta = "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
+                Respuesta = _Obtener_Respuesta_Aleatoria("fuera_de_dominio") or "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
 
     # ── 8. Actualizar contexto ──
     if Etiqueta in ["buscar_producto", "filtrar_categoria", "filtrar_genero", "colores"]:

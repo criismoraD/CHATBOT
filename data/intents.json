@@ -515,7 +515,9 @@
       ],
       "responses": [
         "Trabajamos con 6 colores: Negro, Blanco, Rojo, Azul, Gris y Verde.",
-        "Disponibles en Negro, Blanco, Rojo, Azul, Gris y Verde según modelo."
+        "Disponibles en Negro, Blanco, Rojo, Azul, Gris y Verde según modelo.",
+        "Según el modelo, tenemos: Negro, Blanco, Rojo, Azul, Gris y Verde. ¿Cuál te gusta más?",
+        "Los colores varían por producto. Dime qué prenda buscas y te muestro los disponibles."
       ]
     },
     {
@@ -602,7 +604,9 @@
       ],
       "responses": [
         "¡Excelente! Haz clic en 'AGREGAR' en la tarjeta del producto.",
-        "Para comprar, selecciona el producto y presiona AGREGAR. Luego ve al carrito."
+        "Para comprar, selecciona el producto y presiona AGREGAR. Luego ve al carrito.",
+        "Para consultar tu pedido, necesito el número de orden o el nombre con el que compraste.",
+        "Los pedidos se procesan en 24-48h y llegan en 2-5 días hábiles según tu zona."
       ]
     },
     {
@@ -689,7 +693,9 @@
         "como devuelvo"
       ],
       "responses": [
-        "Lamentamos el inconveniente. Para devoluciones o cambios, nuestra política requiere que el producto esté sin uso, en su empaque original y presentar el comprobante de pago dentro de los primeros 7 días. Por favor comunícate a nuestro correo de soporte@senatisports.com para ayudarte."
+        "Lamentamos el inconveniente. Para devoluciones o cambios, nuestra política requiere que el producto esté sin uso, en su empaque original y presentar el comprobante de pago dentro de los primeros 7 días. Por favor comunícate a nuestro correo de soporte@senatisports.com para ayudarte.",
+        "Entiendo tu molestia. Cuéntame qué pasó y te ayudo a resolverlo lo antes posible.",
+        "Lamento escuchar eso. Trabajamos para mejorar. ¿Podrías darme más detalles del problema?"
       ]
     },
     {
@@ -756,7 +762,9 @@
       ],
       "responses": [
         "¡Sí! Tenemos 20% en Running y envío gratis por compras sobre S/ 300 en Chiclayo.",
-        "Estudiantes SENATI tienen 10% adicional con correo institucional."
+        "Estudiantes SENATI tienen 10% adicional con correo institucional.",
+        "¡Tenemos ofertas todo el mes! Revisa el catálogo, los productos con descuento están marcados.",
+        "¿Buscas algún descuento en particular? Puedo filtrar productos en oferta para ti."
       ]
     },
     {
@@ -815,7 +823,10 @@
       ],
       "responses": [
         "¡De nada! ¿Algo más en lo que te ayude?",
-        "¡Con gusto! Avísame si necesitas otra cosa."
+        "¡Con gusto! Avísame si necesitas otra cosa.",
+        "¡Para eso estamos! Si necesitas algo más, aquí estoy. 😊",
+        "¡Un placer ayudarte! Que disfrutes tu compra.",
+        "¡Gracias a ti por confiar en SENATI Sports!"
       ]
     },
     {
@@ -894,7 +905,9 @@
       ],
       "responses": [
         "Disponible en tallas: {tallas}.",
-        "Tenemos stock en: {tallas}."
+        "Tenemos stock en: {tallas}.",
+        "Déjame verificar el stock de ese producto para ti.",
+        "¿Qué talla necesitas? Así reviso disponibilidad exacta."
       ]
     },
     {
@@ -1062,7 +1075,10 @@
       ],
       "responses": [
         "Soy un asistente de SENATI Sports, solo puedo ayudarte con nuestro catálogo de ropa y calzado deportivo.",
-        "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa."
+        "No entiendo tu consulta. Puedes preguntarme nuevamente sobre calzado o ropa.",
+        "Hmm, eso está fuera de mi área. Solo puedo ayudarte con productos deportivos de SENATI Sports.",
+        "No tengo información sobre eso. ¿Te ayudo a buscar algo de nuestro catálogo?",
+        "Disculpa, no entendí. ¿Puedes reformular tu pregunta sobre calzado, ropa o accesorios?"
       ]
     },
     {
@@ -1219,7 +1235,9 @@
         "costo de envio"
       ],
       "responses": [
-        "Atendemos de lunes a sábado de 9am a 8pm. Hacemos envíos por delivery a todo el Perú, con envío gratis en Chiclayo por compras mayores a S/300. Aceptamos tarjetas, Yape, Plin y contraentrega."
+        "Atendemos de lunes a sábado de 9am a 8pm. Hacemos envíos por delivery a todo el Perú, con envío gratis en Chiclayo por compras mayores a S/300. Aceptamos tarjetas, Yape, Plin y contraentrega.",
+        "¡Con gusto te informo! ¿Sobre qué necesitas datos? Tenemos local en Chiclayo y hacemos envíos a todo Perú.",
+        "Nuestro horario es lun-sáb 9am-8pm. ¿Necesitas algo específico sobre ubicación, delivery o formas de pago?"
       ]
     },
     {
@@ -1288,6 +1306,32 @@
         "Utilizamos materiales cuidadosamente seleccionados, enfocados en confort y durabilidad para el producto.",
         "El material varía por artículo. Contamos con ropa en algodón premium y poliéster, mientras que el calzado incluye cueros o mallas textiles.",
         "¡Absolutamente! Todos nuestros artículos son originales y están confeccionados con materiales de la mayor calidad. Puedes leer los componentes exactos en la descripción de cada producto."
+      ]
+    },
+    {
+      "tag": "disponibilidad",
+      "patterns": [
+        "hay stock",
+        "tienen stock",
+        "hay disponibilidad",
+        "está disponible",
+        "tienen unidades",
+        "queda stock",
+        "quedan unidades",
+        "agotado",
+        "sin stock",
+        "hay en tienda",
+        "tienen en tienda",
+        "disponibilidad",
+        "cuantos quedan",
+        "cuantas quedan",
+        "hay talla",
+        "tienen talla"
+      ],
+      "responses": [
+        "Déjame revisar la disponibilidad de ese producto para ti.",
+        "¿Qué talla o producto necesitas? Te verifico el stock al instante.",
+        "Sí, tenemos unidades disponibles. ¿Cuántas necesitas?"
       ]
     }
   ]
