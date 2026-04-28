@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Tecnico Completo | SENATI CHATBOT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fff7ea;
+            --bg-soft: #fffdf7;
+            --card-bg: #fffaf2;
+            --primary: #d9f3e3;
+            --primary-dark: #78a992;
+            --secondary: #d9ebff;
+            --secondary-dark: #7e9ab7;
+            --accent: #ffe1ec;
+            --accent-dark: #b9879d;
+            --success: #e5f9ef;
+            --info: #fff4d8;
+            --info-border: #d8be7f;
+            --text: #3f5364;
+            --text-muted: #5f7384;
+            --border: #dac7ad;
+            --shadow: 0 15px 35px rgba(173, 143, 112, 0.18);
+            --shadow-strong: 0 20px 42px rgba(159, 132, 101, 0.26);
+            --mint: #c7efd9;
+            --mint-dark: #7aa58f;
+            --title-shadow: rgba(122, 165, 143, 0.42);
+            --transition: all 0.4s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Baloo 2', 'Comic Neue', cursive; }
+
+        body {
+            background:
+                radial-gradient(circle at 14% 10%, rgba(255, 232, 202, 0.82), transparent 39%),
+                radial-gradient(circle at 86% 15%, rgba(218, 242, 228, 0.74), transparent 38%),
+                linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+            color: var(--text);
+            line-height: 1.8;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(8px);
+        }
+
+        body::before {
+            background: radial-gradient(circle, rgba(236, 215, 183, 0.56), rgba(236, 215, 183, 0));
+            top: 8%;
+            left: -70px;
+            animation: orbFloatA 14s ease-in-out infinite;
+        }
+
+        body::after {
+            background: radial-gradient(circle, rgba(206, 238, 222, 0.5), rgba(206, 238, 222, 0));
+            bottom: 10%;
+            right: -80px;
+            animation: orbFloatB 16s ease-in-out infinite;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-size: 1.08rem;
+            font-weight: 600;
+            line-height: 1.85;
+            letter-spacing: 0.1px;
+        }
+
+        ul {
+            margin: 1rem 0 0 1.5rem;
+            color: var(--text);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-size: 1.03rem;
+            font-weight: 600;
+        }
+
+        .container { max-width: 1150px; margin: 4rem auto; padding: 2rem; }
+
+        section {
+            margin-bottom: 8rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+            will-change: transform, opacity;
+        }
+        section.visible { opacity: 1; transform: translateY(0); }
+
+        h2 {
+            font-size: 2.7rem;
+            margin-bottom: 2.5rem;
+            color: var(--mint-dark);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 900;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px var(--title-shadow);
+        }
+
+        h2 span {
+            background: linear-gradient(135deg, #f4e9cf, #d9f3e3);
+            color: var(--mint-dark);
+            padding: 0.3rem 1.2rem;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            border: 2px solid rgba(122, 165, 143, 0.55);
+            box-shadow: 0 10px 20px rgba(181, 156, 127, 0.28);
+            text-shadow: 0 2px 8px rgba(122, 165, 143, 0.35);
+        }
+
+        strong {
+            color: var(--mint-dark);
+            font-weight: 900;
+            padding: 0.06rem 0.4rem;
+            border-radius: 8px;
+            border: 1px solid rgba(122, 165, 143, 0.35);
+            background: linear-gradient(180deg, #f2fbe8, #dff4e7);
+            text-shadow: 0 1px 6px rgba(122, 165, 143, 0.28);
+        }
+
+        code {
+            background: #eefcf3;
+            color: #5f8b74;
+            border: 1px solid #9fd8b7;
+            border-radius: 6px;
+            padding: 0.08rem 0.35rem;
+            font-weight: 700;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 40px;
+            padding: 4rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            animation: cardReveal 0.9s ease both;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(
+                125deg,
+                rgba(191, 244, 210, 0.16),
+                rgba(255, 255, 255, 0) 38%,
+                rgba(255, 212, 228, 0.15) 72%,
+                rgba(255, 255, 255, 0) 100%
+            );
+        }
+
+        .card p {
+            font-size: 1.1rem;
+        }
+
+        .file-list { margin-top: 2rem; display: grid; gap: 2rem; }
+
+        .file-item {
+            padding: 2rem;
+            border-radius: 25px;
+            background: linear-gradient(145deg, rgba(255, 246, 231, 0.98), rgba(244, 253, 245, 0.94));
+            border-left: 8px solid var(--secondary);
+            border: 1px solid rgba(122, 165, 143, 0.42);
+            box-shadow: 0 8px 22px rgba(15, 68, 42, 0.08);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-item::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 55%;
+            height: 100%;
+            transform: skewX(-20deg);
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.82), transparent);
+            transition: left 0.85s ease;
+        }
+
+        .file-item:hover {
+            transform: translateY(-6px) scale(1.008);
+            background: #ffffff;
+            border-color: rgba(95, 171, 129, 0.48);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .file-item:hover::after { left: 130%; }
+
+        .file-item h4 {
+            color: var(--mint-dark);
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            font-weight: 900;
+            text-shadow: 0 2px 8px rgba(122, 165, 143, 0.3);
+        }
+
+        .file-item p {
+            color: var(--text);
+            font-size: 1.07rem;
+            font-weight: 600;
+        }
+
+        .architecture-group {
+            margin-top: 2.5rem;
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px solid rgba(95, 171, 129, 0.3);
+            background: linear-gradient(145deg, #fffdf8, #fff3e3);
+            box-shadow: 0 10px 26px rgba(18, 68, 44, 0.08);
+        }
+
+        .architecture-group h3 {
+            color: var(--mint-dark);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 900;
+            text-shadow: 0 2px 8px rgba(122, 165, 143, 0.3);
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-top: 2rem;
+        }
+
+        .intro-card {
+            border: 1px solid rgba(95, 171, 129, 0.36);
+            border-radius: 18px;
+            padding: 1.2rem;
+            background: #fffdf8;
+            box-shadow: 0 8px 18px rgba(20, 71, 44, 0.08);
+            transition: var(--transition);
+            animation: cardReveal 0.8s ease both;
+        }
+
+        .intro-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 28px rgba(17, 60, 37, 0.16);
+        }
+
+        .intro-card h4 {
+            color: var(--mint-dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            font-weight: 900;
+            text-shadow: 0 2px 8px rgba(122, 165, 143, 0.28);
+        }
+
+        .highlight-box {
+            background: var(--success);
+            padding: 2.5rem;
+            border-radius: 30px;
+            margin: 2rem 0;
+            color: #557363;
+            font-weight: 700;
+            border: 1px solid rgba(22, 95, 59, 0.3);
+            box-shadow: 0 10px 24px rgba(22, 95, 59, 0.13);
+        }
+
+        .help-box {
+            background: var(--info);
+            border: 1px solid #caa65a;
+            border-radius: 18px;
+            padding: 1.2rem;
+            margin-top: 1.2rem;
+            box-shadow: 0 8px 18px rgba(125, 95, 18, 0.12);
+        }
+
+        .tree {
+            background: #f7efdf;
+            color: #6a7d8a;
+            font-family: Consolas, 'Courier New', monospace;
+            padding: 1.5rem;
+            border-radius: 18px;
+            white-space: pre;
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            border: 1px solid rgba(173, 138, 103, 0.56);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), 0 8px 24px rgba(177, 145, 112, 0.26);
+        }
+
+        pre {
+            background: #f8f1e4;
+            padding: 2rem;
+            border-radius: 25px;
+            color: #648873;
+            font-size: 1rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border: 1px solid rgba(188, 150, 112, 0.35);
+            box-shadow: inset 0 5px 15px rgba(177, 145, 112, 0.18), 0 10px 24px rgba(177, 145, 112, 0.22);
+        }
+
+        .diagram {
+            width: 100%;
+            background: linear-gradient(155deg, #ffffff, #f2fff7);
+            border-radius: 40px;
+            padding: 3rem;
+            margin: 2.5rem 0;
+            display: flex;
+            justify-content: center;
+            border: 3px dashed #8dd7b3;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 14px 30px rgba(14, 64, 38, 0.14);
+        }
+
+        .diagram::after {
+            content: "";
+            position: absolute;
+            inset: -40% -25%;
+            background: radial-gradient(circle, rgba(174, 240, 202, 0.18), rgba(174, 240, 202, 0));
+            animation: haloShift 11s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .table-wrapper {
+            margin-top: 2rem;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fffaf2;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(122, 165, 143, 0.5);
+        }
+
+        th, td {
+            text-align: left;
+            padding: 0.9rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+            color: var(--text);
+            font-size: 1.02rem;
+            font-weight: 600;
+        }
+
+        th {
+            background: linear-gradient(150deg, #fdf2df, #edf8f0);
+            color: var(--mint-dark);
+            font-weight: 900;
+            text-shadow: 0 2px 6px rgba(122, 165, 143, 0.3);
+        }
+
+        .svg-node { fill: #cdf5df; stroke: #0e5a35; stroke-width: 2.5; }
+        .svg-node-alt { fill: #9fd9ff; stroke: #0c3657; stroke-width: 2.5; }
+        .svg-node-acc { fill: #ffd9e8; stroke: #6e1e40; stroke-width: 2.5; }
+
+        .svg-text {
+            fill: var(--text);
+            font-size: 11px;
+            font-weight: 900;
+            text-anchor: middle;
+            paint-order: stroke;
+            stroke: #ffffff;
+            stroke-width: 0.9px;
+        }
+
+        .svg-line { stroke: #0e5a35; stroke-width: 3; fill: none; stroke-linecap: round; }
+        .svg-line-animated {
+            stroke: #0e5a35;
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-dasharray: 10 8;
+            animation: lineFlow 6s linear infinite;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3.5rem;
+        }
+
+        .nlp-card {
+            padding: 3rem;
+            border-radius: 35px;
+            color: var(--text);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(95, 171, 129, 0.3);
+            transition: var(--transition);
+        }
+        .nlp-card:nth-child(1) { background: #f8ecd9; }
+        .nlp-card:nth-child(2) { background: #eef4df; }
+        .nlp-card:nth-child(3) { background: #f7e8df; }
+        .nlp-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .nlp-card h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--mint-dark);
+            text-shadow: 0 2px 8px rgba(122, 165, 143, 0.3);
+        }
+
+        .nlp-card p {
+            font-size: 1.08rem;
+            font-weight: 600;
+            color: #3f5364;
+        }
+
+        .desc-block { margin-top: 2rem; }
+
+        .desc-block h4 {
+            color: var(--mint-dark);
+            margin-bottom: 1rem;
+            font-weight: 900;
+            border-bottom: 2px solid #b7d8c6;
+            display: inline-block;
+            text-shadow: 0 2px 8px rgba(122, 165, 143, 0.3);
+        }
+
+        @keyframes orbFloatA {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -24px) scale(1.12); }
+        }
+
+        @keyframes orbFloatB {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-28px, 20px) scale(1.08); }
+        }
+
+        @keyframes cardReveal {
+            from {
+                opacity: 0;
+                transform: translateY(14px) scale(0.99);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes lineFlow {
+            to { stroke-dashoffset: -180; }
+        }
+
+        @keyframes haloShift {
+            0%, 100% { transform: translateX(-8%); }
+            50% { transform: translateX(9%); }
+        }
+
+        @media (max-width: 768px) {
+            .card { padding: 2rem; }
+            .grid { grid-template-columns: 1fr; }
+            h2 { font-size: 2rem; }
+            .diagram { padding: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- 01. INTRO -->
+        <section id="intro">
+            <h2><span>01</span> 🧭 Que Es Este Proyecto</h2>
+            <div class="card">
+                <p>Este proyecto es una tienda virtual de ropa deportiva con un asistente conversacional integrado. En palabras simples: la persona puede navegar productos como en un e-commerce normal y, al mismo tiempo, hablar con un bot que entiende pedidos como "busco zapatillas negras" o "cual es el precio de este modelo".</p>
+                <p>La solucion junta tres partes grandes que trabajan en equipo: una interfaz web para ver productos, una API en Python para procesar mensajes, y un motor de inteligencia artificial para detectar la intencion del usuario. Ademas, el sistema guarda memoria de la conversacion para no perder el contexto entre mensajes.</p>
+
+                <div class="intro-grid">
+                    <div class="intro-card">
+                        <h4>1) Interfaz visual (Frontend)</h4>
+                        <p>Muestra catalogo, filtros, carrito y chat. Es la parte que ve la persona en el navegador.</p>
+                    </div>
+                    <div class="intro-card">
+                        <h4>2) Logica del asistente (Backend)</h4>
+                        <p>Recibe cada mensaje, interpreta que quiere el usuario y devuelve una respuesta util y accionable.</p>
+                    </div>
+                    <div class="intro-card">
+                        <h4>3) Datos y modelo entrenado</h4>
+                        <p>Incluye productos, intenciones de conversacion y el modelo de IA listo para usar.</p>
+                    </div>
+                </div>
+
+                <div class="help-box">
+                    <strong>Idea clave en lenguaje simple:</strong> imagina que este proyecto es una tienda con un vendedor virtual. El vendedor escucha lo que pides, entiende tu necesidad, aplica filtros en el catalogo y te devuelve opciones concretas sin que tengas que conocer comandos tecnicos.
+                </div>
+            </div>
+        </section>
+
+        <!-- 02. INICIO RÁPIDO -->
+        <section id="inicio">
+            <h2><span>02</span> 🚀 Puesta En Marcha Paso A Paso</h2>
+            <div class="card">
+                <pre>
+# 1) Instalar dependencias del proyecto
+pip install -r requirements.txt
+
+# 2) Iniciar servidor (API + Frontend en el mismo puerto)
+python app.py
+
+# 3) Abrir en el navegador
+http://localhost:5000/
+                </pre>
+
+                <div class="highlight-box">
+                    <strong>Nota importante:</strong> El archivo data/model.pth ya viene entrenado. Solo debes ejecutar train_pytorch.py si cambiaste data/intents.json y quieres que el bot aprenda esos cambios.
+                </div>
+
+                <div class="help-box">
+                    <strong>Si algo falla al iniciar:</strong>
+                    <ul>
+                        <li>Revisa que exista la carpeta data con intents.json, model.pth y products_scraped.json.</li>
+                        <li>Verifica que el puerto 5000 no este siendo usado por otro programa.</li>
+                        <li>Si spaCy pide modelo de idioma, el propio proyecto intentara descargarlo automaticamente.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 03. DESGLOSE DE COMPONENTES -->
+        <section id="estructura">
+            <h2><span>03</span> 📁 Arquitectura De Archivos Completa</h2>
+            <div class="card">
+                <p>Aqui tienes la estructura completa del proyecto.</p>
+
+                <div class="tree">CHATBOT/
+├── app.py
+├── catalogo.py
+├── config.py
+├── dialogo.py
+├── extractor.py
+├── ia.py
+├── memoria.py
+├── train_pytorch.py
+├── utils_nlp.py
+├── index.html
+├── requirements.txt
+├── Historial_Tecnico.md
+├── css/
+│   └── style.css
+├── js/
+│   └── main.js
+├── data/
+│   ├── intents.json
+│   ├── model.pth
+│   ├── products_scraped.json
+│   └── chat_memory
+└── documentacion/
+    └── index.html</div>
+
+                <div class="diagram">
+                    <svg viewBox="0 0 860 230" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrow-arch" markerWidth="10" markerHeight="10" refX="9" refY="5" orientation="auto">
+                                <path d="M0,0 L0,10 L9,5 z" fill="#0e5a35" />
+                            </marker>
+                        </defs>
+
+                        <rect x="20" y="82" width="140" height="66" rx="12" class="svg-node-alt" />
+                        <text x="90" y="121" class="svg-text">FRONTEND</text>
+
+                        <rect x="210" y="82" width="140" height="66" rx="12" class="svg-node" />
+                        <text x="280" y="121" class="svg-text">APP.PY</text>
+
+                        <rect x="400" y="82" width="145" height="66" rx="12" class="svg-node-acc" />
+                        <text x="472" y="121" class="svg-text">DIALOGO.PY</text>
+
+                        <rect x="590" y="25" width="110" height="46" rx="10" class="svg-node" />
+                        <text x="645" y="53" class="svg-text">IA.PY</text>
+
+                        <rect x="590" y="92" width="110" height="46" rx="10" class="svg-node-alt" />
+                        <text x="645" y="120" class="svg-text">CATALOGO.PY</text>
+
+                        <rect x="590" y="160" width="110" height="46" rx="10" class="svg-node-acc" />
+                        <text x="645" y="188" class="svg-text">MEMORIA.PY</text>
+
+                        <circle cx="790" cy="115" r="36" class="svg-node" />
+                        <text x="790" y="118" class="svg-text">RESP</text>
+
+                        <line x1="160" y1="115" x2="210" y2="115" class="svg-line-animated" marker-end="url(#arrow-arch)" />
+                        <line x1="350" y1="115" x2="400" y2="115" class="svg-line-animated" marker-end="url(#arrow-arch)" />
+                        <line x1="545" y1="115" x2="590" y2="48" class="svg-line-animated" marker-end="url(#arrow-arch)" />
+                        <line x1="545" y1="115" x2="590" y2="115" class="svg-line-animated" marker-end="url(#arrow-arch)" />
+                        <line x1="545" y1="115" x2="590" y2="183" class="svg-line-animated" marker-end="url(#arrow-arch)" />
+                        <line x1="700" y1="48" x2="754" y2="92" class="svg-line-animated" marker-end="url(#arrow-arch)" />
+                        <line x1="700" y1="115" x2="754" y2="115" class="svg-line-animated" marker-end="url(#arrow-arch)" />
+                        <line x1="700" y1="183" x2="754" y2="137" class="svg-line-animated" marker-end="url(#arrow-arch)" />
+                    </svg>
+                </div>
+
+                <div class="help-box">
+                    <strong>Lectura rapida del grafico:</strong> el frontend no decide por su cuenta la logica del bot. Siempre pasa por app.py y dialogo.py, y desde ahi se consulta IA, catalogo y memoria para construir una respuesta coherente.
+                </div>
+
+                <div class="architecture-group">
+                    <h3>Bloque 1: Backend y logica del asistente (Python)</h3>
+                    <div class="file-list">
+                        <div class="file-item">
+                            <h4>app.py</h4>
+                            <p><strong>Puerta principal del sistema.</strong> Crea el servidor Flask y publica rutas como /chat, /search, /products, /transcribe y /status. En terminos simples, aqui entra todo lo que llega desde el navegador y aqui tambien sale la respuesta final. Tambien sirve los archivos web para que no necesites otro servidor adicional.</p>
+                        </div>
+                        <div class="file-item" style="border-left-color: var(--primary);">
+                            <h4>dialogo.py</h4>
+                            <p><strong>Cerebro de decisiones conversacionales.</strong> Toma la intencion detectada por la IA y decide que hacer: responder, buscar productos, pedir mas detalle o usar contexto de mensajes anteriores. Tambien construye mensajes naturales para que el bot suene mas humano y aplica reglas para evitar respuestas incoherentes.</p>
+                        </div>
+                        <div class="file-item" style="border-left-color: var(--accent);">
+                            <h4>ia.py</h4>
+                            <p><strong>Motor de inferencia.</strong> Carga el modelo de PyTorch desde data/model.pth y calcula que intencion tiene el mensaje del usuario. Adicionalmente inicializa el modelo de voz Whisper para transcribir audios enviados desde el frontend.</p>
+                        </div>
+                        <div class="file-item">
+                            <h4>catalogo.py</h4>
+                            <p><strong>Gestor de inventario y busqueda.</strong> Carga productos desde data/products_scraped.json, normaliza categorias y construye un indice para buscar rapido por nombre, descripcion, color, talla, genero o precio. Usa TF-IDF y similitud de coseno, con fallback lexico, para entregar resultados mas utiles.</p>
+                        </div>
+                        <div class="file-item" style="border-left-color: var(--primary);">
+                            <h4>extractor.py</h4>
+                            <p><strong>Extractor de entidades.</strong> Detecta datos concretos dentro de frases libres: color, talla, presupuesto, genero y tambien posibles IDs de producto. Combina regex, normalizacion de texto y coincidencia difusa con thefuzz para tolerar errores de escritura.</p>
+                        </div>
+                        <div class="file-item" style="border-left-color: var(--accent);">
+                            <h4>memoria.py</h4>
+                            <p><strong>Memoria conversacional.</strong> Guarda estado por sesion (ultimo tag, filtros, producto seleccionado e historial corto). Gracias a esto el usuario puede decir "y de color rojo" despues de otra busqueda y el bot entiende que sigue en el mismo tema.</p>
+                        </div>
+                        <div class="file-item">
+                            <h4>config.py</h4>
+                            <p><strong>Parametros globales.</strong> Centraliza rutas de archivos y umbrales de comportamiento (confianza, limites de busqueda, memoria, etc.). Tener todo en un solo lugar evita cambios sueltos y reduce errores de mantenimiento.</p>
+                        </div>
+                        <div class="file-item" style="border-left-color: var(--primary);">
+                            <h4>utils_nlp.py</h4>
+                            <p><strong>Utilidades de lenguaje.</strong> Limpia texto, elimina acentos y genera tokens lematizados con spaCy. Tambien crea bigramas para conservar significado en frases como "zapatilla blanca" o "entrega rapida".</p>
+                        </div>
+                        <div class="file-item" style="border-left-color: var(--accent);">
+                            <h4>train_pytorch.py</h4>
+                            <p><strong>Entrenamiento del modelo.</strong> Prepara datos de intents, crea vocabulario, entrena una red neuronal con Embedding + LSTM bidireccional, evalua metricas y guarda el modelo final. Se usa cuando quieres mejorar o actualizar el entendimiento del bot.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="architecture-group">
+                    <h3>Bloque 2: Frontend y experiencia del usuario (Web)</h3>
+                    <div class="file-list">
+                        <div class="file-item">
+                            <h4>index.html (raiz del proyecto)</h4>
+                            <p><strong>Estructura visual de la tienda.</strong> Define layout general: panel de catalogo, filtros, chat, carrito y controles de busqueda. Es la base de la interfaz que ve el usuario final.</p>
+                        </div>
+                        <div class="file-item" style="border-left-color: var(--primary);">
+                            <h4>css/style.css</h4>
+                            <p><strong>Estilos y diseno responsive.</strong> Da apariencia moderna al dashboard, define tarjetas de producto, animaciones, panel de chat y version movil. Sin este archivo la web funcionaria, pero se veria sin formato y dificil de usar.</p>
+                        </div>
+                        <div class="file-item" style="border-left-color: var(--accent);">
+                            <h4>js/main.js</h4>
+                            <p><strong>Comportamiento dinamico de la web.</strong> Carga productos, aplica filtros, sincroniza carrito, envia mensajes al endpoint /chat, procesa filter_action del backend y maneja la grabacion de audio para transcripcion. Es el puente principal entre interfaz y API.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="architecture-group">
+                    <h3>Bloque 3: Datos, modelo entrenado y persistencia</h3>
+                    <div class="file-list">
+                        <div class="file-item">
+                            <h4>data/intents.json</h4>
+                            <p><strong>Base de conocimiento conversacional.</strong> Contiene intenciones (tags), ejemplos de frases (patterns) y posibles respuestas. Es la materia prima para entrenar la IA y tambien una referencia de comportamiento del bot.</p>
+                        </div>
+                        <div class="file-item" style="border-left-color: var(--primary);">
+                            <h4>data/model.pth</h4>
+                            <p><strong>Modelo ya entrenado.</strong> Guarda pesos y metadatos de la red neuronal. Gracias a este archivo el bot puede arrancar en segundos sin volver a entrenar cada vez.</p>
+                        </div>
+                        <div class="file-item" style="border-left-color: var(--accent);">
+                            <h4>data/products_scraped.json</h4>
+                            <p><strong>Catalogo de productos.</strong> Lista de articulos con campos como id, nombre, precio, categoria, colores, tallas, genero y stock. Es la fuente principal para mostrar el inventario y para responder consultas del usuario.</p>
+                        </div>
+                        <div class="file-item">
+                            <h4>data/chat_memory</h4>
+                            <p><strong>Memoria volátil.</strong> Anteriormente se usaba <code>shelve</code> para disco. Ahora se almacena en memoria RAM y un Session ID dinámico en el navegador limpia el historial en cada recarga (F5) para prevenir cruce de filtros ("zombies").</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="architecture-group">
+                    <h3>Bloque 4: Soporte, instalacion y documentacion</h3>
+                    <div class="file-list">
+                        <div class="file-item">
+                            <h4>requirements.txt</h4>
+                            <p><strong>Lista de librerias.</strong> Define todo lo necesario para ejecutar la aplicacion (Flask, torch, spaCy, scikit-learn, thefuzz, faster-whisper, entre otros). Evita instalar paquetes manualmente uno por uno.</p>
+                        </div>
+                        <div class="file-item" style="border-left-color: var(--primary);">
+                            <h4>documentacion/index.html</h4>
+                            <p><strong>Manual tecnico del proyecto.</strong> Este mismo archivo. Su funcion es explicar arquitectura, flujo, endpoints y tecnicas en un lenguaje entendible para personas nuevas en estos temas.</p>
+                        </div>
+                        <div class="file-item" style="border-left-color: var(--accent);">
+                            <h4>Historial_Tecnico.md</h4>
+                            <p><strong>Bitacora de cambios.</strong> Registra mejoras, hotfixes, pruebas y decisiones tecnicas para mantener trazabilidad. Es muy util cuando el proyecto crece y varias personas lo mantienen.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 04. FLUJO DE MENSAJERÍA -->
+        <section id="flujo">
+            <h2><span>04</span> ⚙️ Flujo Completo De Mensajeria</h2>
+            <div class="card">
+                <p>Cuando una persona escribe en el chat o usa el microfono, el mensaje no se responde de forma magica. Recorre una cadena de pasos bien definidos para mantener precision y contexto.</p>
+                
+                <div class="desc-block">
+                    <h4>Etapa 1: Captura desde la interfaz</h4>
+                    <p>El frontend (js/main.js) envia el texto al endpoint /chat junto con session_id y, si aplica, context_product_id. Esto permite que el backend sepa quien habla y sobre que producto se esta consultando.</p>
+                </div>
+
+                <div class="diagram">
+                    <svg viewBox="0 0 600 180" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orientation="auto">
+                                <path d="M0,0 L0,10 L9,5 z" fill="#1b4965" />
+                            </marker>
+                        </defs>
+                        <circle cx="50" cy="90" r="35" class="svg-node" />
+                        <text x="50" y="93" class="svg-text">WEB</text>
+                        <line x1="85" y1="90" x2="150" y2="90" class="svg-line" marker-end="url(#arrow)" />
+
+                        <rect x="160" y="60" width="100" height="60" rx="15" class="svg-node-alt" />
+                        <text x="210" y="93" class="svg-text" style="fill:#fff">APP.PY</text>
+                        <line x1="260" y1="90" x2="320" y2="90" class="svg-line" marker-end="url(#arrow)" />
+
+                        <rect x="330" y="40" width="120" height="100" rx="20" class="svg-node-acc" />
+                        <text x="390" y="85" class="svg-text" style="fill:#fff">IA + LOGICA</text>
+                        <text x="390" y="105" class="svg-text" style="fill:#fff">(IA / DIALOGO)</text>
+                        <line x1="450" y1="90" x2="520" y2="90" class="svg-line" marker-end="url(#arrow)" />
+
+                        <circle cx="550" cy="90" r="30" class="svg-node" />
+                        <text x="550" y="93" class="svg-text">RESP</text>
+                    </svg>
+                </div>
+
+                <div class="desc-block">
+                    <h4>Etapa 2: Prediccion de intencion (ia.py)</h4>
+                    <p>La IA convierte el texto en numeros y calcula la etiqueta mas probable (por ejemplo: buscar_producto, consultar_precio_item, pedidos). Tambien retorna nivel de confianza para que la capa de dialogo decida si confiar totalmente o apoyar con reglas.</p>
+                </div>
+
+                <div class="desc-block">
+                    <h4>Etapa 3: Extraccion de filtros y contexto</h4>
+                    <p>dialogo.py llama a extractor.py para detectar categoria, color, talla, genero y precio maximo. Luego consulta memoria.py para heredar contexto cuando corresponde. Si la frase depende de un producto previamente seleccionado, se prioriza ese contexto.</p>
+                </div>
+
+                <div class="desc-block">
+                    <h4>Etapa 4: Busqueda en catalogo</h4>
+                    <p>Si la intencion es de busqueda, catalogo.py filtra y ordena productos usando reglas duras (color, talla, precio) y similitud de texto. Cuando no hay coincidencia semantica fuerte, intenta una via lexico-practica para no dejar al usuario sin opciones.</p>
+                </div>
+
+                <div class="desc-block">
+                    <h4>Etapa 5: Respuesta para UI</h4>
+                    <p>El backend devuelve texto natural + tag + filter_action. Con filter_action, el frontend ajusta automaticamente botones, sliders y tarjetas visibles. Resultado: la conversacion y el catalogo quedan sincronizados.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 05. ARQUITECTURA NEURONAL -->
+        <section id="ia-detallada">
+            <h2><span>05</span> 🧠 Motor De IA Explicado Facil</h2>
+            <div class="card">
+                <p>El bot no usa un modelo generativo gigante. Usa un clasificador entrenado para identificar intenciones concretas del negocio. Eso lo hace mas rapido y estable para un entorno de tienda.</p>
+                <p>En este proyecto, la red real es de tipo <strong>Embedding + LSTM bidireccional + capa final de clasificacion</strong>. En simple: transforma palabras en vectores, analiza secuencia de la frase y escoge la intencion mas probable.</p>
+                
+                <div class="diagram">
+                    <svg viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="25" y="70" width="110" height="60" rx="12" class="svg-node" />
+                        <text x="80" y="105" class="svg-text">TOKENS</text>
+
+                        <rect x="165" y="55" width="110" height="90" rx="12" class="svg-node-alt" />
+                        <text x="220" y="90" class="svg-text" style="fill:#fff">EMBEDDING</text>
+                        <text x="220" y="112" class="svg-text" style="fill:#fff">+ BI-LSTM</text>
+
+                        <rect x="305" y="70" width="160" height="60" rx="12" class="svg-node-acc" />
+                        <text x="385" y="105" class="svg-text" style="fill:#fff">TAG FINAL</text>
+
+                        <line x1="135" y1="100" x2="165" y2="100" stroke="#ccc" stroke-width="2" />
+                        <line x1="275" y1="100" x2="305" y2="100" stroke="#ccc" stroke-width="2" />
+                    </svg>
+                </div>
+
+                <div class="desc-block">
+                    <h4>Como interpretarlo sin tecnicismos:</h4>
+                    <ul>
+                        <li><strong>Entrada:</strong> El texto se limpia y se transforma en una secuencia numerica.</li>
+                        <li><strong>Embedding:</strong> Cada palabra se convierte en una representacion matematica que conserva significado.</li>
+                        <li><strong>LSTM bidireccional:</strong> Analiza orden y contexto de palabras, leyendo la secuencia en ambos sentidos.</li>
+                        <li><strong>Salida:</strong> Se calcula la probabilidad de cada intencion y se elige la mejor.</li>
+                    </ul>
+                </div>
+
+                <div class="help-box">
+                    <strong>Resumen sencillo:</strong> la IA no "inventa" respuestas largas. Primero clasifica la intencion y luego la logica del proyecto arma una respuesta util segun reglas y datos del catalogo.
+                </div>
+            </div>
+        </section>
+
+        <!-- 06. NLP -->
+        <section id="nlp">
+            <h2><span>06</span> 🧪 Tecnicas De Procesamiento De Lenguaje</h2>
+            <div class="grid">
+                <div class="nlp-card">
+                    <h3>Limpieza + Lematizacion</h3>
+                    <p>utils_nlp.py normaliza tildes y caracteres, luego spaCy convierte palabras a su forma base. Asi "buscando zapatillas" y "buscar zapatilla" quedan mas cerca y el bot entiende mejor.</p>
+                </div>
+                <div class="nlp-card">
+                    <h3>Extraccion de Entidades</h3>
+                    <p>extractor.py detecta color, talla, genero y precio usando regex y thefuzz. Esto permite que frases informales como "quiero algo negro talla m" se conviertan en filtros concretos.</p>
+                </div>
+                <div class="nlp-card">
+                    <h3>Busqueda Semantica + Lexica</h3>
+                    <p>catalogo.py combina TF-IDF con similitud de coseno y, si hace falta, una busqueda por coincidencia textual. Asi se reduce el riesgo de "no encontre nada" cuando si hay productos parecidos.</p>
+                </div>
+            </div>
+
+            <div class="diagram">
+                <svg viewBox="0 0 860 220" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrow-nlp" markerWidth="10" markerHeight="10" refX="9" refY="5" orientation="auto">
+                            <path d="M0,0 L0,10 L9,5 z" fill="#0e5a35" />
+                        </marker>
+                    </defs>
+
+                    <rect x="20" y="78" width="130" height="62" rx="11" class="svg-node-alt" />
+                    <text x="85" y="114" class="svg-text">MENSAJE</text>
+
+                    <rect x="185" y="78" width="130" height="62" rx="11" class="svg-node" />
+                    <text x="250" y="106" class="svg-text">LIMPIEZA</text>
+                    <text x="250" y="125" class="svg-text">+ LEMAS</text>
+
+                    <rect x="350" y="78" width="130" height="62" rx="11" class="svg-node-acc" />
+                    <text x="415" y="106" class="svg-text">FILTROS</text>
+                    <text x="415" y="125" class="svg-text">ENTIDADES</text>
+
+                    <rect x="515" y="78" width="130" height="62" rx="11" class="svg-node" />
+                    <text x="580" y="106" class="svg-text">BUSQUEDA</text>
+                    <text x="580" y="125" class="svg-text">TF-IDF</text>
+
+                    <rect x="680" y="78" width="160" height="62" rx="11" class="svg-node-alt" />
+                    <text x="760" y="106" class="svg-text">PRODUCTOS</text>
+                    <text x="760" y="125" class="svg-text">RELEVANTES</text>
+
+                    <line x1="150" y1="109" x2="185" y2="109" class="svg-line-animated" marker-end="url(#arrow-nlp)" />
+                    <line x1="315" y1="109" x2="350" y2="109" class="svg-line-animated" marker-end="url(#arrow-nlp)" />
+                    <line x1="480" y1="109" x2="515" y2="109" class="svg-line-animated" marker-end="url(#arrow-nlp)" />
+                    <line x1="645" y1="109" x2="680" y2="109" class="svg-line-animated" marker-end="url(#arrow-nlp)" />
+                </svg>
+            </div>
+
+            <div class="card" style="margin-top:2.2rem;">
+                <p>Estas tecnicas se eligieron porque son estables, rapidas y adecuadas para una tienda. No requieren infraestructura compleja y funcionan bien con un catalogo en JSON y un modelo de intenciones.</p>
+            </div>
+        </section>
+
+        <!-- 07. API -->
+        <section id="api">
+            <h2><span>07</span> 🔌 API Del Proyecto En Palabras Simples</h2>
+            <div class="card">
+                <p>Un endpoint es una "puerta" del servidor. El frontend toca esa puerta y recibe una respuesta. Este proyecto tiene endpoints claros para cada tarea:</p>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ruta</th>
+                                <th>Metodo</th>
+                                <th>Para que sirve</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>/</td>
+                                <td>GET</td>
+                                <td>Entrega la pagina principal de la tienda (index.html).</td>
+                            </tr>
+                            <tr>
+                                <td>/status</td>
+                                <td>GET</td>
+                                <td>Muestra estado del servidor, catalogo activo y modelo cargado.</td>
+                            </tr>
+                            <tr>
+                                <td>/products</td>
+                                <td>GET</td>
+                                <td>Devuelve lista de productos para renderizar el catalogo.</td>
+                            </tr>
+                            <tr>
+                                <td>/search</td>
+                                <td>POST</td>
+                                <td>Permite buscar con filtros estructurados (categoria, color, genero, precio, keywords).</td>
+                            </tr>
+                            <tr>
+                                <td>/chat</td>
+                                <td>POST</td>
+                                <td>Procesa mensajes del chat y devuelve respuesta + acciones de filtro para UI.</td>
+                            </tr>
+                                <td>/transcribe</td>
+                                <td>POST</td>
+                                <td>Convierte audio en texto con Whisper para alimentar el chat.</td>
+                            </tr>
+                            <tr>
+                                <td>/save_pdf</td>
+                                <td>POST</td>
+                                <td>Guarda en el servidor la boleta de venta PDF generada en el frontend.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="diagram">
+                    <svg viewBox="0 0 860 220" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrow-api" markerWidth="10" markerHeight="10" refX="9" refY="5" orientation="auto">
+                                <path d="M0,0 L0,10 L9,5 z" fill="#0e5a35" />
+                            </marker>
+                        </defs>
+
+                        <rect x="20" y="74" width="140" height="68" rx="12" class="svg-node-alt" />
+                        <text x="90" y="104" class="svg-text">USUARIO</text>
+                        <text x="90" y="123" class="svg-text">WEB</text>
+
+                        <rect x="205" y="74" width="145" height="68" rx="12" class="svg-node" />
+                        <text x="278" y="104" class="svg-text">POST /CHAT</text>
+                        <text x="278" y="123" class="svg-text">APP.PY</text>
+
+                        <rect x="395" y="74" width="145" height="68" rx="12" class="svg-node-acc" />
+                        <text x="468" y="104" class="svg-text">DIALOGO + IA</text>
+                        <text x="468" y="123" class="svg-text">+ FILTROS</text>
+
+                        <rect x="585" y="52" width="118" height="42" rx="10" class="svg-node" />
+                        <text x="644" y="78" class="svg-text">TAG</text>
+
+                        <rect x="585" y="105" width="118" height="42" rx="10" class="svg-node-alt" />
+                        <text x="644" y="131" class="svg-text">RESPUESTA</text>
+
+                        <rect x="585" y="158" width="118" height="42" rx="10" class="svg-node-acc" />
+                        <text x="644" y="184" class="svg-text">FILTER_ACTION</text>
+
+                        <circle cx="790" cy="108" r="36" class="svg-node" />
+                        <text x="790" y="112" class="svg-text">UI</text>
+
+                        <line x1="160" y1="108" x2="205" y2="108" class="svg-line-animated" marker-end="url(#arrow-api)" />
+                        <line x1="350" y1="108" x2="395" y2="108" class="svg-line-animated" marker-end="url(#arrow-api)" />
+                        <line x1="540" y1="108" x2="585" y2="73" class="svg-line-animated" marker-end="url(#arrow-api)" />
+                        <line x1="540" y1="108" x2="585" y2="126" class="svg-line-animated" marker-end="url(#arrow-api)" />
+                        <line x1="540" y1="108" x2="585" y2="179" class="svg-line-animated" marker-end="url(#arrow-api)" />
+                        <line x1="703" y1="73" x2="754" y2="94" class="svg-line-animated" marker-end="url(#arrow-api)" />
+                        <line x1="703" y1="126" x2="754" y2="108" class="svg-line-animated" marker-end="url(#arrow-api)" />
+                        <line x1="703" y1="179" x2="754" y2="123" class="svg-line-animated" marker-end="url(#arrow-api)" />
+                    </svg>
+                </div>
+
+                <div class="help-box">
+                    <strong>Por que este grafico importa:</strong> muestra que la UI no solo recibe un texto. Tambien recibe instrucciones estructuradas (filter_action) para mover filtros y mostrar exactamente los productos que el bot encontro.
+                </div>
+            </div>
+        </section>
+
+        <!-- 08. GLOSARIO DE FUNCIONES -->
+        <section id="funciones">
+            <h2><span>08</span> 🛠️ Glosario De Funciones Clave</h2>
+            <div class="card">
+                <p>Estas funciones son las mas importantes para entender y mantener el proyecto. Estan explicadas con enfoque practico para que puedas ubicar rapido donde modificar cuando necesites mejorar el comportamiento del sistema.</p>
+                
+                <div class="file-list">
+                    <div class="file-item">
+                        <h4>Predecir_Tag(Texto_Consulta) [ia.py]</h4>
+                        <p>Recibe texto del usuario, lo transforma al formato que entiende el modelo y devuelve la etiqueta con mayor probabilidad. Tambien retorna confianza y margen para que la logica decida si necesita apoyo de heuristicas.</p>
+                    </div>
+
+                    <div class="file-item" style="border-left-color: var(--primary);">
+                        <h4>Obtener_Respuesta_Principal(...) [dialogo.py]</h4>
+                        <p>Funcion central de negocio. Une IA, extractor, memoria y catalogo para generar la respuesta final. Maneja continuidad de contexto, forzado de intenciones por reglas y armado de filter_action para sincronizar catalogo y chat.</p>
+                    </div>
+
+                    <div class="file-item" style="border-left-color: var(--accent);">
+                        <h4>Buscar_Productos(...) [catalogo.py]</h4>
+                        <p>Aplica filtros directos (categoria, color, talla, genero y precio) y luego ordena por relevancia. Si no hay match semantico suficiente, usa coincidencia lexico-textual para rescatar resultados utiles.</p>
+                    </div>
+
+                    <div class="file-item">
+                        <h4>Extraer_Filtros(...) [extractor.py]</h4>
+                        <p>Interpreta frases libres y detecta entidades concretas con tolerancia a errores de escritura. Devuelve categoria, color, precio maximo, talla y genero para que la busqueda sea precisa.</p>
+                    </div>
+
+                    <div class="file-item" style="border-left-color: var(--primary);">
+                        <h4>Actualizar_Contexto(...) [memoria.py]</h4>
+                        <p>Guarda estado por sesion en disco (shelve): ultimo tag, filtros usados y producto activo. Esto permite preguntas encadenadas como "y su precio?" sin repetir todo.</p>
+                    </div>
+
+                    <div class="file-item" style="border-left-color: var(--accent);">
+                        <h4>tokenizar_y_lematizar(texto) [utils_nlp.py]</h4>
+                        <p>Limpia texto, aplica lematizacion y genera bigramas. Mejora la consistencia del lenguaje para IA y busqueda semantica.</p>
+                    </div>
+
+                    <div class="file-item">
+                        <h4>Detectar_Id_De_Producto_En_Texto(...) [extractor.py]</h4>
+                        <p>Detecta cuando el usuario menciona un producto concreto por nombre o codigo. Esto habilita respuestas de detalle (precio, stock, colores) sobre el item correcto.</p>
+                    </div>
+
+                    <div class="file-item" style="border-left-color: var(--primary);">
+                        <h4>chat() [app.py]</h4>
+                        <p>Es el endpoint principal del asistente. Recibe JSON, coordina contexto, llama la logica de dialogo y devuelve respuesta estructurada para el frontend.</p>
+                    </div>
+
+                    <div class="file-item" style="border-left-color: var(--accent);">
+                        <h4>Aplicar_Filtro_Desde_Chat(...) [js/main.js]</h4>
+                        <p>Toma la accion que devuelve el backend y actualiza la interfaz: categoria activa, color, genero, precio y productos visibles. Es clave para que el usuario vea reflejada la conversacion en el catalogo.</p>
+                    </div>
+
+                    <div class="file-item">
+                        <h4>Obtener_Respuesta_Chat(...) [js/main.js]</h4>
+                        <p>Envia el mensaje al backend, muestra indicador de escritura y dibuja la respuesta del bot en pantalla. Tambien conserva o limpia contexto de producto segun el tag recibido.</p>
+                    </div>
+                </div>
+
+                <div class="help-box">
+                    <strong>Consejo para personas nuevas:</strong> si quieres modificar el comportamiento del bot, empieza por dialogo.py. Si quieres cambiar visual y experiencia, empieza por index.html + css/style.css + js/main.js. Si quieres mejorar entendimiento del lenguaje, revisa intents.json y train_pytorch.py.
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section').forEach(s => observer.observe(s));
+    </script>
+</body>
+</html>

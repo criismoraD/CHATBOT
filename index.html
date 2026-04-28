@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENATI SPORTS | Elevando tu rendimiento</title>
+    <meta name="description"
+        content="La mejor tienda de ropa deportiva. Encuentra zapatillas, camisetas y otros articulos para running, futbol y mas.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome eliminado por lentitud y bloqueadores -->
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="dashboard-app">
+        <!-- CATÁLOGO (Left Panel) -->
+        <main class="dashboard-left" id="dashboard-left">
+            <!-- Header (Logo + Title) -->
+            <div class="dashboard-header">
+                <div class="logo">SENATI<span>SPORTS</span></div>
+                <div class="header-right">
+                    <div class="header-search">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="product-search" placeholder="Buscar en catálogo: nombre, color o descripción...">
+                    </div>
+                    <button class="cart-btn" id="cart-btn">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        <span class="cart-count">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Toggle Filtros -->
+            <button class="filters-toggle-btn" id="filters-toggle-btn" title="Mostrar/Ocultar filtros">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                <span>Filtros</span>
+            </button>
+
+            <!-- Filtros Superiores (Categorías + Colores) - OCULTOS por defecto -->
+            <div class="dashboard-filters horizontal-bar collapsed" id="dashboard-filters">
+                <div class="filter-group">
+                    <div class="filter-buttons" id="category-filter-container">
+                        <button class="filter-btn active" data-category="all" title="Todo">Todo</button>
+                        <button class="filter-btn" data-category="CALZADO" title="Calzado">Calzado</button>
+                        <button class="filter-btn" data-category="POLOS" title="Polos">Polos</button>
+                        <button class="filter-btn" data-category="PANTALONES" title="Pantalones">Pantalones</button>
+                        <button class="filter-btn" data-category="OTROS" title="Otros">Otros</button>
+                    </div>
+                </div>
+
+                <div class="filter-divider"></div>
+
+                <div class="filter-group">
+                    <div class="gender-filter-buttons" id="gender-filter-container">
+                        <button class="gender-btn active" data-gender="all" title="Todos">Todos</button>
+                        <button class="gender-btn" data-gender="Mujer" title="Mujer">Mujer</button>
+                        <button class="gender-btn" data-gender="Hombre" title="Hombre">Hombre</button>
+                        <button class="gender-btn" data-gender="Unisex" title="Unisex">Unisex</button>
+                    </div>
+                </div>
+
+                <div class="filter-divider"></div>
+
+                <div class="filter-group compact-colors">
+                    <div class="color-filter-circles" id="color-filter-container">
+                        <div class="color-circle all-colors active" data-color="all" title="Todos"></div>
+                        <div class="color-circle" data-color="Negro" style="background-color: #1a1a1a;" title="Negro"></div>
+                        <div class="color-circle" data-color="Blanco" style="background-color: #f0f0f0;" title="Blanco"></div>
+                        <div class="color-circle" data-color="Rojo" style="background-color: #e74c3c;" title="Rojo"></div>
+                        <div class="color-circle" data-color="Azul" style="background-color: #3498db;" title="Azul"></div>
+                        <div class="color-circle" data-color="Gris" style="background-color: #95a5a6;" title="Gris"></div>
+                        <div class="color-circle" data-color="Verde" style="background-color: #27ae60;" title="Verde"></div>
+                    </div>
+                </div>
+
+                <div class="filter-divider"></div>
+
+                <div class="filter-group price-group">
+                    <div class="price-filter-controls horizontal-price">
+                        <div class="price-range-single">
+                            <div class="price-range-values">
+                                <span id="price-min-value">S/ 0</span>
+                                <span>-</span>
+                                <span id="price-max-value">S/ 500</span>
+                            </div>
+                            <div class="price-range-track-wrapper">
+                                <div class="price-range-track-base"></div>
+                                <div class="price-range-highlight" id="price-range-highlight"></div>
+                                <input type="range" id="price-min-slider" class="price-range-slider thumb-min" min="0" max="500" step="1" value="0">
+                                <input type="range" id="price-max-slider" class="price-range-slider thumb-max" min="0" max="500" step="1" value="500">
+                            </div>
+                        </div>
+                        <button id="reset-all-filters" class="price-filter-btn" title="Reiniciar todos los filtros">Reiniciar filtros</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="catalog-controls">
+                <p id="product-count">Mostrando 0 productos</p>
+            </div>
+
+            <!-- Grilla de Productos -->
+            <div class="dashboard-products" id="product-list">
+                <!-- Se inyectarán tarjetas minimalistas aquí -->
+            </div>
+            
+            <div class="load-more-container">
+                <button id="load-more-btn" class="btn-simple">Cargar más productos...</button>
+            </div>
+            <br>
+        </main>
+
+        <!-- CHATBOT (Right Panel) -->
+        <aside class="dashboard-chat" id="dashboard-chat">
+        <div class="chatbot-float-header" id="chatbot-float-header">
+            <div class="chatbot-float-title">
+                <div class="bot-avatar">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                        <circle cx="12" cy="5" r="2"></circle>
+                        <path d="M12 7v4"></path>
+                        <line x1="8" y1="16" x2="8" y2="16"></line>
+                        <line x1="16" y1="16" x2="16" y2="16"></line>
+                        <path d="M9 21v2"></path>
+                        <path d="M15 21v2"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h4>Asistente SENATI</h4>
+                    <span class="online-status">En línea</span>
+                </div>
+            </div>
+        </div>
+        <div class="chatbot-float-body" id="chatbot-float-body">
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot">
+                    ¡Hola! Soy Asistente Virtual. ¿En qué puedo ayudarte hoy?
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <button id="mic-btn" class="mic-btn" title="Reconocimiento de voz">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                </button>
+                <input type="text" id="chat-input" placeholder="Pregunta por un producto...">
+                <button id="send-chat">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </div>
+        </div>
+    </aside>
+    </div>
+
+    <!-- Modals (Cart) -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Tu Carrito</h3>
+            <button id="close-cart"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        </div>
+        <div class="cart-items" id="cart-items-list">
+            <p class="empty-msg">Tu carrito está vacío.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-amount">S/ 0.00</span>
+            </div>
+            <button id="checkout-btn" class="btn btn-primary checkout-btn">Finalizar Compra</button>
+        </div>
+    </div>
+    <div id="cart-overlay" class="cart-overlay"></div>
+
+    <!-- Mobile Chat Toggle -->
+    <button class="mobile-chat-toggle" id="mobile-chat-toggle" title="Abrir chat">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+            <circle cx="12" cy="5" r="2"></circle>
+            <path d="M12 7v4"></path>
+            <line x1="8" y1="16" x2="8" y2="16"></line>
+            <line x1="16" y1="16" x2="16" y2="16"></line>
+            <path d="M9 21v2"></path>
+            <path d="M15 21v2"></path>
+        </svg>
+    </button>
+
+    <!-- jsPDF eliminado. El PDF se genera en el backend -->
+
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+*$py.class
+data/chat_memory*
+
+chatbot_tienda.sql
+.vscode/
+boleta_compra.pdf
+*.pdf

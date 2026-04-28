@@ -1,0 +1,5 @@
+# Genera un enlace publico HTTPS para exponer tu bot local (puerto 5000) usando localhost.run
+ssh -T -o StrictHostKeyChecking=no -R 80:127.0.0.1:5000 nokey@localhost.run
+
+# Reiniciar rama main con archivos locales
+git checkout --orphan temp_branch; git add -A; git commit -m "Initial commit - Clean main branch"; git branch -D main; git branch -m main; git push -f origin main
