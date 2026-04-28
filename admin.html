@@ -734,10 +734,11 @@
           <div class="section" id="section-reportes">
             <div class="section-title">📈 Reportes de Ventas</div>
             <div class="chart-controls">
-              <button class="btn btn-ghost btn-sm" id="rpt-diario" onclick="cargarReporte('diario')">Diario (30d)</button>
+              <button class="btn btn-primary btn-sm" id="rpt-diario" onclick="cargarReporte('diario')">Diario (30d)</button>
               <button class="btn btn-ghost btn-sm" id="rpt-semanal" onclick="cargarReporte('semanal')">Semanal (12s)</button>
-              <button class="btn btn-primary btn-sm" id="rpt-mensual" onclick="cargarReporte('mensual')">Mensual (12m)</button>
+              <button class="btn btn-ghost btn-sm" id="rpt-mensual" onclick="cargarReporte('mensual')">Mensual (12m)</button>
               <button class="btn btn-success btn-sm" onclick="exportarReportePDF()" style="margin-left:auto" title="Descargar reporte PDF">📄 Exportar PDF</button>
+              <button class="btn btn-ghost btn-sm" onclick="exportarReporteCSV()" title="Descargar reporte CSV">📊 Exportar CSV</button>
             </div>
             <div class="chart-grid">
               <div class="chart-card" style="grid-column: 1/-1">
@@ -751,6 +752,14 @@
               <div class="chart-card">
                 <h4>Top 10 productos más vendidos</h4>
                 <canvas id="chart-top-productos" height="180"></canvas>
+              </div>
+              <div class="chart-card">
+                <h4>Ventas por categoría</h4>
+                <canvas id="chart-categorias-pie" height="180"></canvas>
+              </div>
+              <div class="chart-card" style="grid-column: 1/-1">
+                <h4>🔄 Rotación de Stock: Sobrestock vs Más Vendidos</h4>
+                <canvas id="chart-rotacion-stock" height="120"></canvas>
               </div>
             </div>
           </div>
@@ -990,7 +999,7 @@
         if (name === "productos") cargarProductos();
         if (name === "categorias") cargarCategorias();
         if (name === "stock") cargarStock(false);
-        if (name === "reportes") cargarReporte("mensual");
+        if (name === "reportes") cargarReporte("diario");
       }
 
       function iniciarApp() {
@@ -1526,6 +1535,19 @@
             "Unidades",
             "#ffc107",
           );
+
+          // Gráfico de ventas por categoría (pie chart)
+          const catData = await api("/admin/reportes/por_categoria");
+          dibujarPie(
+            "chart-categorias-pie",
+            catData.por_categoria.map((c) => c.categoria),
+            catData.por_categoria.map((c) => c.monto_total),
+          );
+
+          // Gráfico de rotación de stock
+          const rotacion = await api("/admin/reportes/rotacion_stock");
+          dibujarRotacionStock(rotacion);
+
         } catch (e) {
           console.error(e);
         }
@@ -1650,6 +1672,86 @@
             },
           },
         });
+      }
+
+      /* ── Pie Chart (categorías) ── */
+      function dibujarPie(canvasId, labels, data) {
+        const ctx = document.getElementById(canvasId);
+        if (!ctx) return;
+        if (State.charts[canvasId]) State.charts[canvasId].destroy();
+        const COLORES_PIE = ["#6c63ff", "#00d4aa", "#ffc107", "#ff4d6d", "#00b4d8", "#f4a017", "#43aa8b", "#9b5de5"];
+        State.charts[canvasId] = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels,
+            datasets: [{
+              data,
+              backgroundColor: COLORES_PIE.slice(0, labels.length),
+              borderColor: "#1a1d2e",
+              borderWidth: 2,
+            }],
+          },
+          options: {
+            plugins: {
+              legend: { position: "bottom", labels: { color: "#9ca3c0", padding: 12 } },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `S/ ${ctx.parsed.toFixed(2)}`
+                }
+              }
+            },
+          },
+        });
+      }
+
+      /* ── Rotación de Stock (bar chart agrupado) ── */
+      function dibujarRotacionStock(rotacion) {
+        const canvasId = "chart-rotacion-stock";
+        const ctx = document.getElementById(canvasId);
+        if (!ctx) return;
+        if (State.charts[canvasId]) State.charts[canvasId].destroy();
+
+        // Combinar top vendidos con su stock actual
+        const labels = rotacion.mas_vendidos.map(p => p.nombre.substring(0, 25) + "…");
+        const vendidos = rotacion.mas_vendidos.map(p => p.unidades_vendidas);
+        const stock = rotacion.mas_vendidos.map(p => p.stock_actual);
+
+        State.charts[canvasId] = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [
+              { label: "Unidades Vendidas", data: vendidos, backgroundColor: "#00d4aacc", borderColor: "#00d4aa", borderWidth: 1, borderRadius: 4 },
+              { label: "Stock Actual", data: stock, backgroundColor: "#ff4d6dcc", borderColor: "#ff4d6d", borderWidth: 1, borderRadius: 4 },
+            ],
+          },
+          options: {
+            plugins: { legend: { labels: { color: "#9ca3c0" } } },
+            scales: {
+              x: { ticks: { color: "#9ca3c0", maxRotation: 45 }, grid: { color: "#2e3150" } },
+              y: { ticks: { color: "#9ca3c0" }, grid: { color: "#2e3150" }, beginAtZero: true },
+            },
+          },
+        });
+      }
+
+      /* ── Exportar CSV ── */
+      async function exportarReporteCSV() {
+        try {
+          toast("Generando CSV...", "ok");
+          const res = await fetch("/admin/reportes/csv?periodo=diario", { credentials: "same-origin" });
+          if (!res.ok) throw new Error("Error al generar CSV");
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `reporte_ventas_${new Date().toISOString().slice(0,10)}.csv`;
+          a.click();
+          URL.revokeObjectURL(url);
+          toast("CSV descargado", "ok");
+        } catch (e) {
+          toast(e.message, "err");
+        }
       }
 
       /* ═══════════════════════════════════════════════════════════

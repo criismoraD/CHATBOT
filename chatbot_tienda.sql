@@ -28,6 +28,10 @@ DELIMITER $$
 --
 -- Procedimientos
 --
+-- ============================================================
+-- Procedimiento: buscar_productos (búsqueda full-text + filtros)
+-- ============================================================
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `buscar_productos` (IN `p_texto` VARCHAR(255), IN `p_categoria` VARCHAR(50), IN `p_genero` VARCHAR(20), IN `p_color` VARCHAR(50), IN `p_talla` VARCHAR(10), IN `p_precio_min` DECIMAL(10,2), IN `p_precio_max` DECIMAL(10,2))   BEGIN
   SELECT DISTINCT
     p.id, p.nombre, p.precio,
@@ -48,28 +52,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `buscar_productos` (IN `p_texto` VAR
     AND (p_precio_max IS NULL OR p.precio <= p_precio_max)
   ORDER BY p.rating DESC, p.nombre
   LIMIT 20;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `guardar_mensaje` (IN `p_sesion_id` VARCHAR(64), IN `p_rol` ENUM('user','bot'), IN `p_mensaje` TEXT, IN `p_intent_detectado` VARCHAR(60), IN `p_confianza` DECIMAL(5,4))   BEGIN
-  INSERT IGNORE INTO sesiones (sesion_id) VALUES (p_sesion_id);
-  INSERT INTO historial_chat (sesion_id, rol, mensaje, intent_detectado, confianza)
-  VALUES (p_sesion_id, p_rol, p_mensaje, p_intent_detectado, p_confianza);
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `upsert_memoria` (IN `p_sesion_id` VARCHAR(64), IN `p_ultimo_tag` VARCHAR(60), IN `p_filtros` JSON, IN `p_producto_id` SMALLINT UNSIGNED, IN `p_historial_tags` JSON)   BEGIN
-  -- Crear sesión si no existe
-  INSERT IGNORE INTO sesiones (sesion_id) VALUES (p_sesion_id);
-
-  -- Upsert memoria
-  INSERT INTO memoria_usuario
-    (sesion_id, ultimo_tag, filtros_activos, producto_id_actual, historial_tags)
-  VALUES
-    (p_sesion_id, p_ultimo_tag, p_filtros, p_producto_id, p_historial_tags)
-  ON DUPLICATE KEY UPDATE
-    ultimo_tag         = VALUES(ultimo_tag),
-    filtros_activos    = VALUES(filtros_activos),
-    producto_id_actual = VALUES(producto_id_actual),
-    historial_tags     = VALUES(historial_tags);
 END$$
 
 DELIMITER ;
@@ -2411,7 +2393,10 @@ ALTER TABLE `productos`
   ADD KEY `idx_cat` (`categoria_id`),
   ADD KEY `idx_genero` (`genero`),
   ADD KEY `idx_precio` (`precio`),
-  ADD KEY `idx_rating` (`rating`);
+  ADD KEY `idx_rating` (`rating`),
+  ADD KEY `idx_activo_stock` (`activo`, `stock`),
+  ADD KEY `idx_cat_gen_precio` (`categoria_id`, `genero`, `precio`),
+  ADD KEY `idx_nombre` (`nombre`);
 ALTER TABLE `productos` ADD FULLTEXT KEY `ft_nombre_desc` (`nombre`,`descripcion`);
 
 --
@@ -2431,7 +2416,8 @@ ALTER TABLE `producto_tallas`
 --
 ALTER TABLE `ventas`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_fecha` (`fecha`);
+  ADD KEY `idx_fecha` (`fecha`),
+  ADD KEY `idx_sesion` (`sesion_id`);
 
 --
 -- Indices de la tabla `venta_detalle`
@@ -2439,7 +2425,9 @@ ALTER TABLE `ventas`
 ALTER TABLE `venta_detalle`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_venta` (`venta_id`),
-  ADD KEY `fk_producto_venta` (`producto_id`);
+  ADD KEY `fk_producto_venta` (`producto_id`),
+  ADD KEY `idx_cantidad` (`cantidad`),
+  ADD KEY `idx_subtotal` (`subtotal`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
