@@ -1,6 +1,6 @@
 """
-admin.py  ·  Módulo de Administración para el Chatbot Tienda
--------------------------------------------------------------
+admin/panel.py  ·  Módulo de Administración para el Chatbot Tienda
+--------------------------------------------------------------------
 Provee rutas Flask para:
   - Login / Logout de administrador
   - CRUD de Productos (Crear, Leer, Actualizar, Eliminar)
@@ -10,8 +10,8 @@ Provee rutas Flask para:
   - Registrar ventas desde el carrito
 
 Uso: importar y registrar en app.py con:
-    from admin import admin_bp
-    app.register_blueprint(admin_bp)
+    from admin import Inicializar_Admin
+    Inicializar_Admin(app)
 """
 
 import os
@@ -25,21 +25,21 @@ from flask import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from db import ejecutar_consulta, ejecutar_escritura, get_connection
+from core.db import Ejecutar_Consulta, Ejecutar_Escritura, Obtener_Conexion
 from mysql.connector import Error
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 
-UPLOADS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'uploads')
+UPLOADS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 def _ext_permitida(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ─── Blueprint ────────────────────────────────────────────────────────────────
-admin_bp = Blueprint("admin", __name__)
+Admin_Blueprint = Blueprint("admin", __name__)
 
 # Clave secreta para sesiones (en producción usar variable de entorno)
 ADMIN_SESSION_KEY = "admin_logged_in"
@@ -64,16 +64,16 @@ def _init_admin_default():
     Llámalo una vez al arrancar la app.
     """
     try:
-        rows = ejecutar_consulta("SELECT id, password_hash FROM administradores WHERE usuario = 'admin'")
+        rows = Ejecutar_Consulta("SELECT id, password_hash FROM administradores WHERE usuario = 'admin'")
         hash_ok = generate_password_hash("admin123")
         if not rows:
-            ejecutar_escritura(
+            Ejecutar_Escritura(
                 "INSERT INTO administradores (usuario, password_hash, nombre) VALUES (%s, %s, %s)",
                 ("admin", hash_ok, "Administrador")
             )
             print("[ADMIN] Usuario 'admin' creado con contraseña 'admin123'.")
         elif "placeholder" in rows[0].get("password_hash", ""):
-            ejecutar_escritura(
+            Ejecutar_Escritura(
                 "UPDATE administradores SET password_hash = %s WHERE usuario = 'admin'",
                 (hash_ok,)
             )
@@ -84,7 +84,7 @@ def _init_admin_default():
 
 # ─── Servir panel HTML ────────────────────────────────────────────────────────
 
-@admin_bp.route("/admin", methods=["GET"])
+@Admin_Blueprint.route("/admin", methods=["GET"])
 def Servir_Panel_Admin():
     """Sirve la página HTML del panel de administración."""
     return send_from_directory(".", "admin.html")
@@ -92,7 +92,7 @@ def Servir_Panel_Admin():
 
 # ─── Autenticación ───────────────────────────────────────────────────────────
 
-@admin_bp.route("/admin/login", methods=["POST"])
+@Admin_Blueprint.route("/admin/login", methods=["POST"])
 def Admin_Login():
     datos = request.get_json(silent=True) or {}
     usuario  = str(datos.get("usuario", "")).strip()
@@ -101,7 +101,7 @@ def Admin_Login():
     if not usuario or not password:
         return jsonify({"error": "Usuario y contraseña requeridos."}), 400
 
-    rows = ejecutar_consulta(
+    rows = Ejecutar_Consulta(
         "SELECT id, password_hash, nombre FROM administradores WHERE usuario = %s",
         (usuario,)
     )
@@ -114,14 +114,14 @@ def Admin_Login():
     return jsonify({"ok": True, "nombre": rows[0].get("nombre", usuario)})
 
 
-@admin_bp.route("/admin/logout", methods=["POST"])
+@Admin_Blueprint.route("/admin/logout", methods=["POST"])
 def Admin_Logout():
     session.pop(ADMIN_SESSION_KEY, None)
     session.pop(ADMIN_USER_KEY, None)
     return jsonify({"ok": True})
 
 
-@admin_bp.route("/admin/verificar", methods=["GET"])
+@Admin_Blueprint.route("/admin/verificar", methods=["GET"])
 def Admin_Verificar():
     """Comprueba si hay una sesión activa."""
     if session.get(ADMIN_SESSION_KEY):
@@ -131,7 +131,7 @@ def Admin_Verificar():
 
 # ─── CRUD Productos ───────────────────────────────────────────────────────────
 
-@admin_bp.route("/admin/productos", methods=["GET"])
+@Admin_Blueprint.route("/admin/productos", methods=["GET"])
 @login_requerido
 def Admin_Listar_Productos():
     """Lista todos los productos con su categoría."""
@@ -157,8 +157,8 @@ def Admin_Listar_Productos():
             LIMIT %s OFFSET %s
         """
         param_busq = f"%{busqueda}%"
-        total_rows = ejecutar_consulta(sql_count, (param_busq,))
-        productos  = ejecutar_consulta(sql_data, (param_busq, por_pag, offset))
+        total_rows = Ejecutar_Consulta(sql_count, (param_busq,))
+        productos  = Ejecutar_Consulta(sql_data, (param_busq, por_pag, offset))
     else:
         sql_count = "SELECT COUNT(*) AS total FROM productos"
         sql_data  = """
@@ -170,8 +170,8 @@ def Admin_Listar_Productos():
             ORDER BY p.id DESC
             LIMIT %s OFFSET %s
         """
-        total_rows = ejecutar_consulta(sql_count)
-        productos  = ejecutar_consulta(sql_data, (por_pag, offset))
+        total_rows = Ejecutar_Consulta(sql_count)
+        productos  = Ejecutar_Consulta(sql_data, (por_pag, offset))
 
     total = total_rows[0]["total"] if total_rows else 0
 
@@ -190,11 +190,11 @@ def Admin_Listar_Productos():
     })
 
 
-@admin_bp.route("/admin/productos/<int:producto_id>", methods=["GET"])
+@Admin_Blueprint.route("/admin/productos/<int:producto_id>", methods=["GET"])
 @login_requerido
 def Admin_Obtener_Producto(producto_id):
     """Devuelve un producto específico por ID."""
-    rows = ejecutar_consulta(
+    rows = Ejecutar_Consulta(
         """
         SELECT p.id, p.nombre, p.precio, p.categoria_id,
                c.nombre AS categoria, p.genero, p.color,
@@ -213,7 +213,7 @@ def Admin_Obtener_Producto(producto_id):
     return jsonify(p)
 
 
-@admin_bp.route("/admin/productos", methods=["POST"])
+@Admin_Blueprint.route("/admin/productos", methods=["POST"])
 @login_requerido
 def Admin_Crear_Producto():
     """Crea un nuevo producto."""
@@ -244,7 +244,7 @@ def Admin_Crear_Producto():
     except (TypeError, ValueError):
         return jsonify({"error": "Precio, stock o rating con formato incorrecto."}), 400
 
-    nuevo_id = ejecutar_escritura(
+    nuevo_id = Ejecutar_Escritura(
         """
         INSERT INTO productos
             (nombre, precio, categoria_id, genero, color, stock, rating, descripcion, imagen_url, activo)
@@ -259,12 +259,12 @@ def Admin_Crear_Producto():
     return jsonify({"ok": True, "id": nuevo_id, "mensaje": f"Producto '{nombre}' creado correctamente."}), 201
 
 
-@admin_bp.route("/admin/productos/<int:producto_id>", methods=["PUT"])
+@Admin_Blueprint.route("/admin/productos/<int:producto_id>", methods=["PUT"])
 @login_requerido
 def Admin_Actualizar_Producto(producto_id):
     """Actualiza un producto existente."""
     # Verificar que existe
-    existente = ejecutar_consulta("SELECT id FROM productos WHERE id = %s", (producto_id,))
+    existente = Ejecutar_Consulta("SELECT id FROM productos WHERE id = %s", (producto_id,))
     if not existente:
         return jsonify({"error": "Producto no encontrado."}), 404
 
@@ -301,46 +301,46 @@ def Admin_Actualizar_Producto(producto_id):
 
     valores.append(producto_id)
     sql = f"UPDATE productos SET {', '.join(campos)} WHERE id = %s"
-    ejecutar_escritura(sql, tuple(valores))
+    Ejecutar_Escritura(sql, tuple(valores))
 
     return jsonify({"ok": True, "mensaje": "Producto actualizado correctamente."})
 
 
-@admin_bp.route("/admin/productos/<int:producto_id>", methods=["DELETE"])
+@Admin_Blueprint.route("/admin/productos/<int:producto_id>", methods=["DELETE"])
 @login_requerido
 def Admin_Eliminar_Producto(producto_id):
     """Elimina (desactiva) un producto. Pasa activo=0 en lugar de borrar físicamente."""
-    existente = ejecutar_consulta("SELECT id, nombre FROM productos WHERE id = %s", (producto_id,))
+    existente = Ejecutar_Consulta("SELECT id, nombre FROM productos WHERE id = %s", (producto_id,))
     if not existente:
         return jsonify({"error": "Producto no encontrado."}), 404
 
     nombre = existente[0]["nombre"]
 
     # Eliminación lógica: marca como inactivo
-    ejecutar_escritura("UPDATE productos SET activo = 0 WHERE id = %s", (producto_id,))
+    Ejecutar_Escritura("UPDATE productos SET activo = 0 WHERE id = %s", (producto_id,))
 
     return jsonify({"ok": True, "mensaje": f"Producto '{nombre}' desactivado correctamente."})
 
 
-@admin_bp.route("/admin/productos/<int:producto_id>/restaurar", methods=["POST"])
+@Admin_Blueprint.route("/admin/productos/<int:producto_id>/restaurar", methods=["POST"])
 @login_requerido
 def Admin_Restaurar_Producto(producto_id):
     """Reactiva un producto previamente desactivado."""
-    existente = ejecutar_consulta("SELECT id, nombre FROM productos WHERE id = %s", (producto_id,))
+    existente = Ejecutar_Consulta("SELECT id, nombre FROM productos WHERE id = %s", (producto_id,))
     if not existente:
         return jsonify({"error": "Producto no encontrado."}), 404
 
-    ejecutar_escritura("UPDATE productos SET activo = 1 WHERE id = %s", (producto_id,))
+    Ejecutar_Escritura("UPDATE productos SET activo = 1 WHERE id = %s", (producto_id,))
     return jsonify({"ok": True, "mensaje": f"Producto '{existente[0]['nombre']}' reactivado."})
 
 
 # ─── CRUD Categorías ──────────────────────────────────────────────────────────
 
-@admin_bp.route("/admin/categorias", methods=["GET"])
+@Admin_Blueprint.route("/admin/categorias", methods=["GET"])
 @login_requerido
 def Admin_Listar_Categorias():
     """Lista todas las categorías con conteo de productos."""
-    rows = ejecutar_consulta(
+    rows = Ejecutar_Consulta(
         """
         SELECT c.id, c.nombre,
                COUNT(p.id) AS total_productos
@@ -353,7 +353,7 @@ def Admin_Listar_Categorias():
     return jsonify({"categorias": rows})
 
 
-@admin_bp.route("/admin/categorias", methods=["POST"])
+@Admin_Blueprint.route("/admin/categorias", methods=["POST"])
 @login_requerido
 def Admin_Crear_Categoria():
     d = request.get_json(silent=True) or {}
@@ -361,15 +361,15 @@ def Admin_Crear_Categoria():
     if not nombre:
         return jsonify({"error": "El nombre de la categoría es requerido."}), 400
 
-    existe = ejecutar_consulta("SELECT id FROM categorias WHERE nombre = %s", (nombre,))
+    existe = Ejecutar_Consulta("SELECT id FROM categorias WHERE nombre = %s", (nombre,))
     if existe:
         return jsonify({"error": f"La categoría '{nombre}' ya existe."}), 409
 
-    nuevo_id = ejecutar_escritura("INSERT INTO categorias (nombre) VALUES (%s)", (nombre,))
+    nuevo_id = Ejecutar_Escritura("INSERT INTO categorias (nombre) VALUES (%s)", (nombre,))
     return jsonify({"ok": True, "id": nuevo_id, "mensaje": f"Categoría '{nombre}' creada."}), 201
 
 
-@admin_bp.route("/admin/categorias/<int:cat_id>", methods=["PUT"])
+@Admin_Blueprint.route("/admin/categorias/<int:cat_id>", methods=["PUT"])
 @login_requerido
 def Admin_Actualizar_Categoria(cat_id):
     d = request.get_json(silent=True) or {}
@@ -377,34 +377,34 @@ def Admin_Actualizar_Categoria(cat_id):
     if not nombre:
         return jsonify({"error": "Nombre requerido."}), 400
 
-    existente = ejecutar_consulta("SELECT id FROM categorias WHERE id = %s", (cat_id,))
+    existente = Ejecutar_Consulta("SELECT id FROM categorias WHERE id = %s", (cat_id,))
     if not existente:
         return jsonify({"error": "Categoría no encontrada."}), 404
 
-    ejecutar_escritura("UPDATE categorias SET nombre = %s WHERE id = %s", (nombre, cat_id))
+    Ejecutar_Escritura("UPDATE categorias SET nombre = %s WHERE id = %s", (nombre, cat_id))
     return jsonify({"ok": True, "mensaje": "Categoría actualizada."})
 
 
-@admin_bp.route("/admin/categorias/<int:cat_id>", methods=["DELETE"])
+@Admin_Blueprint.route("/admin/categorias/<int:cat_id>", methods=["DELETE"])
 @login_requerido
 def Admin_Eliminar_Categoria(cat_id):
-    en_uso = ejecutar_consulta(
+    en_uso = Ejecutar_Consulta(
         "SELECT COUNT(*) AS n FROM productos WHERE categoria_id = %s", (cat_id,)
     )
     if en_uso and en_uso[0]["n"] > 0:
         return jsonify({"error": "No se puede eliminar: la categoría tiene productos asignados."}), 409
 
-    existente = ejecutar_consulta("SELECT nombre FROM categorias WHERE id = %s", (cat_id,))
+    existente = Ejecutar_Consulta("SELECT nombre FROM categorias WHERE id = %s", (cat_id,))
     if not existente:
         return jsonify({"error": "Categoría no encontrada."}), 404
 
-    ejecutar_escritura("DELETE FROM categorias WHERE id = %s", (cat_id,))
+    Ejecutar_Escritura("DELETE FROM categorias WHERE id = %s", (cat_id,))
     return jsonify({"ok": True, "mensaje": f"Categoría '{existente[0]['nombre']}' eliminada."})
 
 
 # ─── Stock ────────────────────────────────────────────────────────────────────
 
-@admin_bp.route("/admin/stock", methods=["GET"])
+@Admin_Blueprint.route("/admin/stock", methods=["GET"])
 @login_requerido
 def Admin_Ver_Stock():
     """
@@ -422,7 +422,7 @@ def Admin_Ver_Stock():
             WHERE p.stock <= %s
             ORDER BY p.stock ASC, p.nombre
         """
-        rows = ejecutar_consulta(sql, (umbral,))
+        rows = Ejecutar_Consulta(sql, (umbral,))
     else:
         sql = """
             SELECT p.id, p.nombre, p.stock, c.nombre AS categoria, p.activo
@@ -430,12 +430,12 @@ def Admin_Ver_Stock():
             JOIN categorias c ON p.categoria_id = c.id
             ORDER BY p.stock ASC, p.nombre
         """
-        rows = ejecutar_consulta(sql)
+        rows = Ejecutar_Consulta(sql)
 
     return jsonify({"stock": rows, "total": len(rows)})
 
 
-@admin_bp.route("/admin/stock/<int:producto_id>", methods=["PATCH"])
+@Admin_Blueprint.route("/admin/stock/<int:producto_id>", methods=["PATCH"])
 @login_requerido
 def Admin_Actualizar_Stock(producto_id):
     """Actualiza solo el stock de un producto."""
@@ -448,17 +448,17 @@ def Admin_Actualizar_Stock(producto_id):
     if nuevo_stock < 0:
         return jsonify({"error": "El stock no puede ser negativo."}), 400
 
-    existente = ejecutar_consulta("SELECT id FROM productos WHERE id = %s", (producto_id,))
+    existente = Ejecutar_Consulta("SELECT id FROM productos WHERE id = %s", (producto_id,))
     if not existente:
         return jsonify({"error": "Producto no encontrado."}), 404
 
-    ejecutar_escritura("UPDATE productos SET stock = %s WHERE id = %s", (nuevo_stock, producto_id))
+    Ejecutar_Escritura("UPDATE productos SET stock = %s WHERE id = %s", (nuevo_stock, producto_id))
     return jsonify({"ok": True, "mensaje": f"Stock actualizado a {nuevo_stock}."})
 
 
 # ─── Ventas: registrar ─────────────────────────────────────────────────────────
 
-@admin_bp.route("/admin/ventas/registrar", methods=["POST"])
+@Admin_Blueprint.route("/admin/ventas/registrar", methods=["POST"])
 def Admin_Registrar_Venta():
     """
     Registra una venta con su detalle.
@@ -491,7 +491,7 @@ def Admin_Registrar_Venta():
     sesion_id = str(datos.get("sesion_id", "anon"))
 
     # Insertar cabecera de venta
-    venta_id = ejecutar_escritura(
+    venta_id = Ejecutar_Escritura(
         "INSERT INTO ventas (sesion_id, total, cantidad_items) VALUES (%s, %s, %s)",
         (sesion_id, round(total_venta, 2), len(items_validos))
     )
@@ -501,7 +501,7 @@ def Admin_Registrar_Venta():
 
     # Insertar detalle y descontar stock
     for prod_id, nombre, precio, cantidad, subtotal in items_validos:
-        ejecutar_escritura(
+        Ejecutar_Escritura(
             """
             INSERT INTO venta_detalle
                 (venta_id, producto_id, nombre_producto, precio_unitario, cantidad, subtotal)
@@ -510,7 +510,7 @@ def Admin_Registrar_Venta():
             (venta_id, prod_id, nombre, precio, cantidad, round(subtotal, 2))
         )
         # Descontar stock (no bajar de 0)
-        ejecutar_escritura(
+        Ejecutar_Escritura(
             "UPDATE productos SET stock = GREATEST(0, stock - %s) WHERE id = %s",
             (cantidad, prod_id)
         )
@@ -520,7 +520,7 @@ def Admin_Registrar_Venta():
 
 # ─── Reportes ─────────────────────────────────────────────────────────────────
 
-@admin_bp.route("/admin/reportes/ventas", methods=["GET"])
+@Admin_Blueprint.route("/admin/reportes/ventas", methods=["GET"])
 @login_requerido
 def Admin_Reporte_Ventas():
     """
@@ -530,7 +530,7 @@ def Admin_Reporte_Ventas():
         ?periodo=semanal  → últimas 12 semanas, agrupado por semana
         ?periodo=mensual  → últimos 12 meses, agrupado por mes (por defecto)
     """
-    periodo = request.args.get("periodo", "mensual").lower()
+    periodo = request.args.get("periodo", "diario").lower()
 
     if periodo == "diario":
         sql = """
@@ -569,7 +569,7 @@ def Admin_Reporte_Ventas():
             ORDER BY etiqueta ASC
         """
 
-    rows = ejecutar_consulta(sql)
+    rows = Ejecutar_Consulta(sql)
 
     # Convertir Decimal a float para JSON
     for r in rows:
@@ -579,17 +579,17 @@ def Admin_Reporte_Ventas():
     return jsonify({"periodo": periodo, "datos": rows})
 
 
-@admin_bp.route("/admin/reportes/resumen", methods=["GET"])
+@Admin_Blueprint.route("/admin/reportes/resumen", methods=["GET"])
 @login_requerido
 def Admin_Resumen():
     """Resumen general para el dashboard de administración."""
-    total_productos  = ejecutar_consulta("SELECT COUNT(*) AS n FROM productos WHERE activo=1")
-    total_categorias = ejecutar_consulta("SELECT COUNT(*) AS n FROM categorias")
-    stock_critico    = ejecutar_consulta("SELECT COUNT(*) AS n FROM productos WHERE stock <= 5 AND activo=1")
+    total_productos  = Ejecutar_Consulta("SELECT COUNT(*) AS n FROM productos WHERE activo=1")
+    total_categorias = Ejecutar_Consulta("SELECT COUNT(*) AS n FROM categorias")
+    stock_critico    = Ejecutar_Consulta("SELECT COUNT(*) AS n FROM productos WHERE stock <= 5 AND activo=1")
 
-    ventas_hoy   = ejecutar_consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas WHERE DATE(fecha)=CURDATE()")
-    ventas_mes   = ejecutar_consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas WHERE MONTH(fecha)=MONTH(NOW()) AND YEAR(fecha)=YEAR(NOW())")
-    ventas_total = ejecutar_consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas")
+    ventas_hoy   = Ejecutar_Consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas WHERE DATE(fecha)=CURDATE()")
+    ventas_mes   = Ejecutar_Consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas WHERE MONTH(fecha)=MONTH(NOW()) AND YEAR(fecha)=YEAR(NOW())")
+    ventas_total = Ejecutar_Consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas")
 
     def _val(rows, campo):
         return rows[0][campo] if rows else 0
@@ -604,11 +604,11 @@ def Admin_Resumen():
     })
 
 
-@admin_bp.route("/admin/reportes/top_productos", methods=["GET"])
+@Admin_Blueprint.route("/admin/reportes/top_productos", methods=["GET"])
 @login_requerido
 def Admin_Top_Productos():
     """Top 10 productos más vendidos."""
-    rows = ejecutar_consulta(
+    rows = Ejecutar_Consulta(
         """
         SELECT
             vd.producto_id,
@@ -628,7 +628,7 @@ def Admin_Top_Productos():
 
 # ─── Upload Imagen ───────────────────────────────────────────────────────────
 
-@admin_bp.route("/admin/productos/upload_imagen", methods=["POST"])
+@Admin_Blueprint.route("/admin/productos/upload_imagen", methods=["POST"])
 @login_requerido
 def Admin_Upload_Imagen():
     """Recibe un archivo imagen y lo guarda en data/uploads/. Retorna la URL."""
@@ -652,24 +652,24 @@ def Admin_Upload_Imagen():
 
 # ─── Reporte PDF ──────────────────────────────────────────────────────────────
 
-@admin_bp.route("/admin/reportes/pdf", methods=["GET"])
+@Admin_Blueprint.route("/admin/reportes/pdf", methods=["GET"])
 @login_requerido
 def Admin_Reporte_PDF():
     """Genera y descarga un PDF con resumen de ventas y top productos."""
     # Datos resumen
-    resumen_v = ejecutar_consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas WHERE DATE(fecha)=CURDATE()")
-    resumen_m = ejecutar_consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas WHERE MONTH(fecha)=MONTH(NOW()) AND YEAR(fecha)=YEAR(NOW())")
-    resumen_t = ejecutar_consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas")
+    resumen_v = Ejecutar_Consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas WHERE DATE(fecha)=CURDATE()")
+    resumen_m = Ejecutar_Consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas WHERE MONTH(fecha)=MONTH(NOW()) AND YEAR(fecha)=YEAR(NOW())")
+    resumen_t = Ejecutar_Consulta("SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas")
 
     # Ventas últimos 30 días
-    ventas_rows = ejecutar_consulta(
+    ventas_rows = Ejecutar_Consulta(
         "SELECT DATE(fecha) AS dia, COUNT(*) AS cant, SUM(total) AS monto "
         "FROM ventas WHERE fecha >= DATE_SUB(NOW(), INTERVAL 30 DAY) "
         "GROUP BY DATE(fecha) ORDER BY dia ASC"
     )
 
     # Top productos
-    top_rows = ejecutar_consulta(
+    top_rows = Ejecutar_Consulta(
         "SELECT vd.nombre_producto, SUM(vd.cantidad) AS unidades, SUM(vd.subtotal) AS ingresos "
         "FROM venta_detalle vd GROUP BY vd.nombre_producto "
         "ORDER BY unidades DESC LIMIT 10"
@@ -763,14 +763,14 @@ def Admin_Reporte_PDF():
 
 # ─── Inicialización ───────────────────────────────────────────────────────────
 
-def init_admin(app):
+def Inicializar_Admin(app):
     """
-    Registra el blueprint y configura la clave secreta para sesiones.
-    Llamar desde app.py: admin.init_admin(app)
+    Registra el blueprint de administración y configura la sesión.
+    Llamar desde app.py: admin.Inicializar_Admin(app)
     """
     if not app.secret_key:
         app.secret_key = os.getenv("FLASK_SECRET_KEY", "senati_admin_secret_2024")
-    app.register_blueprint(admin_bp)
+    app.register_blueprint(Admin_Blueprint)
     with app.app_context():
         _init_admin_default()
     print("[ADMIN] Módulo de administración registrado en /admin")

@@ -1,3 +1,14 @@
+"""
+app.py  ·  Punto de Entrada Principal del Chatbot SENATI Sports
+----------------------------------------------------------------
+Servidor Flask que integra:
+  - Chatbot con IA (PyTorch LSTM)
+  - Panel de administración
+  - Catálogo de productos (MySQL)
+  - Generación de boletas PDF
+  - Transcripción de voz (Whisper)
+"""
+
 import os
 import tempfile
 from flask import Flask, request, jsonify, send_from_directory, send_file
@@ -6,40 +17,42 @@ import datetime
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-import admin as admin_module
-import config
-from ia import Modelo_IA, Etiquetas_De_Intencion, Obtener_Modelo_Voz
-from catalogo import (
+from admin import Inicializar_Admin
+from core import config
+from core.db import Ejecutar_Escritura
+from bot.ia import Modelo_IA, Etiquetas_De_Intencion, Obtener_Modelo_Voz
+from bot.catalogo import (
     Datos_De_Productos, Catalogos_De_Productos, Fuente_Activa_De_Catalogo,
     Cambiar_Fuente_De_Catalogo, Buscar_Productos, Obtener_Producto_Por_Id,
     Decrementar_Stock_En_Cache
 )
-from memoria import Obtener_Contexto, Actualizar_Contexto
-from dialogo import Obtener_Respuesta_Principal
+from bot.memoria import Obtener_Contexto, Actualizar_Contexto
+from bot.dialogo import Obtener_Respuesta_Principal
 
-app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "senati_admin_2024")
 
-# Configuración de CORS: Permitir solo origenes definidos en config.
-CORS(app, resources={r"/*": {"origins": config.Origenes_Cors_Permitidos}})
+# ─── Inicialización de Flask ─────────────────────────────────────────────────
 
-# Módulo de administración
-admin_module.init_admin(app)
+Aplicacion = Flask(__name__)
+Aplicacion.secret_key = os.getenv("FLASK_SECRET_KEY", "senati_admin_2024")
 
+CORS(Aplicacion, resources={r"/*": {"origins": config.Origenes_Cors_Permitidos}})
+
+Inicializar_Admin(Aplicacion)
+
+
+# ─── Detección de Intención Contextual ───────────────────────────────────────
 
 def Detectar_Intencion_De_Detalle_Contextual(Mensaje_Usuario):
-    Texto_Normalizado = str(Mensaje_Usuario or "").strip().lower()
-    if not Texto_Normalizado:
+    """Detecta si el usuario pregunta por precio, stock o color de un producto en contexto."""
+    Texto = str(Mensaje_Usuario or "").strip().lower()
+    if not Texto:
         return None
-    Indicadores_De_Precio = ("precio", "cuesta", "costo", "coste", "valor")
-    Indicadores_De_Stock = ("talla", "tallas", "stock", "disponible", "disponibles")
-    Indicadores_De_Color = ("color", "colores", "tono", "tonos")
 
-    if any(Indicador in Texto_Normalizado for Indicador in Indicadores_De_Precio):
+    if any(P in Texto for P in ("precio", "cuesta", "costo", "coste", "valor")):
         return "consultar_precio_item"
-    if any(Indicador in Texto_Normalizado for Indicador in Indicadores_De_Stock):
+    if any(P in Texto for P in ("talla", "tallas", "stock", "disponible", "disponibles")):
         return "consultar_stock_item"
-    if any(Indicador in Texto_Normalizado for Indicador in Indicadores_De_Color):
+    if any(P in Texto for P in ("color", "colores", "tono", "tonos")):
         return "colores"
 
     return None
@@ -48,52 +61,73 @@ def Detectar_Intencion_De_Detalle_Contextual(Mensaje_Usuario):
 def Detectar_Intencion_Carrito(Mensaje_Usuario):
     """Detecta si el usuario quiere añadir el producto en contexto al carrito."""
     Texto = str(Mensaje_Usuario or "").strip().lower()
-    Palabras_Carrito = (
+    Palabras = (
         "carrito", "añadir", "añadelo", "agregar", "agregalo",
         "comprar", "comprarlo", "quiero", "llevar", "llevarlo",
         "pedir", "pedirlo", "adquirir",
     )
-    return any(p in Texto for p in Palabras_Carrito)
+    return any(P in Texto for P in Palabras)
 
 
-def Construir_Respuesta_Contextual_Rapida(Producto, Etiqueta_Detalle):
-    Nombre_Producto = Producto.get("name", "producto")
+def Construir_Respuesta_Contextual_Rapida(Producto, Etiqueta):
+    """Genera una respuesta directa para consultas de precio/stock/color de un producto en contexto."""
+    Nombre = Producto.get("name", "producto")
 
-    if Etiqueta_Detalle == "consultar_precio_item":
+    if Etiqueta == "consultar_precio_item":
         Precio = Producto.get("price")
         if isinstance(Precio, (int, float)):
-            return f"¡Excelente elección! El precio del {Nombre_Producto} es de S/ {Precio:.2f}."
-        return f"Aún no tengo registrado el precio del {Nombre_Producto}."
+            return f"¡Excelente elección! El precio del {Nombre} es de S/ {Precio:.2f}."
+        return f"Aún no tengo registrado el precio del {Nombre}."
 
-    if Etiqueta_Detalle == "consultar_stock_item":
+    if Etiqueta == "consultar_stock_item":
         Tallas = Producto.get("tallas") or ["No especificadas"]
         Genero = Producto.get("genero") or "No especificado"
         Stock = Producto.get("stock")
         if Stock is None:
             Stock = "No especificado"
         return (
-            f"Claro, el {Nombre_Producto} lo tenemos en las siguientes tallas: {', '.join(Tallas)}. "
+            f"Claro, el {Nombre} lo tenemos en las siguientes tallas: {', '.join(Tallas)}. "
             f"Genero: {Genero}. Stock: {Stock} unidades."
         )
 
-    if Etiqueta_Detalle == "colores":
+    if Etiqueta == "colores":
         Colores = Producto.get("colores") or []
         if Colores:
-            return f"El {Nombre_Producto} está disponible en estos colores: {', '.join(Colores)}."
-        Color_Principal = Producto.get("color")
-        if Color_Principal:
-            return f"El {Nombre_Producto} está disponible en color {Color_Principal}."
-        return f"Aún no tengo colores registrados para el {Nombre_Producto}."
+            return f"El {Nombre} está disponible en estos colores: {', '.join(Colores)}."
+        Color = Producto.get("color")
+        if Color:
+            return f"El {Nombre} está disponible en color {Color}."
+        return f"Aún no tengo colores registrados para el {Nombre}."
 
     return None
 
 
-@app.route('/', methods=['GET'])
-def index():
+# ─── Rutas Estáticas ─────────────────────────────────────────────────────────
+
+@Aplicacion.route('/', methods=['GET'])
+def Servir_Index():
     return send_from_directory('.', 'index.html')
 
 
-@app.route('/status', methods=['GET'])
+@Aplicacion.route('/css/<path:Nombre_Archivo>', methods=['GET'])
+def Servir_Css(Nombre_Archivo):
+    return send_from_directory('css', Nombre_Archivo)
+
+
+@Aplicacion.route('/js/<path:Nombre_Archivo>', methods=['GET'])
+def Servir_Js(Nombre_Archivo):
+    return send_from_directory('js', Nombre_Archivo)
+
+
+@Aplicacion.route('/uploads/<path:Nombre_Archivo>', methods=['GET'])
+def Servir_Uploads(Nombre_Archivo):
+    Directorio = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'uploads')
+    return send_from_directory(Directorio, Nombre_Archivo)
+
+
+# ─── Estado del Servidor ─────────────────────────────────────────────────────
+
+@Aplicacion.route('/status', methods=['GET'])
 def Estado_Del_Servidor():
     return jsonify({
         "status": "online",
@@ -107,322 +141,265 @@ def Estado_Del_Servidor():
     })
 
 
-@app.route('/css/<path:Nombre_De_Archivo>', methods=['GET'])
-def Servir_Archivos_Css(Nombre_De_Archivo):
-    return send_from_directory('css', Nombre_De_Archivo)
+# ─── Chat ────────────────────────────────────────────────────────────────────
 
+@Aplicacion.route('/chat', methods=['POST'])
+def Chat():
+    Datos = request.get_json(silent=True) or {}
+    Mensaje = str(Datos.get('message', '')).strip()
+    Id_Sesion = str(Datos.get('session_id', 'default_user')).strip() or 'default_user'
+    Id_Producto_Ctx = Datos.get('context_product_id')
+    Contexto = Obtener_Contexto(Id_Sesion)
 
-@app.route('/js/<path:Nombre_De_Archivo>', methods=['GET'])
-def Servir_Archivos_Js(Nombre_De_Archivo):
-    return send_from_directory('js', Nombre_De_Archivo)
+    Fuente = Datos.get('catalog_source') or Contexto.get('catalog_source', 'auto')
+    Fuente_Usada = Cambiar_Fuente_De_Catalogo(Fuente)
+    Actualizar_Contexto(Id_Sesion, Fuente_De_Catalogo=Fuente_Usada)
 
+    if isinstance(Id_Producto_Ctx, str) and Id_Producto_Ctx.isdigit():
+        Id_Producto_Ctx = int(Id_Producto_Ctx)
 
-@app.route('/chat', methods=['POST'])
-def chat():
-    Datos_Usuario = request.get_json(silent=True) or {}
-    mensaje = str(Datos_Usuario.get('message', '')).strip()
-    print(f"[DEBUG] Mensaje recibido: '{mensaje}'")
-    Id_De_Sesion_Actual = str(Datos_Usuario.get('session_id', 'default_user')).strip() or 'default_user'
-    Id_De_Producto_En_Contexto = Datos_Usuario.get('context_product_id')
-    Contexto_Actual = Obtener_Contexto(Id_De_Sesion_Actual)
+    # Actualizar producto en contexto
+    if Id_Producto_Ctx is not None:
+        Actualizar_Contexto(Id_Sesion, Id_De_Producto=Id_Producto_Ctx, Fuente_De_Catalogo=Fuente_Usada)
+        Contexto = Obtener_Contexto(Id_Sesion)
 
-    Fuente_Solicitada = Datos_Usuario.get('catalog_source')
-    if not Fuente_Solicitada:
-        Fuente_Solicitada = Contexto_Actual.get('catalog_source', 'auto')
-
-    Fuente_Usada = Cambiar_Fuente_De_Catalogo(Fuente_Solicitada)
-    Actualizar_Contexto(Id_De_Sesion_Actual, Fuente_De_Catalogo=Fuente_Usada)
-
-    if isinstance(Id_De_Producto_En_Contexto, str) and Id_De_Producto_En_Contexto.isdigit():
-        Id_De_Producto_En_Contexto = int(Id_De_Producto_En_Contexto)
-    
-    # Si recibimos un ID de contexto, actualizamos el estado actual del bot
-    if Id_De_Producto_En_Contexto is not None:
-        Actualizar_Contexto(
-            Id_De_Sesion_Actual,
-            Id_De_Producto=Id_De_Producto_En_Contexto,
-            Fuente_De_Catalogo=Fuente_Usada,
-        )
-        Contexto_Actual = Obtener_Contexto(Id_De_Sesion_Actual)
-        # Si es el mensaje oculto de inicio de consulta, cortamos aquí
-        if mensaje == 'quiero saber mas de este producto':
-            product = Obtener_Producto_Por_Id(Id_De_Producto_En_Contexto)
-            if product:
-                msg = f"¡Excelente elección! Veo que te interesa el {product['name']}. ¿Qué te gustaría saber? (Ej. 'precio' o 'stock')."
+        if Mensaje == 'quiero saber mas de este producto':
+            Producto = Obtener_Producto_Por_Id(Id_Producto_Ctx)
+            if Producto:
+                Msg = f"¡Excelente elección! Veo que te interesa el {Producto['name']}. ¿Qué te gustaría saber? (Ej. 'precio' o 'stock')."
             else:
-                msg = "Claro, ¿En qué te ayudo con este producto?"
+                Msg = "Claro, ¿En qué te ayudo con este producto?"
             return jsonify({
-                "response": msg,
-                "tag": "contexto_iniciado",
-                "bot_name": config.Nombre_Del_Bot,
-                "catalog_source": Fuente_Usada,
+                "response": Msg, "tag": "contexto_iniciado",
+                "bot_name": config.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
             })
-        
-    if not mensaje:
+
+    if not Mensaje:
         return jsonify({"error": "No se recibio mensaje"}), 400
 
-    Id_De_Producto_Contextual = Contexto_Actual.get('selected_product_id')
-    Etiqueta_De_Detalle_Contextual = Detectar_Intencion_De_Detalle_Contextual(mensaje)
-    if Id_De_Producto_Contextual and Etiqueta_De_Detalle_Contextual:
-        Producto_Contextual = Obtener_Producto_Por_Id(Id_De_Producto_Contextual)
-        if Producto_Contextual:
-            Respuesta_Contextual = Construir_Respuesta_Contextual_Rapida(
-                Producto_Contextual,
-                Etiqueta_De_Detalle_Contextual,
-            )
-            if Respuesta_Contextual:
-                Actualizar_Contexto(
-                    Id_De_Sesion_Actual,
-                    Etiqueta=Etiqueta_De_Detalle_Contextual,
-                    Id_De_Producto=Id_De_Producto_Contextual,
-                    Fuente_De_Catalogo=Fuente_Usada,
-                )
+    # Consulta contextual rápida (precio/stock/color)
+    Id_Producto_Ctx_Actual = Contexto.get('selected_product_id')
+    Etiqueta_Detalle = Detectar_Intencion_De_Detalle_Contextual(Mensaje)
+    if Id_Producto_Ctx_Actual and Etiqueta_Detalle:
+        Producto = Obtener_Producto_Por_Id(Id_Producto_Ctx_Actual)
+        if Producto:
+            Respuesta_Ctx = Construir_Respuesta_Contextual_Rapida(Producto, Etiqueta_Detalle)
+            if Respuesta_Ctx:
+                Actualizar_Contexto(Id_Sesion, Etiqueta=Etiqueta_Detalle, Id_De_Producto=Id_Producto_Ctx_Actual, Fuente_De_Catalogo=Fuente_Usada)
                 return jsonify({
-                    "response": Respuesta_Contextual,
-                    "tag": Etiqueta_De_Detalle_Contextual,
-                    "bot_name": config.Nombre_Del_Bot,
-                    "catalog_source": Fuente_Usada,
+                    "response": Respuesta_Ctx, "tag": Etiqueta_Detalle,
+                    "bot_name": config.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
                 })
 
-    # ── Intento de añadir al carrito desde el chat ──
-    if Id_De_Producto_Contextual and Detectar_Intencion_Carrito(mensaje):
-        Producto_Para_Carrito = Obtener_Producto_Por_Id(Id_De_Producto_Contextual)
-        if Producto_Para_Carrito:
-            Nombre = Producto_Para_Carrito.get("name", "el producto")
-            Precio = Producto_Para_Carrito.get("price", 0)
-            Stock = Producto_Para_Carrito.get("stock", 0)
+    # Intención de carrito
+    if Id_Producto_Ctx_Actual and Detectar_Intencion_Carrito(Mensaje):
+        Producto = Obtener_Producto_Por_Id(Id_Producto_Ctx_Actual)
+        if Producto:
+            Nombre = Producto.get("name", "el producto")
+            Precio = Producto.get("price", 0)
+            Stock = Producto.get("stock", 0)
             if isinstance(Stock, (int, float)) and int(Stock) <= 0:
                 return jsonify({
                     "response": f"Lo siento, {Nombre} está agotado en este momento. 😔",
-                    "tag": "sin_stock",
-                    "bot_name": config.Nombre_Del_Bot,
-                    "catalog_source": Fuente_Usada,
+                    "tag": "sin_stock", "bot_name": config.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
                 })
             return jsonify({
                 "response": f"¡Listo! Añadí {Nombre} (S/ {Precio:.2f}) a tu carrito. 🛒",
-                "tag": "agregar_carrito",
-                "add_to_cart": True,
-                "product": Producto_Para_Carrito,
-                "bot_name": config.Nombre_Del_Bot,
-                "catalog_source": Fuente_Usada,
+                "tag": "agregar_carrito", "add_to_cart": True,
+                "product": Producto, "bot_name": config.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
             })
 
-    Respuesta_Bot, Etiqueta_Bot, Accion_De_Filtro = Obtener_Respuesta_Principal(Id_De_Sesion_Actual, mensaje)
+    # Motor de diálogo principal
+    Respuesta, Etiqueta, Accion = Obtener_Respuesta_Principal(Id_Sesion, Mensaje)
 
-    Resultado_Json = {
-        "response": Respuesta_Bot,
-        "tag": Etiqueta_Bot,
-        "bot_name": config.Nombre_Del_Bot,
-        "catalog_source": Fuente_Usada,
+    Resultado = {
+        "response": Respuesta, "tag": Etiqueta,
+        "bot_name": config.Nombre_Del_Bot, "catalog_source": Fuente_Usada,
     }
+    if Accion:
+        Resultado["filter_action"] = Accion
 
-    if Accion_De_Filtro:
-        Resultado_Json["filter_action"] = Accion_De_Filtro
-
-    return jsonify(Resultado_Json)
-
-
-@app.route('/products', methods=['GET'])
-def Productos_Endpoint():
-    Fuente_Usada = Cambiar_Fuente_De_Catalogo(request.args.get('source', 'auto'))
-    return jsonify({
-        "products": Datos_De_Productos,
-        "count": len(Datos_De_Productos),
-        "source": Fuente_Usada,
-    })
+    return jsonify(Resultado)
 
 
-@app.route('/transcribe', methods=['POST'])
+# ─── Productos ───────────────────────────────────────────────────────────────
+
+@Aplicacion.route('/products', methods=['GET'])
+def Listar_Productos():
+    Fuente = Cambiar_Fuente_De_Catalogo(request.args.get('source', 'auto'))
+    return jsonify({"products": Datos_De_Productos, "count": len(Datos_De_Productos), "source": Fuente})
+
+
+# ─── Búsqueda ────────────────────────────────────────────────────────────────
+
+@Aplicacion.route('/search', methods=['POST'])
+def Buscar():
+    Datos = request.get_json(silent=True) or {}
+    Fuente = Cambiar_Fuente_De_Catalogo(Datos.get('catalog_source', request.args.get('source', 'auto')))
+
+    Cat = Datos.get('category')
+    Color = Datos.get('color')
+    Genero = Datos.get('genero')
+    Keywords = Datos.get('keywords')
+
+    Precio_Max = Datos.get('max_price')
+    if Precio_Max is not None:
+        try:
+            Precio_Max = float(Precio_Max)
+        except (TypeError, ValueError):
+            Precio_Max = None
+
+    Limite = Datos.get('limit', config.Limite_Busqueda_Por_Defecto)
+    try:
+        Limite = int(Limite)
+    except (TypeError, ValueError):
+        Limite = config.Limite_Busqueda_Por_Defecto
+    Limite = max(1, min(config.Maximo_Limite_De_Busqueda, Limite))
+
+    Resultados = Buscar_Productos(
+        Categoria=Cat, Color=Color, Precio_Maximo=Precio_Max,
+        Genero=Genero, Palabras_Clave=Keywords, Limite=Limite,
+    )
+    return jsonify({"products": Resultados, "count": len(Resultados), "source": Fuente})
+
+
+# ─── Transcripción de Voz ────────────────────────────────────────────────────
+
+@Aplicacion.route('/transcribe', methods=['POST'])
 def Transcribir_Voz():
     if 'audio' not in request.files:
         return jsonify({"error": "No audio file provided"}), 400
 
-    Archivo_Audio = request.files['audio']
+    Archivo = request.files['audio']
     Ruta_Temporal = None
 
     try:
-        with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as Archivo_Temporal:
-            Ruta_Temporal = Archivo_Temporal.name
-            Archivo_Audio.save(Ruta_Temporal)
+        with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as Temp:
+            Ruta_Temporal = Temp.name
+            Archivo.save(Ruta_Temporal)
 
-        Modelo_De_Voz = Obtener_Modelo_Voz()
-        Segmentos, _ = Modelo_De_Voz.transcribe(Ruta_Temporal, beam_size=5)
-        Texto_Transcrito = " ".join([segmento.text for segmento in Segmentos])
-        return jsonify({"text": Texto_Transcrito.strip()})
-    except Exception as Error_De_Transcripcion:
-        print(f"[ERROR] Transcripcion de voz: {Error_De_Transcripcion}")
+        Modelo_Voz = Obtener_Modelo_Voz()
+        Segmentos, _ = Modelo_Voz.transcribe(Ruta_Temporal, beam_size=5)
+        Texto = " ".join([Seg.text for Seg in Segmentos])
+        return jsonify({"text": Texto.strip()})
+    except Exception as Error:
+        print(f"[ERROR] Transcripcion de voz: {Error}")
         return jsonify({"error": "No se pudo procesar el audio"}), 500
     finally:
         if Ruta_Temporal and os.path.exists(Ruta_Temporal):
             os.remove(Ruta_Temporal)
 
 
-@app.route('/search', methods=['POST'])
-def Buscar_Endpoint():
-    """Endpoint para buscar productos filtrados."""
-    Datos_De_Consulta = request.get_json(silent=True) or {}
-    Fuente_Usada = Cambiar_Fuente_De_Catalogo(
-        Datos_De_Consulta.get('catalog_source', request.args.get('source', 'auto'))
-    )
-    Categoria_Consulta = Datos_De_Consulta.get('category')
-    Color_Consulta = Datos_De_Consulta.get('color')
-    Genero_Consulta = Datos_De_Consulta.get('genero')
-    Palabras_Clave_Consulta = Datos_De_Consulta.get('keywords')
+# ─── Generación de Boleta PDF ────────────────────────────────────────────────
 
-    Precio_Maximo_Consulta = Datos_De_Consulta.get('max_price')
-    if Precio_Maximo_Consulta is not None:
-        try:
-            Precio_Maximo_Consulta = float(Precio_Maximo_Consulta)
-        except (TypeError, ValueError):
-            Precio_Maximo_Consulta = None
+@Aplicacion.route('/generate_pdf', methods=['POST'])
+def Generar_Boleta_PDF():
+    Datos = request.get_json(silent=True) or {}
+    Carrito = Datos.get('carrito', [])
 
-    Limite_Consulta = Datos_De_Consulta.get('limit', config.Limite_Busqueda_Por_Defecto)
-    try:
-        Limite_Consulta = int(Limite_Consulta)
-    except (TypeError, ValueError):
-        Limite_Consulta = config.Limite_Busqueda_Por_Defecto
-    Limite_Consulta = max(1, min(config.Maximo_Limite_De_Busqueda, Limite_Consulta))
-    
-    Resultados_De_Busqueda = Buscar_Productos(
-        Categoria=Categoria_Consulta,
-        Color=Color_Consulta,
-        Precio_Maximo=Precio_Maximo_Consulta,
-        Genero=Genero_Consulta,
-        Palabras_Clave=Palabras_Clave_Consulta,
-        Limite=Limite_Consulta,
-    )
-    return jsonify({
-        "products": Resultados_De_Busqueda,
-        "count": len(Resultados_De_Busqueda),
-        "source": Fuente_Usada,
-    })
-
-
-@app.route('/generate_pdf', methods=['POST'])
-def Generate_Pdf():
-    datos = request.get_json(silent=True) or {}
-    carrito = datos.get('carrito', [])
-    
-    if not carrito:
+    if not Carrito:
         return jsonify({"error": "Carrito vacio"}), 400
 
     Ruta_Guardado = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'boleta_compra.pdf')
-    
-    try:
-        c = canvas.Canvas(Ruta_Guardado, pagesize=letter)
-        c.setFont("Helvetica-Bold", 20)
-        c.drawCentredString(300, 750, "SENATI SPORTS - Boleta de Venta")
-        
-        c.setFont("Helvetica", 12)
-        fecha_actual = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        c.drawString(50, 710, f"Fecha: {fecha_actual}")
-        
-        y = 670
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(50, y, "Producto")
-        c.drawString(350, y, "Cant.")
-        c.drawString(420, y, "P. Unit")
-        c.drawString(500, y, "Subtotal")
-        
-        y -= 10
-        c.line(50, y, 550, y)
-        
-        y -= 20
-        c.setFont("Helvetica", 12)
-        total = 0
-        for item in carrito:
-            nombre = str(item.get('name', ''))
-            if len(nombre) > 40:
-                nombre = nombre[:37] + '...'
-                
-            cantidad = int(item.get('quantity', 1))
-            precio = float(item.get('price', 0))
-            subtotal = precio * cantidad
-            total += subtotal
-            
-            c.drawString(50, y, nombre)
-            c.drawRightString(380, y, str(cantidad))
-            c.drawRightString(460, y, f"S/ {precio:.2f}")
-            c.drawRightString(540, y, f"S/ {subtotal:.2f}")
-            
-            y -= 20
-            
-            if y < 100:
-                c.showPage()
-                y = 750
-                c.setFont("Helvetica", 12)
-                
-        y -= 10
-        c.line(50, y, 550, y)
-        
-        y -= 20
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(420, y, "TOTAL:")
-        c.drawRightString(540, y, f"S/ {total:.2f}")
-        
-        y -= 40
-        c.setFont("Helvetica-Oblique", 10)
-        c.drawCentredString(300, y, "¡Gracias por tu compra en SENATI SPORTS!")
-        
-        c.save()
-        print(f"[OK] PDF generado y guardado en: {Ruta_Guardado}")
 
-        # Registrar la venta en la base de datos automáticamente
+    try:
+        C = canvas.Canvas(Ruta_Guardado, pagesize=letter)
+        C.setFont("Helvetica-Bold", 20)
+        C.drawCentredString(300, 750, "SENATI SPORTS - Boleta de Venta")
+
+        C.setFont("Helvetica", 12)
+        Fecha = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        C.drawString(50, 710, f"Fecha: {Fecha}")
+
+        Y = 670
+        C.setFont("Helvetica-Bold", 12)
+        C.drawString(50, Y, "Producto")
+        C.drawString(350, Y, "Cant.")
+        C.drawString(420, Y, "P. Unit")
+        C.drawString(500, Y, "Subtotal")
+
+        Y -= 10
+        C.line(50, Y, 550, Y)
+        Y -= 20
+        C.setFont("Helvetica", 12)
+
+        Total = 0
+        for Item in Carrito:
+            Nombre = str(Item.get('name', ''))
+            if len(Nombre) > 40:
+                Nombre = Nombre[:37] + '...'
+
+            Cantidad = int(Item.get('quantity', 1))
+            Precio = float(Item.get('price', 0))
+            Subtotal = Precio * Cantidad
+            Total += Subtotal
+
+            C.drawString(50, Y, Nombre)
+            C.drawRightString(380, Y, str(Cantidad))
+            C.drawRightString(460, Y, f"S/ {Precio:.2f}")
+            C.drawRightString(540, Y, f"S/ {Subtotal:.2f}")
+            Y -= 20
+
+            if Y < 100:
+                C.showPage()
+                Y = 750
+                C.setFont("Helvetica", 12)
+
+        Y -= 10
+        C.line(50, Y, 550, Y)
+        Y -= 20
+        C.setFont("Helvetica-Bold", 12)
+        C.drawString(420, Y, "TOTAL:")
+        C.drawRightString(540, Y, f"S/ {Total:.2f}")
+
+        Y -= 40
+        C.setFont("Helvetica-Oblique", 10)
+        C.drawCentredString(300, Y, "¡Gracias por tu compra en SENATI SPORTS!")
+
+        C.save()
+
+        # Registrar venta en la base de datos
         try:
-            sesion_id = datos.get('session_id', 'anonimo')
-            from admin import Admin_Registrar_Venta as _reg
-            with app.test_request_context(
-                '/admin/ventas/registrar',
-                method='POST',
-                json={'sesion_id': sesion_id, 'carrito': carrito}
-            ):
-                from flask import request as _req
-                _req.get_json  # noqa
-            # Llamada directa a la función de registro
-            from db import ejecutar_escritura
-            total_venta = sum(float(i.get('price', 0)) * int(i.get('quantity', 1)) for i in carrito)
-            venta_id = ejecutar_escritura(
+            Sesion_Id = str(Datos.get('session_id', 'anonimo'))
+            Total_Venta = sum(float(i.get('price', 0)) * int(i.get('quantity', 1)) for i in Carrito)
+            Venta_Id = Ejecutar_Escritura(
                 "INSERT INTO ventas (sesion_id, total, cantidad_items) VALUES (%s, %s, %s)",
-                (str(datos.get('session_id', 'anonimo')), round(total_venta, 2), len(carrito))
+                (Sesion_Id, round(Total_Venta, 2), len(Carrito))
             )
-            if venta_id:
-                for item in carrito:
-                    cantidad = int(item.get('quantity', 1))
-                    precio   = float(item.get('price', 0))
-                    prod_id  = int(item.get('id', 0))
-                    nombre   = str(item.get('name', 'Producto'))
-                    subtotal = precio * cantidad
-                    ejecutar_escritura(
+            if Venta_Id:
+                for Item in Carrito:
+                    Cantidad = int(Item.get('quantity', 1))
+                    Precio = float(Item.get('price', 0))
+                    Prod_Id = int(Item.get('id', 0))
+                    Nombre = str(Item.get('name', 'Producto'))
+                    Subtotal = Precio * Cantidad
+                    Ejecutar_Escritura(
                         "INSERT INTO venta_detalle (venta_id, producto_id, nombre_producto, precio_unitario, cantidad, subtotal) VALUES (%s,%s,%s,%s,%s,%s)",
-                        (venta_id, prod_id, nombre, precio, cantidad, round(subtotal, 2))
+                        (Venta_Id, Prod_Id, Nombre, Precio, Cantidad, round(Subtotal, 2))
                     )
-                    ejecutar_escritura(
+                    Ejecutar_Escritura(
                         "UPDATE productos SET stock = GREATEST(0, stock - %s) WHERE id = %s",
-                        (cantidad, prod_id)
+                        (Cantidad, Prod_Id)
                     )
-                    Decrementar_Stock_En_Cache(prod_id, cantidad)
-                print(f"[ADMIN] Venta #{venta_id} registrada automáticamente.")
-        except Exception as e_venta:
-            print(f"[ADMIN] No se pudo registrar la venta: {e_venta}")
+                    Decrementar_Stock_En_Cache(Prod_Id, Cantidad)
+                print(f"[ADMIN] Venta #{Venta_Id} registrada automáticamente.")
+        except Exception as Error_Venta:
+            print(f"[ADMIN] No se pudo registrar la venta: {Error_Venta}")
 
         return send_file(Ruta_Guardado, mimetype='application/pdf', as_attachment=False)
-    except Exception as e:
-        print(f"[ERROR] No se pudo generar PDF: {e}")
-        return jsonify({"error": str(e)}), 500
+    except Exception as Error:
+        print(f"[ERROR] No se pudo generar PDF: {Error}")
+        return jsonify({"error": str(Error)}), 500
 
 
-@app.route('/uploads/<path:filename>', methods=['GET'])
-def Servir_Uploads(filename):
-    uploads_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'uploads')
-    return send_from_directory(uploads_dir, filename)
-
+# ─── Ejecución ───────────────────────────────────────────────────────────────
 
 if __name__ == '__main__':
-    server_port = int(os.getenv('SENATI_PORT', '5000'))
-    debug_mode = True
-    print(f">>> Frontend listo en http://localhost:{server_port}/")
-    print(f">>> Estado API en http://localhost:{server_port}/status")
-    print(f">>> Chat API en http://localhost:{server_port}/chat")
-    print(f">>> Admin Panel en http://localhost:{server_port}/admin")
-    print(f">>> Debug: {debug_mode}")
-    app.run(port=server_port, debug=debug_mode)
+    Puerto = int(os.getenv('SENATI_PORT', '5000'))
+    Debug = True
+    print(f">>> Frontend listo en http://localhost:{Puerto}/")
+    print(f">>> Estado API en http://localhost:{Puerto}/status")
+    print(f">>> Chat API en http://localhost:{Puerto}/chat")
+    print(f">>> Admin Panel en http://localhost:{Puerto}/admin")
+    print(f">>> Debug: {Debug}")
+    Aplicacion.run(port=Puerto, debug=Debug)

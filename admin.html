@@ -734,9 +734,9 @@
           <div class="section" id="section-reportes">
             <div class="section-title">📈 Reportes de Ventas</div>
             <div class="chart-controls">
-              <button class="btn btn-ghost btn-sm" id="rpt-diario" onclick="cargarReporte('diario')">Diario (30d)</button>
+              <button class="btn btn-primary btn-sm" id="rpt-diario" onclick="cargarReporte('diario')">Diario (30d)</button>
               <button class="btn btn-ghost btn-sm" id="rpt-semanal" onclick="cargarReporte('semanal')">Semanal (12s)</button>
-              <button class="btn btn-primary btn-sm" id="rpt-mensual" onclick="cargarReporte('mensual')">Mensual (12m)</button>
+              <button class="btn btn-ghost btn-sm" id="rpt-mensual" onclick="cargarReporte('mensual')">Mensual (12m)</button>
               <button class="btn btn-success btn-sm" onclick="exportarReportePDF()" style="margin-left:auto" title="Descargar reporte PDF">📄 Exportar PDF</button>
             </div>
             <div class="chart-grid">
@@ -990,7 +990,7 @@
         if (name === "productos") cargarProductos();
         if (name === "categorias") cargarCategorias();
         if (name === "stock") cargarStock(false);
-        if (name === "reportes") cargarReporte("mensual");
+        if (name === "reportes") cargarReporte("diario");
       }
 
       function iniciarApp() {
