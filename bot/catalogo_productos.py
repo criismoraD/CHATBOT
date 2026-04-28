@@ -1,8 +1,29 @@
 """
-bot/catalogo.py  ·  Catálogo de Productos
-------------------------------------------
-Gestiona la carga, indexación y búsqueda de productos.
-Soporta búsqueda semántica (TF-IDF) y coincidencia léxica.
+bot/catalogo_productos.py · Catálogo de Productos
+═════════════════════════════════════════════════
+
+Gestiona la carga, indexación y búsqueda de productos deportivos.
+
+FLUJO DE INICIALIZACIÓN (al importar el módulo):
+  1. _Cargar_Productos_Desde_BD() → consulta vista_productos_completa en MySQL
+  2. Normaliza cada producto (categoría, colores, tallas)
+  3. Reconstruir_Indice_De_Nombres() → índice para detección por texto
+  4. Reconstruir_Diccionario_De_Productos() → mapeo id → producto
+  5. Reconstruir_Diccionario_De_Colores() → mapeo categoría → colores
+  6. Inicializar_Motor_Semantico() → matriz TF-IDF sobre descripciones
+
+FLUJO DE BÚSQUEDA (Buscar_Productos):
+  1. Recibe filtros (categoría, color, precio, talla, género, palabras clave)
+  2. Filtra productos por cada criterio (intersección)
+  3. Si hay palabras clave:
+     a. Intenta búsqueda semántica (TF-IDF + similitud coseno)
+     b. Si no hay resultados, usa coincidencia léxica (variantes de palabras)
+  4. Si no hay palabras clave: retorna productos filtrados en orden aleatorio
+  5. Limita resultados al parámetro Limite
+
+EXPORTA:
+  Datos_De_Productos, Buscar_Productos, Obtener_Producto_Por_Id,
+  Cambiar_Fuente_De_Catalogo, Decrementar_Stock_En_Cache
 """
 
 import os

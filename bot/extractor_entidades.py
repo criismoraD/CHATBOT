@@ -1,15 +1,31 @@
 """
-bot/extractor.py  ·  Extracción de Entidades y Filtros del Mensaje
--------------------------------------------------------------------
-Detecta del mensaje del usuario:
-  - Categoría de producto (CALZADO, POLos, PANTALONES, OTROS)
-  - Color
-  - Talla
-  - Precio máximo
-  - Género
-  - Palabras clave de búsqueda
-  - ID de producto mencionado
-  - Intención de seguimiento de pedido
+bot/extractor_entidades.py · Extracción de Entidades y Filtros
+═════════════════════════════════════════════════════════════
+
+Detecta y extrae información estructurada del mensaje del usuario.
+
+FLUJO DE Extracción:
+  1. Extraer_Filtros(Mensaje, Categorias, Colores) → (Cat, Color, Precio, Talla, Género)
+     - Usa thefuzz (fuzzy matching) para tolerar errores ortográficos
+     - Detecta sinónimos (ej: "zapas" → CALZADO, "negra" → Negro)
+     - Detecta precio por patrones regex (ej: "menos de 100 soles")
+     - Detecta talla por patrón (ej: "talla 42", "en M")
+  2. Extraer_Palabras_Clave_De_Mensaje(Mensaje) → lista de keywords
+     - Elimina palabras vacías, ruido de precio/color/género
+     - Aplica sinónimos (ej: "zapatillas" → "zapatilla")
+  3. Detectar_Id_De_Producto_En_Texto(Mensaje, Índice, Frecuencias) → id
+     - Busca coincidencia directa por nombre normalizado
+     - Busca por código (ej: "s-01")
+     - Busca por tokens ponderados (IDF) con mínimo 2 coincidencias
+  4. Inferir_Etiqueta_De_Detalle(Mensaje, ...) → tag de detalle
+     - Si hay producto en contexto, detecta si pregunta por precio/stock/color
+  5. Es_Consulta_De_Seguimiento_De_Pedido(Mensaje) → bool
+     - Detecta preguntas sobre estado de pedido/envío
+  6. Es_Solicitud_De_Reinicio_De_Filtros(Mensaje) → bool
+     - Detecta "muéstrame todo", "reiniciar filtros", etc.
+
+USO:
+  from bot.extractor_entidades import Extraer_Filtros, Extraer_Palabras_Clave_De_Mensaje
 """
 
 import re

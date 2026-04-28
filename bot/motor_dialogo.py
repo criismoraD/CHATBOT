@@ -1,9 +1,38 @@
 """
-bot/dialogo.py  ·  Motor de Diálogo del Chatbot
-------------------------------------------------
-Procesa el mensaje del usuario, detecta intenciones,
-aplica filtros de búsqueda y genera la respuesta del bot.
-Es el cerebro conversacional del chatbot.
+bot/motor_dialogo.py · Motor de Diálogo del Chatbot
+═══════════════════════════════════════════════════
+
+Cerebro conversacional del chatbot. Procesa el mensaje del usuario,
+detecta intenciones, aplica filtros y genera la respuesta.
+
+FLUJO DE Obtener_Respuesta_Principal(Id_Sesion, Mensaje):
+  1. PREDICCIÓN: bot.inteligencia_artificial.Predice_Tag(Mensaje) → (tag, confianza, margen)
+  2. CONTEXTO: bot.memoria_conversacion.Obtener_Contexto(Id_Sesion) → filtros anteriores
+  3. DETECCIÓN DE PRODUCTO: bot.extractor_entidades.Detectar_Id_De_Producto_En_Texto()
+  4. EXTRACCIÓN DE FILTROS: bot.extractor_entidades.Extraer_Filtros()
+     → (categoría, color, precio, talla, género, palabras clave)
+  5. REFINAMIENTO DE ETIQUETA:
+     - Si hay producto en contexto → infiere si pregunta por precio/stock/color
+     - Si el modelo dice "fuera_de_dominio" pero hay filtros → "buscar_producto"
+     - Usa patrones del intents.json como respaldo
+     - Aplica heurísticas de soporte (delivery, reclamos, etc.)
+  6. LÓGICA POR TAG:
+     - buscar_producto → bot.catalogo_productos.Buscar_Productos()
+     - filtrar_categoria → filtra por categoría
+     - consulta_precio → busca producto en contexto
+     - colores → muestra colores del producto o categoría
+     - consultar_stock_item → muestra tallas y stock
+     - pedidos → guía de seguimiento
+     - etc.
+  7. RETORNA: (Respuesta, Etiqueta, Accion_De_Filtro)
+     - Accion_De_Filtro se envía al frontend para actualizar el catálogo
+
+MÓDULOS QUE USA:
+  - bot.inteligencia_artificial → predicción de tag
+  - bot.extractor_entidades → extracción de filtros y entidades
+  - bot.catalogo_productos → búsqueda de productos
+  - bot.memoria_conversacion → contexto de sesión
+  - data/intenciones_chatbot.json → responses aleatorios por tag
 """
 
 import re

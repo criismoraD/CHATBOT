@@ -1,8 +1,28 @@
 """
-bot/ia.py  ·  Módulo de Inteligencia Artificial
-------------------------------------------------
-Carga el modelo PyTorch LSTM y el modelo Whisper para voz.
-Expone funciones de predicción de intención y transcripción de audio.
+bot/inteligencia_artificial.py · Modelo de IA (LSTM + Whisper)
+═════════════════════════════════════════════════════════════
+
+Carga y ejecuta dos modelos de IA:
+  1. PyTorch LSTM → predice la intención (tag) de un mensaje de texto
+  2. Whisper → transcribe audio del usuario a texto
+
+FLUJO DE PREDICCIÓN (Predecir_Tag):
+  1. Recibe texto del usuario (ej: "quiero zapatillas negras")
+  2. Tokeniza y lematiza con core.procesamiento_lenguaje
+  3. Convierte tokens a secuencia de índices numéricos (padding)
+  4. Ejecuta el modelo LSTM → obtiene logits por cada tag
+  5. Aplica softmax → retorna (etiqueta, confianza, margen)
+     - etiqueta: "buscar_producto", "saludo", "colores", etc.
+     - confianza: probabilidad del tag más probable (0-1)
+     - margen: diferencia con el segundo más probable
+
+FLUJO DE VOZ (Obtener_Modelo_Voz):
+  - Carga Whisper "base" bajo demanda (thread-safe con lock)
+  - Se usa en app.py para transcribir audios del frontend
+
+ARCHIVOS QUE USA:
+  - data/modelo_lstm.pth → pesos del modelo LSTM entrenado
+  - data/intenciones_chatbot.json → tags, patterns y responses
 """
 
 import os

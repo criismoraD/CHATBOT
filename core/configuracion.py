@@ -1,7 +1,19 @@
 """
-core/config.py  ·  Configuración Global del Chatbot
------------------------------------------------------
-Centraliza todas las constantes, rutas y parámetros del sistema.
+core/configuracion.py · Configuración Global del Chatbot
+═══════════════════════════════════════════════════════
+
+Centraliza TODAS las constantes, rutas y parámetros del sistema.
+Ningún otro módulo debe tener configuración hardcodeada; todo se define aquí.
+
+CONTENIDO:
+  - Rutas de archivos (modelo LSTM, intents JSON, memoria)
+  - Credenciales de MySQL (leídas de env o con defaults)
+  - Nombre del bot y fuentes de catálogo
+  - Umbrales de confianza del modelo de IA
+  - Límites de búsqueda y historial de chat
+
+USO:
+  from core.configuracion import Nombre_Del_Bot, Umbral_De_Confianza
 """
 
 import os

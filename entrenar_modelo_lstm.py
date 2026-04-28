@@ -1,4 +1,36 @@
-import json
+"""
+entrenar_modelo_lstm.py · Entrenamiento del Modelo LSTM
+═══════════════════════════════════════════════════════
+
+Entrena una red neuronal LSTM bidireccional para clasificar intenciones
+del chatbot a partir de los patterns definidos en data/intenciones_chatbot.json.
+
+FLUJO DE ENTRENAMIENTO:
+  1. Cargar_Intents() → lee data/intenciones_chatbot.json
+  2. Preparar_Datos():
+     a. Tokeniza y lematiza cada pattern con core.procesamiento_lenguaje
+     b. Construye vocabulario filtrado (elimina términos muy raros)
+     c. Convierte patterns a secuencias de índices (padding)
+     d. Divide en train/val (80/20 estratificado)
+  3. Entrenar_Modelo():
+     a. DataLoader con WeightedRandomSampler (balancea clases)
+     b. Modelo: Embedding → BiLSTM → Dropout → Linear
+     c. Optimizador: Adam con weight decay
+     d. Scheduler: ReduceLROnPlateau
+     e. Early stopping por F1-macro en validación
+  4. Evalúa con classification_report (precision, recall, F1)
+  5. Guarda modelo en data/modelo_lstm.pth:
+     - model_state, input_size, hidden_size, output_size
+     - embedding_dim, all_words, tags, max_length
+
+ARQUITECTURA DEL MODELO:
+  Input → Embedding(vocab, 128) → BiLSTM(128//2, bidirectional)
+  → Dropout(0.4) → Linear(hidden, num_tags) → Output
+
+USO:
+  python entrenar_modelo_lstm.py
+  (solo necesario si se modificó data/intenciones_chatbot.json)
+"""
 import random
 from collections import Counter
 from copy import deepcopy

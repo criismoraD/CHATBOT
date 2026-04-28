@@ -1,12 +1,32 @@
 """
-app.py  ·  Punto de Entrada Principal del Chatbot SENATI Sports
----------------------------------------------------------------------------------
-Servidor Flask que integra:
-  - Chatbot con IA (PyTorch LSTM)
-  - Panel de administración
-  - Catálogo de productos (MySQL)
-  - Generación de boletas PDF
-  - Transcripción de voz (Whisper)
+app.py · Punto de Entrada Principal del Chatbot SENATI Sports
+═════════════════════════════════════════════════════════════
+
+Servidor Flask que orquesta todos los módulos del sistema.
+
+FLUJO DE UN MENSAJE DE CHAT:
+  1. El frontend (interfaz_chatbot.html) envía POST a /chat con el mensaje
+  2. Se verifica si hay un producto en contexto (context_product_id)
+  3. Se detecta si es una consulta rápida (precio/stock/color) → respuesta directa
+  4. Se detecta si el usuario quiere añadir al carrito → respuesta con add_to_cart
+  5. Si no, se delega a bot.motor_dialogo.Obtener_Respuesta_Principal()
+     que retorna (respuesta, etiqueta, acción_de_filtro)
+  6. El frontend aplica los filtros al catálogo y muestra la respuesta
+
+FLUJO DE UNA VENTA:
+  1. El frontend llama a /generate_pdf con el carrito
+  2. Se genera la boleta PDF con reportlab
+  3. Se registra la venta en MySQL (transacción con ROLLBACK)
+  4. Se descuenta el stock de cada producto
+
+MÓDULOS QUE USA:
+  - bot.motor_dialogo       → cerebro conversacional
+  - bot.catalogo_productos  → catálogo y búsqueda de productos
+  - bot.memoria_conversacion → contexto por sesión
+  - bot.inteligencia_artificial → modelo IA y voz
+  - admin.panel_administracion  → panel de administración
+  - core.base_datos         → conexión MySQL
+  - core.configuracion      → constantes del sistema
 """
 
 import os

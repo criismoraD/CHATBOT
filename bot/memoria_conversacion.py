@@ -1,11 +1,32 @@
 """
-bot/memoria.py  ·  Memoria de Conversación del Chatbot
--------------------------------------------------------
-Mantiene el contexto de cada sesión de chat:
-  - Último tag detectado
-  - Filtros de búsqueda activos
-  - Producto seleccionado
-  - Fuente de catálogo activa
+bot/memoria_conversacion.py · Memoria de Conversación
+═════════════════════════════════════════════════════
+
+Mantiene el contexto conversacional de cada sesión de chat en memoria RAM.
+Permite que el bot recuerde qué producto está consultando el usuario
+y qué filtros aplicó en mensajes anteriores.
+
+FLUJO:
+  1. app.py recibe un mensaje con session_id
+  2. Actualizar_Contexto(Id_Sesion, Etiqueta, Filtros, Id_Producto, Fuente)
+     - Guarda: último tag, filtros activos, producto seleccionado, fuente catálogo
+     - Si es búsqueda general, limpia el producto anterior
+     - Limita historial a Maximo_Historial_Chat (configuración)
+  3. Obtener_Contexto(Id_Sesion) → dict con el contexto actual
+  4. motor_dialogo.py usa el contexto para:
+     - Heredar filtros de mensajes anteriores (ej: "y verdes?" mantiene la categoría)
+     - Responder preguntas sobre el producto en contexto (precio, stock, color)
+
+ESTRUCTURA DEL CONTEXTO:
+  {
+    "last_tag": "buscar_producto",
+    "last_filters": {"category": "CALZADO", "color": "Negro"},
+    "selected_product_id": 42,
+    "catalog_source": "scraped",
+    "history": ["saludo", "buscar_producto", "consultar_precio_item"]
+  }
+
+NOTA: La memoria es volátil (RAM). Si se reinicia el servidor, se pierde.
 """
 
 from core import config

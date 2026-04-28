@@ -1,17 +1,45 @@
 """
-admin/panel.py  ·  Módulo de Administración para el Chatbot Tienda
---------------------------------------------------------------------
-Provee rutas Flask para:
-  - Login / Logout de administrador
-  - CRUD de Productos (Crear, Leer, Actualizar, Eliminar)
-  - CRUD de Categorías
-  - Reportes de ventas (diario, semanal, mensual)
-  - Stock de productos
-  - Registrar ventas desde el carrito
+admin/panel_administracion.py · Panel de Administración
+══════════════════════════════════════════════════════
 
-Uso: importar y registrar en app.py:
-    from admin import Inicializar_Admin
-    Inicializar_Admin(app)
+Backend Flask del panel de administración de SENATI Sports.
+
+FLUJO DE AUTENTICACIÓN:
+  1. GET /admin → sirve panel_administracion.html
+  2. POST /admin/login → verifica usuario/password_hash en MySQL
+  3. Guarda sesión (admin_logged_in = True)
+  4. Las rutas protegidas usan @login_requerido
+
+ENDPOINTS PRINCIPALES:
+  CRUD Productos:
+    GET    /admin/productos         → listar con paginación y búsqueda
+    POST   /admin/productos         → crear producto
+    PUT    /admin/productos/:id     → actualizar producto
+    DELETE /admin/productos/:id     → desactivar (soft delete)
+    POST   /admin/productos/:id/restaurar → reactivar
+
+  CRUD Categorías:
+    GET/POST/PUT/DELETE /admin/categorias
+
+  Stock:
+    GET   /admin/stock              → ver stock (opcional ?alerta=1)
+    PATCH /admin/stock/:id          → actualizar stock
+
+  Ventas:
+    POST  /admin/ventas/registrar   → registrar venta (TRANSACCIÓN)
+
+  Reportes:
+    GET   /admin/reportes/ventas    → ventas por período (diario/semanal/mensual)
+    GET   /admin/reportes/resumen   → dashboard (productos, categorías, ventas)
+    GET   /admin/reportes/top_productos → top 10 (con filtro ?desde=&hasta=)
+    GET   /admin/reportes/por_categoria → ventas agrupadas por categoría
+    GET   /admin/reportes/rotacion_stock → sobrestock vs más vendidos
+    GET   /admin/reportes/pdf       → exportar resumen a PDF
+    GET   /admin/reportes/csv       → exportar ventas a CSV
+
+USO:
+  from admin import Inicializar_Admin
+  Inicializar_Admin(app)
 """
 
 import os

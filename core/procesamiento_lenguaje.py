@@ -1,8 +1,23 @@
 """
-core/nlp.py  ·  Utilidades de Procesamiento de Lenguaje Natural
-----------------------------------------------------------------
+core/procesamiento_lenguaje.py · Utilidades NLP
+════════════════════════════════════════════════
+
 Funciones de limpieza, tokenización y lematización usando spaCy.
-Optimizado para el dominio de e-commerce (SENATI Sports).
+Optimizado para el dominio de e-commerce deportivo (SENATI Sports).
+
+FLUJO DE PROCESAMIENTO:
+  1. Normalizar_Texto(texto) → minúsculas, sin tildes, sin caracteres especiales
+  2. Tokenizar_Y_Lematizar(texto) → lemas + bigramas (ej: "zapatilla_correr")
+     a. Reemplaza sinónimos locales (casaca→chaqueta, polo→camiseta)
+     b. Limpia el texto (tildes, caracteres especiales)
+     c. Procesa con spaCy (tokenización + lematización)
+     d. Elimina stop words (excepto palabras clave de e-commerce)
+     e. Genera bigramas para capturar contexto (ej: "talla_42")
+
+USO:
+  from core.procesamiento_lenguaje import Tokenizar_Y_Lematizar, Normalizar_Texto
+  lemas = Tokenizar_Y_Lematizar("zapatillas running negras para hombre")
+  # → ['zapatilla', 'correr', 'negro', 'hombre', 'zapatilla_correr', ...]
 """
 
 import re

@@ -1,8 +1,25 @@
 """
-core/db.py  ·  Capa de Conexión MySQL
---------------------------------------
+core/base_datos.py · Capa de Conexión MySQL
+═══════════════════════════════════════════
+
 Centraliza la conexión a la base de datos mediante un pool de conexiones
 y expone helpers reutilizables para consultas y escrituras.
+
+FLUJO:
+  1. Al primer uso, Crear_Pool_De_Conexiones() crea un pool de 5 conexiones
+  2. Obtener_Conexion() devuelve una conexión del pool (la reutiliza)
+  3. Ejecutar_Consulta(sql, params) → lista de diccionarios (SELECT)
+  4. Ejecutar_Escritura(sql, params) → lastrowid (INSERT/UPDATE/DELETE)
+  5. La conexión se devuelve al pool automáticamente al cerrar
+
+CONFIGURACIÓN:
+  Lee DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME de:
+  1. Variables de entorno (prioridad alta)
+  2. core.configuracion (defaults)
+
+USO:
+  from core.base_datos import Ejecutar_Consulta, Ejecutar_Escritura
+  productos = Ejecutar_Consulta("SELECT * FROM productos WHERE activo = 1")
 """
 
 import os
