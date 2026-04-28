@@ -12,7 +12,7 @@ import torch
 import numpy as np
 from entrenar_modelo_lstm import NeuralNet
 from core import config
-from core.nlp import Tokenizar_Y_Lematizar
+from core.procesamiento_lenguaje import Tokenizar_Y_Lematizar
 
 
 # ─── Estado Global del Módulo ────────────────────────────────────────────────

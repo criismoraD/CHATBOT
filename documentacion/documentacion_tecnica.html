@@ -553,7 +553,7 @@ http://localhost:5000/
 ├── app.py
 ├── catalogo.py
 ├── config.py
-├── bot/dialogo.py
+├── bot/motor_dialogo.py
 ├── extractor.py
 ├── ia.py
 ├── memoria.py
@@ -615,7 +615,7 @@ http://localhost:5000/
                 </div>
 
                 <div class="help-box">
-                    <strong>Lectura rapida del grafico:</strong> el frontend no decide por su cuenta la logica del bot. Siempre pasa por app.py y bot/dialogo.py, y desde ahi se consulta IA, catalogo y memoria para construir una respuesta coherente.
+                    <strong>Lectura rapida del grafico:</strong> el frontend no decide por su cuenta la logica del bot. Siempre pasa por app.py y bot/motor_dialogo.py, y desde ahi se consulta IA, catalogo y memoria para construir una respuesta coherente.
                 </div>
 
                 <div class="architecture-group">
@@ -626,7 +626,7 @@ http://localhost:5000/
                             <p><strong>Puerta principal del sistema.</strong> Crea el servidor Flask y publica rutas como /chat, /search, /products, /transcribe y /status. En terminos simples, aqui entra todo lo que llega desde el navegador y aqui tambien sale la respuesta final. Tambien sirve los archivos web para que no necesites otro servidor adicional.</p>
                         </div>
                         <div class="file-item" style="border-left-color: var(--primary);">
-                            <h4>bot/dialogo.py</h4>
+                            <h4>bot/motor_dialogo.py</h4>
                             <p><strong>Cerebro de decisiones conversacionales.</strong> Toma la intencion detectada por la IA y decide que hacer: responder, buscar productos, pedir mas detalle o usar contexto de mensajes anteriores. Tambien construye mensajes naturales para que el bot suene mas humano y aplica reglas para evitar respuestas incoherentes.</p>
                         </div>
                         <div class="file-item" style="border-left-color: var(--accent);">
@@ -763,7 +763,7 @@ http://localhost:5000/
 
                 <div class="desc-block">
                     <h4>Etapa 3: Extraccion de filtros y contexto</h4>
-                    <p>bot/dialogo.py llama a extractor.py para detectar categoria, color, talla, genero y precio maximo. Luego consulta memoria.py para heredar contexto cuando corresponde. Si la frase depende de un producto previamente seleccionado, se prioriza ese contexto.</p>
+                    <p>bot/motor_dialogo.py llama a extractor.py para detectar categoria, color, talla, genero y precio maximo. Luego consulta memoria.py para heredar contexto cuando corresponde. Si la frase depende de un producto previamente seleccionado, se prioriza ese contexto.</p>
                 </div>
 
                 <div class="desc-block">
@@ -990,7 +990,7 @@ http://localhost:5000/
                     </div>
 
                     <div class="file-item" style="border-left-color: var(--primary);">
-                        <h4>Obtener_Respuesta_Principal(...) [bot/dialogo.py]</h4>
+                        <h4>Obtener_Respuesta_Principal(...) [bot/motor_dialogo.py]</h4>
                         <p>Funcion central de negocio. Une IA, extractor, memoria y catalogo para generar la respuesta final. Maneja continuidad de contexto, forzado de intenciones por reglas y armado de filter_action para sincronizar catalogo y chat.</p>
                     </div>
 
@@ -1036,7 +1036,7 @@ http://localhost:5000/
                 </div>
 
                 <div class="help-box">
-                    <strong>Consejo para personas nuevas:</strong> si quieres modificar el comportamiento del bot, empieza por bot/dialogo.py. Si quieres cambiar visual y experiencia, empieza por interfaz_chatbot.html + css/estilos_principales.css + js/interfaz_principal.js. Si quieres mejorar entendimiento del lenguaje, revisa intenciones_chatbot.json y entrenar_modelo_lstm.py.
+                    <strong>Consejo para personas nuevas:</strong> si quieres modificar el comportamiento del bot, empieza por bot/motor_dialogo.py. Si quieres cambiar visual y experiencia, empieza por interfaz_chatbot.html + css/estilos_principales.css + js/interfaz_principal.js. Si quieres mejorar entendimiento del lenguaje, revisa intenciones_chatbot.json y entrenar_modelo_lstm.py.
                 </div>
             </div>
         </section>

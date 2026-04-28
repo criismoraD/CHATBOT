@@ -58,20 +58,20 @@
     - El frontend ahora filtra estrictamente por texto dentro de la categoría.
 
 - [23/04] **Hotfix: Sincronización Backend-Frontend (Sinónimos y Conteo):**
-    - Añadidos sinónimos (`leggin`, `jogger`, `buzo`) para `pantalon` en `js/interfaz_principal.js` y `catalogo.py`.
-    - Eliminado `Producto.category` de `Texto_Buscable` en `catalogo.py` (`Buscar_Productos_Por_Coincidencia_Lexica`).
+    - Añadidos sinónimos (`leggin`, `jogger`, `buzo`) para `pantalon` en `js/interfaz_principal.js` y `bot/catalogo_productos.py`.
+    - Eliminado `Producto.category` de `Texto_Buscable` en `bot/catalogo_productos.py` (`Buscar_Productos_Por_Coincidencia_Lexica`).
     - El chatbot ahora cuenta exactamente lo mismo que el frontend y entiende que "pantalones" incluye "leggins".
 
 - [23/04] **Mejora: UX de Filtros Vacíos:**
-    - Modificado `bot/dialogo.py` para reiniciar todos los filtros de forma silenciosa cuando no hay coincidencias.
+    - Modificado `bot/bot/motor_dialogo.py` para reiniciar todos los filtros de forma silenciosa cuando no hay coincidencias.
     - Se reemplazó "Mantenemos los filtros anteriores" por sugerencias automáticas de otras opciones del catálogo.
 
 - [23/04] **Hotfix: Precisión de Filtro por Precio:**
-    - Añadidos términos de comparación (`menor`, `menores`, `mayor`, `mayores`, `bajo`) a `Ruidos_Excluir` en `extractor.py`.
+    - Añadidos términos de comparación (`menor`, `menores`, `mayor`, `mayores`, `bajo`) a `Ruidos_Excluir` en `bot/extractor_entidades.py`.
     - Esto evita que palabras como "menores" se traten como texto de búsqueda, impidiendo que el frontend oculte los productos, y asegurando que el precio se guarde correctamente en memoria para filtros encadenados (ej. pedir luego "para hombre").
 
 - [23/04] **Mejora: UX y Herencia de Botones Sugeridos:**
-    - Modificado `Debe_Heredar_Filtros_De_Contexto` en `bot/dialogo.py` para permitir la herencia del precio cuando el usuario hace clic en un botón de sugerencia que contiene la misma categoría actual (Ej: "Zapatillas para hombre" estando en "CALZADO").
+    - Modificado `Debe_Heredar_Filtros_De_Contexto` en `bot/bot/motor_dialogo.py` para permitir la herencia del precio cuando el usuario hace clic en un botón de sugerencia que contiene la misma categoría actual (Ej: "Zapatillas para hombre" estando en "CALZADO").
     - Ajustado el mensaje de respuesta de género para que use la entidad extraída (Ej: "zapatillas") en lugar del término genérico "productos en CALZADO".
 
 - [24/04] **Hotfix: Iconos de Chat Invisibles:**
@@ -79,12 +79,12 @@
     - Esto garantiza que los botones de Enviar y Micrófono siempre sean visibles incluso si el CDN de fuentes falla o es bloqueado por el navegador/adblock.
 
 - [24/04] **Mejora: Eliminación de Memoria Persistente Zombie:**
-    - Se eliminó el uso de `shelve` en `bot/memoria.py`. Ahora la memoria del bot vive exclusivamente en RAM y se destruye al reiniciar el servidor (`app.py`).
+    - Se eliminó el uso de `shelve` en `bot/bot/memoria_conversacion.py`. Ahora la memoria del bot vive exclusivamente en RAM y se destruye al reiniciar el servidor (`app.py`).
     - En el frontend (`js/interfaz_principal.js`), se reemplazó el `session_id` estático (`user_local`) por un `Session_ID_Unico` generado aleatoriamente en cada recarga de página (F5).
     - Esto asegura que cada vez que recargas el navegador o reinicias el bot, empiezas con una memoria 100% limpia sin filtros arrastrados.
 
 - [24/04] **Hotfix: Pérdida de contexto en precios cortos:**
-    - Modificado `bot/dialogo.py` para que los mensajes cortos (<= 6 palabras) que contengan un precio (ej: "y de 150?") fuercen la intención `buscar_producto`.
+    - Modificado `bot/bot/motor_dialogo.py` para que los mensajes cortos (<= 6 palabras) que contengan un precio (ej: "y de 150?") fuercen la intención `buscar_producto`.
     - Esto evita que el modelo PyTorch se confunda por la falta de verbos y asuma intenciones incorrectas (como `consulta_precio` o características de materiales).
 
 - [24/04] **Mejora UI y Exportación PDF:**
@@ -92,17 +92,17 @@
     - Creado endpoint `/save_pdf` en `app.py` para guardar físicamente el archivo generado en la raíz del proyecto como `boleta_compra.pdf`.
     - El frontend ahora envía el PDF al backend, lo guarda, y luego lo abre en el navegador al finalizar compra.
 
-- [23/04] **Hotfix: Mapeo de columnas SQL en catalogo.py:**
+- [23/04] **Hotfix: Mapeo de columnas SQL en bot/catalogo_productos.py:**
     - Corregido mapeo de `image` (antes buscaba `imagen`, ahora `imagen_url`).
     - Corregido mapeo de `colores` y `tallas` para coincidir con la vista SQL.
     - Las imágenes ahora cargan correctamente en el frontend.
 
-- [23/04] **Hotfix: Configuración MySQL en config.py:**
+- [23/04] **Hotfix: Configuración MySQL en core/configuracion.py:**
     - Corregido error `module config has no attribute DB_HOST`.
     - Añadidas variables por defecto: `localhost`, `root`, `3306`.
 
 - [23/04] **Migración Backend: Integración completa de MySQL:**
-    - `catalogo.py` actualizado. `Cargar_Lista_De_Productos_Desde_BD` reemplaza lectura JSON, conectando con `db.py`.
+    - `bot/catalogo_productos.py` actualizado. `Cargar_Lista_De_Productos_Desde_BD` reemplaza lectura JSON, conectando con `core/base_datos.py`.
     - `js/interfaz_principal.js` actualizado. Eliminada ruta local `data/products_scraped.json` para forzar consumo API.
     - Archivo `products_scraped.json` eliminado definitivamente.
 
@@ -113,7 +113,7 @@
 
 - [23/04] **BD: Revisión y Validación Estructura MySQL:**
     - Revisado `chatbot_tienda.sql` (Relacional completo, FKs, vistas, índices, Fulltext).
-    - Añadidos `db.py` (Pooling de conexión) y `README_MYSQL.md`.
+    - Añadidos `core/base_datos.py` (Pooling de conexión) y `README_MYSQL.md`.
     - BD apta para reemplazar JSON.
 
 - [23/04] **Sincronización: Reinicio de rama main (Hard Reset GitHub):**

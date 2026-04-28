@@ -25,7 +25,7 @@ from flask import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from core.db import Ejecutar_Consulta, Ejecutar_Escritura, Obtener_Conexion
+from core.base_datos import Ejecutar_Consulta, Ejecutar_Escritura, Obtener_Conexion
 from mysql.connector import Error
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
