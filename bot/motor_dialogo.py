@@ -372,22 +372,11 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
 
     # ── buscar_producto ──
     if Etiqueta == "buscar_producto":
-        Relajada = False
         Productos_Encontrados = Buscar_Productos(
             Categoria=Cat, Color=Color, Precio_Maximo=Precio,
             Talla=Talla, Genero=Genero, Palabras_Clave=Palabras_Clave,
             Limite=len(Datos_De_Productos),
         )
-
-        if not Productos_Encontrados and Palabras_Clave:
-            Productos_Encontrados = Buscar_Productos(
-                Categoria=Cat, Color=Color, Precio_Maximo=Precio,
-                Talla=Talla, Genero=Genero, Palabras_Clave=None,
-                Limite=len(Datos_De_Productos),
-            )
-            if Productos_Encontrados:
-                Palabras_Clave = []
-                Relajada = True
 
         if not Productos_Encontrados and not Palabras_Clave and not Cat and Color:
             Respuesta = f"Me parece genial el color {Color.lower()}, pero ¿qué buscas exactamente? ¿Zapatillas, polos, pantalones o algo más?"
@@ -403,13 +392,10 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
             if Cat and not Texto_Natural: Filtro += f" de {Cat.lower()}"
             if Talla: Filtro += f" talla {Talla}"
             if Genero: Filtro += f" para {Genero.lower()}"
-            if Relajada:
-                Respuesta = f"Encontré {len(Productos_Encontrados)} opciones relacionadas de {Texto_Base}{Filtro}. Ya te las muestro en el catálogo, indícame cuál te interesa."
-            else:
-                Respuesta = f"Encontré {len(Productos_Encontrados)} {Texto_Base}{Filtro}. Ya te los muestro en el catálogo, indícame cuál te interesa."
+            Respuesta = f"Encontré {len(Productos_Encontrados)} {Texto_Base}{Filtro}. Ya te los muestro en el catálogo, indícame cuál te interesa."
             Accion = {"category": Cat, "color": Color, "max_price": Precio, "talla": Talla, "genero": Genero, "keywords": Palabras_Clave}
         else:
-            Respuesta = "No encontré productos con esas características. He reiniciado los filtros para que veas otras opciones del catálogo:"
+            Respuesta = "No encontré productos con esas características. No hay coincidencias exactas en el catálogo."
             Accion = {"category": None, "color": None, "max_price": None, "talla": None, "genero": None, "keywords": []}
 
     # ── filtrar_categoria ──
@@ -452,7 +438,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 Respuesta = f"Listo! Te muestro {len(Encontrados)} {Cantidad}{Condicion}."
                 Accion = {"genero": Genero, "max_price": Precio, "category": Cat, "color": Color, "talla": Talla, "keywords": Palabras_Clave}
             else:
-                Respuesta = f"No encontré productos{Condicion}. Aquí tienes otras opciones del catálogo completo:"
+                Respuesta = f"No encontré productos{Condicion}. No hay coincidencias exactas con esos filtros."
                 Accion = {"category": None, "color": None, "max_price": None, "talla": None, "genero": None, "keywords": []}
         else:
             Respuesta = "¿Para qué genero te muestro opciones? Tengo Mujer, Hombre y Unisex."
@@ -621,7 +607,7 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 Respuesta = f"Talla {Talla}, perfecto. ¿Pero de qué producto? ¿Buscas calzado o alguna prenda en particular?"
                 Accion = {"color": Color, "max_price": Precio, "talla": Talla, "genero": Genero, "category": None, "keywords": []}
             elif not Productos_Encontrados and Palabras_Clave:
-                Respuesta = "No encontré nada con esos términos. Te muestro opciones destacadas del catálogo general:"
+                Respuesta = "No encontré nada con esos términos. No hay coincidencias exactas en el catálogo."
                 Accion = {"category": None, "color": None, "max_price": None, "talla": None, "genero": None, "keywords": []}
             elif Productos_Encontrados:
                 Filtro = ""
@@ -632,8 +618,8 @@ def Obtener_Respuesta_Principal(Id_De_Sesion, Mensaje_Usuario):
                 Accion = {"category": Cat, "color": Color, "talla": Talla, "genero": Genero, "max_price": Precio, "keywords": Palabras_Clave}
                 Etiqueta = "buscar_producto"
             else:
-                Respuesta = "No encontré productos con esas características. Mantenemos los filtros anteriores para que puedas modificarlos. ¿Deseas buscar otra cosa?"
-                Accion = {"category": Cat, "color": Color, "talla": Talla, "genero": Genero, "max_price": Precio, "keywords": Palabras_Clave}
+                Respuesta = "No encontré productos con esas características. No hay coincidencias exactas en el catálogo."
+                Accion = {"category": None, "color": None, "max_price": None, "talla": None, "genero": None, "keywords": []}
                 Etiqueta = "buscar_producto"
         elif Id_Producto_Detectado is not None:
             Prod = Obtener_Producto_Por_Id(Id_Producto_Detectado)

@@ -32,6 +32,7 @@ USO:
   (solo necesario si se modificó data/intenciones_chatbot.json)
 """
 import random
+import json
 from collections import Counter
 from copy import deepcopy
 from pathlib import Path
