@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación del Sistema - Chatbot SENATI Sports</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #0056b3;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #d9534f;
+        }
+        .section {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        code {
+            background-color: #eef1f5;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            color: #c7254e;
+        }
+        .flow-step {
+            background-color: #eaf2f8;
+            border-left: 4px solid #0056b3;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+        }
+        .flow-step strong {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Guía Explicativa: Sistema de Chatbot SENATI Sports</h1>
+    
+    <div class="section">
+        <h2>1. ¿De qué trata este proyecto?</h2>
+        <p>Este sistema es un <strong>Chatbot Inteligente E-commerce</strong> diseñado para vender artículos deportivos. Permite a los usuarios interactuar mediante texto y voz, hacer consultas sobre productos (precio, stock, color), agregar productos a un carrito virtual y finalizar la compra generando una boleta electrónica (PDF) mientras se actualiza automáticamente el inventario en la base de datos.</p>
+    </div>
+
+    <div class="section">
+        <h2>2. Estructura de Archivos y Módulos (¿Para qué sirve cada cosa?)</h2>
+        <p>El código está ordenado en diferentes carpetas ("módulos") para no tener todo mezclado. Cada carpeta tiene una responsabilidad única:</p>
+        <ul>
+            <li><strong><code>app.py</code>:</strong> Es el corazón y punto de entrada. Recibe las peticiones de internet (desde el navegador), decide a qué módulo llamar y devuelve la respuesta. Es el "director de orquesta".</li>
+            <li><strong><code>bot/</code> (El Cerebro del Chatbot):</strong>
+                <ul>
+                    <li><code>motor_dialogo.py</code>: Decide qué responder basado en lo que el usuario dice.</li>
+                    <li><code>inteligencia_artificial.py</code>: Carga el modelo matemático entrenado (Red Neuronal LSTM) para clasificar textos y el modelo de voz (Whisper) para escuchar los audios.</li>
+                    <li><code>catalogo_productos.py</code>: Se encarga de buscar productos, filtrar por precio/color y administrar el stock visible.</li>
+                    <li><code>memoria_conversacion.py</code>: Permite que el bot "recuerde" de qué estaban hablando. (Ej. Si preguntas "precio" luego de ver una zapatilla, sabe que hablas de esa zapatilla).</li>
+                </ul>
+            </li>
+            <li><strong><code>core/</code> (La Base del Sistema):</strong>
+                <ul>
+                    <li><code>base_datos.py</code>: Habla directamente con MySQL para guardar ventas y leer productos.</li>
+                    <li><code>configuracion.py</code>: Contiene variables globales (como contraseñas, URLs y límites).</li>
+                </ul>
+            </li>
+            <li><strong><code>admin/</code> (Panel de Control):</strong> Permite a los dueños de la tienda ver las ventas, editar productos y administrar el negocio sin tocar el código.</li>
+            <li><strong>Archivos Web (<code>interfaz_chatbot.html</code>, <code>css/</code>, <code>js/</code>):</strong> Son la "Cara" de la aplicación. Lo que el usuario ve, los botones que presiona y los estilos visuales.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>3. Flujo Principal: ¿Qué pasa cuando un usuario envía un mensaje de Chat?</h2>
+        <p>Imagina que el usuario escribe <em>"Quiero unas zapatillas Nike baratas"</em>. Esto es lo que ocurre internamente, paso a paso:</p>
+        
+        <div class="flow-step">
+            <strong>Paso 1: El Navegador habla con el Servidor.</strong><br>
+            El archivo JavaScript (<code>js/interfaz_principal.js</code>) toma el texto del usuario y lo envía a la ruta (Endpoint) <code>/chat</code> en <code>app.py</code> mediante una petición POST.
+        </div>
+        <div class="flow-step">
+            <strong>Paso 2: Comprobación de la Memoria (Contexto).</strong><br>
+            El servidor pregunta: <em>"¿Este usuario estaba hablando de algún producto específico antes?"</em>. Si acababa de hacer clic en una zapatilla y escribe "precio", el sistema devuelve el precio directamente sin pasar por toda la inteligencia artificial compleja.
+        </div>
+        <div class="flow-step">
+            <strong>Paso 3: Análisis de Intención (Inteligencia Artificial).</strong><br>
+            Si no es un mensaje rápido o directo, se le entrega al <code>motor_dialogo.py</code>, el cual usa el modelo entrenado para darse cuenta de que la intención es "buscar_zapatillas" y la acción es "filtrar_por_marca_nike" y "ordenar_precio_menor".
+        </div>
+        <div class="flow-step">
+            <strong>Paso 4: Devolver la Respuesta.</strong><br>
+            El servidor junta un texto amigable (Ej. <em>"¡Claro! Aquí tienes nuestras Nike más económicas"</em>) junto con las órdenes de filtrado, y lo empaca en un formato JSON. Se lo regresa al navegador.
+        </div>
+        <div class="flow-step">
+            <strong>Paso 5: El Navegador actualiza la Pantalla.</strong><br>
+            El JavaScript recibe el JSON, pinta el mensaje del bot en la conversación y hace que el catálogo de productos de la derecha se mueva para mostrar solo los zapatos pedidos.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>4. Flujo de Transcripción de Voz: ¿Cómo funciona el audio?</h2>
+        <p>Cuando el usuario no quiere escribir y decide enviar un mensaje de voz presionando el botón del micrófono:</p>
+        <ul>
+            <li>El navegador graba el audio y se lo envía "en crudo" a la ruta <code>/transcribe</code> de <code>app.py</code>.</li>
+            <li>Python recibe el archivo, lo guarda momentáneamente en una carpeta temporal con terminación <code>.webm</code>.</li>
+            <li>El modelo de IA Auditiva (Whisper) "escucha" el archivo temporal y adivina cuáles son las palabras.</li>
+            <li>Python une las palabras formando una frase (ej. <em>"cuánto cuesta el balón"</em>), elimina el archivo de audio para no llenar la memoria del computador, y devuelve el texto al navegador.</li>
+            <li>El navegador recibe el texto y lo inserta automáticamente en la caja de chat como si el usuario lo hubiera tecleado.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>5. Flujo de Compra: ¿Qué pasa cuando el usuario paga?</h2>
+        <p>Este es el momento más crítico para cualquier tienda. El proceso es el siguiente:</p>
+        
+        <div class="flow-step">
+            <strong>Paso 1: Presionar "Comprar / Generar Boleta".</strong><br>
+            El usuario añade cosas al carrito y le da a comprar. El carrito completo (una lista con qué producto y cuántas unidades) se envía a <code>/generate_pdf</code> en el <code>app.py</code>.
+        </div>
+        <div class="flow-step">
+            <strong>Paso 2: Generación del Documento (PDF).</strong><br>
+            El servidor usa una librería de Python (como <code>reportlab</code>) para dibujar un archivo PDF desde cero, insertando el título "Boleta de Venta SENATI SPORTS", calculando los subtotales, totales, fecha y dibujando líneas.
+        </div>
+        <div class="flow-step">
+            <strong>Paso 3: Guardado Seguro en la Base de Datos.</strong><br>
+            Antes de entregar el PDF, el sistema hace dos cosas urgentes en <strong>MySQL</strong>:
+            <br>a. Inserta un nuevo registro en la tabla <code>ventas</code> y su <code>venta_detalle</code>.
+            <br>b. Ejecuta un comando <code>UPDATE productos SET stock = stock - cantidad comprada</code> para asegurarse de que nadie más pueda comprar algo que ya se agotó.
+        </div>
+        <div class="flow-step">
+            <strong>Paso 4: Entrega de la Boleta.</strong><br>
+            El servidor toma el PDF recién creado y se lo envía al navegador para que el usuario se lo descargue como recibo de su transacción.
+        </div>
+    </div>
+
+    <div class="section">
+        <p><em>En resumen: Todo este proyecto es un puente que conecta una interfaz visual brillante y amigable con una Base de Datos rígida y segura, usando Inteligencia Artificial para entender a los humanos en el medio de los dos.</em></p>
+    </div>
+
+</body>
+</html>

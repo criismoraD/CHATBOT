@@ -45,7 +45,7 @@ Origenes_Cors_Permitidos = Obtener_Origenes_Cors_Permitidos()
 
 # ─── Base de Datos MySQL ─────────────────────────────────────────────────────
 
-DB_HOST = "localhost"
+DB_HOST = "127.0.0.1"
 DB_PORT = 3306
 DB_USER = "root"
 DB_PASSWORD = ""

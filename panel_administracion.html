@@ -809,10 +809,6 @@
             <label>Stock</label>
             <input type="number" id="prod-stock" min="0" value="0" />
           </div>
-          <div class="form-group">
-            <label>Rating (1-5)</label>
-            <input type="number" id="prod-rating" step="0.1" min="1" max="5" />
-          </div>
           <div class="form-group" style="grid-column: 1/-1">
             <label>Descripción</label>
             <textarea id="prod-descripcion" rows="3"></textarea>
@@ -1126,9 +1122,10 @@
         <button class="btn btn-warn btn-sm" onclick="abrirModalStock(${p.id},'${p.nombre.replace(/'/g, "\\'")}',${p.stock})">📦</button>
         ${
           p.activo
-            ? `<button class="btn btn-danger btn-sm" onclick="eliminarProducto(${p.id},'${p.nombre.replace(/'/g, "\\'")}')">🗑️</button>`
-            : `<button class="btn btn-success btn-sm" onclick="restaurarProducto(${p.id})">♻️</button>`
+            ? `<button class="btn btn-warn btn-sm" onclick="eliminarProducto(${p.id},'${p.nombre.replace(/'/g, "\\'")}')" title="Desactivar">🚫</button>`
+            : `<button class="btn btn-success btn-sm" onclick="restaurarProducto(${p.id})" title="Restaurar">♻️</button>`
         }
+        <button class="btn btn-danger btn-sm" onclick="eliminarPermanente(${p.id},'${p.nombre.replace(/'/g, "\\'")}')" title="Eliminar Permanentemente">🗑️</button>
       </div></td>
     </tr>`;
         }
@@ -1213,7 +1210,7 @@
           "prod-descripcion", "prod-imagen",
         ].forEach((id) => (document.getElementById(id).value = ""));
         document.getElementById("prod-stock").value = "0";
-        document.getElementById("prod-rating").value = "";
+
         document.getElementById("prod-genero").value = "";
         document.getElementById("prod-activo").value = "1";
         document.getElementById("modal-prod-msg").className = "msg";
@@ -1231,7 +1228,7 @@
           document.getElementById("prod-precio").value = p.precio;
           document.getElementById("prod-color").value = p.color || "";
           document.getElementById("prod-stock").value = p.stock;
-          document.getElementById("prod-rating").value = p.rating || "";
+
           document.getElementById("prod-descripcion").value =
             p.descripcion || "";
           document.getElementById("prod-imagen").value = p.imagen_url || "";
@@ -1261,8 +1258,7 @@
           genero: document.getElementById("prod-genero").value || null,
           color: document.getElementById("prod-color").value.trim(),
           stock: parseInt(document.getElementById("prod-stock").value) || 0,
-          rating:
-            parseFloat(document.getElementById("prod-rating").value) || null,
+
           descripcion: document.getElementById("prod-descripcion").value.trim(),
           imagen_url: document.getElementById("prod-imagen").value.trim(),
           activo: parseInt(document.getElementById("prod-activo").value),
@@ -1306,6 +1302,24 @@
         try {
           const res = await api(`/admin/productos/${id}/restaurar`, {
             method: "POST",
+          });
+          toast(res.mensaje, "ok");
+          cargarProductos();
+        } catch (e) {
+          toast(e.message, "err");
+        }
+      }
+
+      async function eliminarPermanente(id, nombre) {
+        if (
+          !confirm(
+            `¿ELIMINAR PERMANENTEMENTE el producto "${nombre}"?\nEsta acción no se puede deshacer.`,
+          )
+        )
+          return;
+        try {
+          const res = await api(`/admin/productos/${id}/permanente`, {
+            method: "DELETE",
           });
           toast(res.mensaje, "ok");
           cargarProductos();

@@ -177,7 +177,7 @@ def Admin_Listar_Productos():
         """
         sql_data = """
             SELECT p.id, p.nombre, p.precio, c.nombre AS categoria,
-                   p.genero, p.color, p.stock, p.rating,
+                    p.genero, p.color, p.stock,
                    p.descripcion, p.imagen_url, p.activo, p.creado_en
             FROM productos p
             JOIN categorias c ON p.categoria_id = c.id
@@ -192,7 +192,7 @@ def Admin_Listar_Productos():
         sql_count = "SELECT COUNT(*) AS total FROM productos"
         sql_data  = """
             SELECT p.id, p.nombre, p.precio, c.nombre AS categoria,
-                   p.genero, p.color, p.stock, p.rating,
+                    p.genero, p.color, p.stock,
                    p.descripcion, p.imagen_url, p.activo, p.creado_en
             FROM productos p
             JOIN categorias c ON p.categoria_id = c.id
@@ -207,7 +207,7 @@ def Admin_Listar_Productos():
     # Convertir campos Decimal/datetime a tipos serializables
     for p in productos:
         p["precio"] = float(p["precio"]) if p["precio"] is not None else 0.0
-        p["rating"]  = float(p["rating"])  if p["rating"]  is not None else None
+
         p["creado_en"] = str(p["creado_en"]) if p["creado_en"] else None
 
     return jsonify({
@@ -227,7 +227,7 @@ def Admin_Obtener_Producto(producto_id):
         """
         SELECT p.id, p.nombre, p.precio, p.categoria_id,
                c.nombre AS categoria, p.genero, p.color,
-               p.stock, p.rating, p.descripcion, p.imagen_url, p.activo
+               p.stock, p.descripcion, p.imagen_url, p.activo
         FROM productos p
         JOIN categorias c ON p.categoria_id = c.id
         WHERE p.id = %s
@@ -238,7 +238,7 @@ def Admin_Obtener_Producto(producto_id):
         return jsonify({"error": "Producto no encontrado."}), 404
     p = rows[0]
     p["precio"] = float(p["precio"]) if p["precio"] is not None else 0.0
-    p["rating"]  = float(p["rating"])  if p["rating"]  is not None else None
+
     return jsonify(p)
 
 
@@ -254,7 +254,7 @@ def Admin_Crear_Producto():
     genero       = d.get("genero")
     color        = d.get("color", "")
     stock        = d.get("stock", 0)
-    rating       = d.get("rating")
+
     descripcion  = d.get("descripcion", "")
     imagen_url   = d.get("imagen_url", "")
     activo       = int(d.get("activo", 1))
@@ -269,17 +269,17 @@ def Admin_Crear_Producto():
     try:
         precio = float(precio)
         stock  = int(stock)
-        rating = float(rating) if rating is not None else None
+
     except (TypeError, ValueError):
-        return jsonify({"error": "Precio, stock o rating con formato incorrecto."}), 400
+        return jsonify({"error": "Precio o stock con formato incorrecto."}), 400
 
     nuevo_id = Ejecutar_Escritura(
         """
         INSERT INTO productos
-            (nombre, precio, categoria_id, genero, color, stock, rating, descripcion, imagen_url, activo)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            (nombre, precio, categoria_id, genero, color, stock, descripcion, imagen_url, activo)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """,
-        (nombre, precio, categoria_id, genero, color, stock, rating, descripcion, imagen_url, activo)
+        (nombre, precio, categoria_id, genero, color, stock, descripcion, imagen_url, activo)
     )
 
     if nuevo_id is None:
@@ -310,7 +310,7 @@ def Admin_Actualizar_Producto(producto_id):
         "genero":       ("genero",       str),
         "color":        ("color",        str),
         "stock":        ("stock",        int),
-        "rating":       ("rating",       float),
+
         "descripcion":  ("descripcion",  str),
         "imagen_url":   ("imagen_url",   str),
         "activo":       ("activo",       int),
@@ -352,6 +352,23 @@ def Admin_Eliminar_Producto(producto_id):
 
     Recargar_Catalogo()  # Actualizar catálogo del chatbot
     return jsonify({"ok": True, "mensaje": f"Producto '{nombre}' desactivado correctamente."})
+
+
+@Admin_Blueprint.route("/admin/productos/<int:producto_id>/permanente", methods=["DELETE"])
+@login_requerido
+def Admin_Eliminar_Producto_Permanente(producto_id):
+    """Elimina físicamente un producto de la base de datos."""
+    existente = Ejecutar_Consulta("SELECT id, nombre FROM productos WHERE id = %s", (producto_id,))
+    if not existente:
+        return jsonify({"error": "Producto no encontrado."}), 404
+
+    nombre = existente[0]["nombre"]
+
+    # Eliminación física
+    Ejecutar_Escritura("DELETE FROM productos WHERE id = %s", (producto_id,))
+
+    Recargar_Catalogo()  # Actualizar catálogo del chatbot
+    return jsonify({"ok": True, "mensaje": f"Producto '{nombre}' eliminado permanentemente."})
 
 
 @Admin_Blueprint.route("/admin/productos/<int:producto_id>/restaurar", methods=["POST"])

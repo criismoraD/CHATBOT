@@ -112,7 +112,6 @@ def _Cargar_Productos_Desde_BD():
                 "colores": Colores,
                 "tallas": Tallas,
                 "stock": Fila.get("stock"),
-                "rating": float(Fila.get("rating")) if Fila.get("rating") is not None else 0.0,
                 "description": Fila.get("descripcion") or "",
                 "image": Fila.get("imagen_url") or ""
             }
@@ -454,6 +453,11 @@ def Recargar_Catalogo():
     Inicializar_Motor_Semantico()
 
     print(f"[CATALOGO] Catálogo recargado: {len(Datos_De_Productos)} productos en memoria.")
+
+
+def Obtener_Catalogo_Actual():
+    """Retorna la referencia actual al catálogo de productos."""
+    return Datos_De_Productos
 
 
 # ─── Inicialización al Importar ──────────────────────────────────────────────

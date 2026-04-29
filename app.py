@@ -42,7 +42,7 @@ from core import configuracion  # Carga las constantes y ajustes globales del si
 from core.base_datos import Ejecutar_Escritura  # Permite guardar datos en la base de datos MySQL
 from bot.inteligencia_artificial import Modelo_IA, Etiquetas_De_Intencion, Obtener_Modelo_Voz  # Cerebro de IA y voz
 from bot.catalogo_productos import (  # Gestión de búsqueda y stock de los productos
-    Datos_De_Productos, Catalogos_De_Productos, Fuente_Activa_De_Catalogo,
+    Obtener_Catalogo_Actual, Catalogos_De_Productos, Fuente_Activa_De_Catalogo,
     Cambiar_Fuente_De_Catalogo, Buscar_Productos, Obtener_Producto_Por_Id,
     Decrementar_Stock_En_Cache
 )
@@ -152,7 +152,7 @@ def Estado_Del_Servidor():
     return jsonify({
         "status": "online",
         "bot_name": configuracion.Nombre_Del_Bot,
-        "products_active": len(Datos_De_Productos),
+        "products_active": len(Obtener_Catalogo_Actual()),
         "products_auto": len(Catalogos_De_Productos.get("auto", [])),
         "products_scraped": len(Catalogos_De_Productos.get("scraped", [])),
         "catalog_source_active": Fuente_Activa_De_Catalogo,
@@ -247,7 +247,8 @@ def Chat():
 @Aplicacion.route('/products', methods=['GET'])
 def Listar_Productos():
     Fuente = Cambiar_Fuente_De_Catalogo(request.args.get('source', 'auto'))
-    return jsonify({"products": Datos_De_Productos, "count": len(Datos_De_Productos), "source": Fuente})
+    Productos = Obtener_Catalogo_Actual()
+    return jsonify({"products": Productos, "count": len(Productos), "source": Fuente})
 
 
 # ─── Búsqueda ────────────────────────────────────────────────────────────────
