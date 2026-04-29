@@ -435,6 +435,27 @@ def Obtener_Colores_Dinamicos():
     return _Colores_Dinamicos
 
 
+# ─── Recarga del Catálogo (llamar tras CRUD en admin) ────────────────────────
+
+def Recargar_Catalogo():
+    """
+    Recarga todos los productos desde MySQL y reconstruye los índices en memoria.
+    Llamar después de crear, editar o eliminar productos desde el panel admin.
+    """
+    global Datos_De_Productos
+
+    Catalogos_De_Productos["scraped"] = _Cargar_Productos_Desde_BD()
+    Datos_De_Productos = Catalogos_De_Productos["scraped"]
+
+    Reconstruir_Indice_De_Nombres()
+    Reconstruir_Diccionario_De_Productos()
+    Reconstruir_Diccionario_De_Colores()
+    Extraer_Entidades_Dinamicas()
+    Inicializar_Motor_Semantico()
+
+    print(f"[CATALOGO] Catálogo recargado: {len(Datos_De_Productos)} productos en memoria.")
+
+
 # ─── Inicialización al Importar ──────────────────────────────────────────────
 
 Catalogos_De_Productos["scraped"] = _Cargar_Productos_Desde_BD()

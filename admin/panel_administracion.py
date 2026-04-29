@@ -55,6 +55,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from core.base_datos import Ejecutar_Consulta, Ejecutar_Escritura, Obtener_Conexion
 from mysql.connector import Error
+from bot.catalogo_productos import Recargar_Catalogo  # Sincroniza el catálogo en memoria tras cambios
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
@@ -284,6 +285,7 @@ def Admin_Crear_Producto():
     if nuevo_id is None:
         return jsonify({"error": "No se pudo crear el producto."}), 500
 
+    Recargar_Catalogo()  # Actualizar catálogo del chatbot
     return jsonify({"ok": True, "id": nuevo_id, "mensaje": f"Producto '{nombre}' creado correctamente."}), 201
 
 
@@ -331,6 +333,7 @@ def Admin_Actualizar_Producto(producto_id):
     sql = f"UPDATE productos SET {', '.join(campos)} WHERE id = %s"
     Ejecutar_Escritura(sql, tuple(valores))
 
+    Recargar_Catalogo()  # Actualizar catálogo del chatbot
     return jsonify({"ok": True, "mensaje": "Producto actualizado correctamente."})
 
 
@@ -347,6 +350,7 @@ def Admin_Eliminar_Producto(producto_id):
     # Eliminación lógica: marca como inactivo
     Ejecutar_Escritura("UPDATE productos SET activo = 0 WHERE id = %s", (producto_id,))
 
+    Recargar_Catalogo()  # Actualizar catálogo del chatbot
     return jsonify({"ok": True, "mensaje": f"Producto '{nombre}' desactivado correctamente."})
 
 
@@ -359,6 +363,7 @@ def Admin_Restaurar_Producto(producto_id):
         return jsonify({"error": "Producto no encontrado."}), 404
 
     Ejecutar_Escritura("UPDATE productos SET activo = 1 WHERE id = %s", (producto_id,))
+    Recargar_Catalogo()  # Actualizar catálogo del chatbot
     return jsonify({"ok": True, "mensaje": f"Producto '{existente[0]['nombre']}' reactivado."})
 
 
@@ -781,51 +786,69 @@ def Admin_Reporte_Rotacion_Stock():
 @login_requerido
 def Admin_Reporte_CSV():
     """
-    Exporta ventas en formato CSV.
-    Parámetros: ?periodo=diario|semanal|mensual (default: diario)
+    Exporta un reporte detallado de ventas en formato CSV (similar al PDF).
+    Incluye: resumen general, ventas últimos 30 días y top 10 productos.
+    Usa ';' como separador para compatibilidad con Excel en español.
     """
     import csv
-    import io
 
-    periodo = request.args.get("periodo", "diario").lower()
+    # ── Datos de resumen ──
+    resumen_hoy = Ejecutar_Consulta(
+        "SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas WHERE DATE(fecha)=CURDATE()"
+    )
+    resumen_mes = Ejecutar_Consulta(
+        "SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas WHERE MONTH(fecha)=MONTH(NOW()) AND YEAR(fecha)=YEAR(NOW())"
+    )
+    resumen_total = Ejecutar_Consulta(
+        "SELECT COUNT(*) AS n, COALESCE(SUM(total),0) AS monto FROM ventas"
+    )
 
-    if periodo == "diario":
-        sql = """
-            SELECT DATE(fecha) AS fecha, COUNT(*) AS ventas,
-                   SUM(total) AS monto, SUM(cantidad_items) AS items
-            FROM ventas WHERE fecha >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-            GROUP BY DATE(fecha) ORDER BY fecha ASC
-        """
-    elif periodo == "semanal":
-        sql = """
-            SELECT CONCAT(YEAR(fecha), '-S', LPAD(WEEK(fecha,1), 2, '0')) AS fecha,
-                   COUNT(*) AS ventas, SUM(total) AS monto, SUM(cantidad_items) AS items
-            FROM ventas WHERE fecha >= DATE_SUB(NOW(), INTERVAL 12 WEEK)
-            GROUP BY YEAR(fecha), WEEK(fecha,1) ORDER BY YEAR(fecha), WEEK(fecha,1)
-        """
-    else:
-        sql = """
-            SELECT DATE_FORMAT(fecha, '%Y-%m') AS fecha, COUNT(*) AS ventas,
-                   SUM(total) AS monto, SUM(cantidad_items) AS items
-            FROM ventas WHERE fecha >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
-            GROUP BY DATE_FORMAT(fecha, '%Y-%m') ORDER BY fecha ASC
-        """
+    # ── Ventas últimos 30 días ──
+    ventas_diarias = Ejecutar_Consulta(
+        "SELECT DATE(fecha) AS dia, COUNT(*) AS cant, SUM(total) AS monto "
+        "FROM ventas WHERE fecha >= DATE_SUB(NOW(), INTERVAL 30 DAY) "
+        "GROUP BY DATE(fecha) ORDER BY dia ASC"
+    )
 
-    rows = Ejecutar_Consulta(sql)
+    # ── Top 10 productos ──
+    top_productos = Ejecutar_Consulta(
+        "SELECT vd.nombre_producto, SUM(vd.cantidad) AS unidades, SUM(vd.subtotal) AS ingresos "
+        "FROM venta_detalle vd GROUP BY vd.nombre_producto "
+        "ORDER BY unidades DESC LIMIT 10"
+    )
+
+    def _val(rows, campo):
+        return rows[0][campo] if rows else 0
 
     buf = io.StringIO()
-    Writer = csv.writer(buf)
-    Writer.writerow(["Período", "Ventas", "Monto Total (S/)", "Items Vendidos"])
-    for r in rows:
-        Writer.writerow([
-            str(r["fecha"]),
-            r["ventas"],
-            f"{float(r['monto'] or 0):.2f}",
-            r["items"]
-        ])
+    Writer = csv.writer(buf, delimiter=';')  # ';' para Excel en español
+
+    # ── Sección 1: Resumen General ──
+    Writer.writerow(["SENATI Sports - Reporte de Ventas"])
+    Writer.writerow([f"Generado: {datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}"])
+    Writer.writerow([])
+    Writer.writerow(["RESUMEN GENERAL"])
+    Writer.writerow(["Período", "Nº Ventas", "Monto Total (S/)"])
+    Writer.writerow(["Hoy", _val(resumen_hoy, 'n'), f"{float(_val(resumen_hoy, 'monto')):.2f}"])
+    Writer.writerow(["Este mes", _val(resumen_mes, 'n'), f"{float(_val(resumen_mes, 'monto')):.2f}"])
+    Writer.writerow(["Total histórico", _val(resumen_total, 'n'), f"{float(_val(resumen_total, 'monto')):.2f}"])
+    Writer.writerow([])
+
+    # ── Sección 2: Ventas últimos 30 días ──
+    Writer.writerow(["VENTAS ÚLTIMOS 30 DÍAS"])
+    Writer.writerow(["Fecha", "Nº Ventas", "Monto (S/)"])
+    for r in ventas_diarias:
+        Writer.writerow([str(r['dia']), r['cant'], f"{float(r['monto']):.2f}"])
+    Writer.writerow([])
+
+    # ── Sección 3: Top 10 productos ──
+    Writer.writerow(["TOP 10 PRODUCTOS MÁS VENDIDOS"])
+    Writer.writerow(["Producto", "Unidades Vendidas", "Ingresos (S/)"])
+    for r in top_productos:
+        Writer.writerow([str(r['nombre_producto']), r['unidades'], f"{float(r['ingresos']):.2f}"])
 
     buf.seek(0)
-    nombre = f"reporte_ventas_{periodo}_{datetime.datetime.now().strftime('%Y%m%d')}.csv"
+    nombre = f"reporte_ventas_{datetime.datetime.now().strftime('%Y%m%d')}.csv"
     return send_file(
         io.BytesIO(buf.getvalue().encode('utf-8-sig')),
         mimetype='text/csv',

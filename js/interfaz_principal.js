@@ -1175,9 +1175,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 Agregar_Al_Carrito(data.product);
             }
 
-            // Si hay filter_action, aplicar el filtro en el catálogo
+            // Si hay filter_action, recargar catálogo y aplicar el filtro
             if (data.filter_action) {
-                setTimeout(() => {
+                setTimeout(async () => {
+                    // Recargar productos desde el servidor para incluir productos nuevos/editados
+                    const Productos_Actualizados = await Cargar_Productos_Desde_Json();
+                    if (Productos_Actualizados.length) {
+                        Datos_De_Productos = Productos_Actualizados;
+                        Configurar_Rango_De_Precio_Inicial();
+                    }
                     Aplicar_Filtro_Desde_Chat(data.filter_action);
                 }, 500);
             }

@@ -29,25 +29,25 @@ MÓDULOS QUE USA:
   - core.configuracion      → constantes del sistema
 """
 
-import os
-import tempfile
-from flask import Flask, request, jsonify, send_from_directory, send_file
-from flask_cors import CORS
-import datetime
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+import os 
+import tempfile  
+from flask import Flask, request, jsonify, send_from_directory, send_file  
+from flask_cors import CORS  
+import datetime  
+from reportlab.lib.pagesizes import letter 
+from reportlab.pdfgen import canvas  
 
-from admin import Inicializar_Admin
-from core import configuracion
-from core.base_datos import Ejecutar_Escritura
-from bot.inteligencia_artificial import Modelo_IA, Etiquetas_De_Intencion, Obtener_Modelo_Voz
-from bot.catalogo_productos import (
+from admin import Inicializar_Admin  # Configura el panel de administración web
+from core import configuracion  # Carga las constantes y ajustes globales del sistema
+from core.base_datos import Ejecutar_Escritura  # Permite guardar datos en la base de datos MySQL
+from bot.inteligencia_artificial import Modelo_IA, Etiquetas_De_Intencion, Obtener_Modelo_Voz  # Cerebro de IA y voz
+from bot.catalogo_productos import (  # Gestión de búsqueda y stock de los productos
     Datos_De_Productos, Catalogos_De_Productos, Fuente_Activa_De_Catalogo,
     Cambiar_Fuente_De_Catalogo, Buscar_Productos, Obtener_Producto_Por_Id,
     Decrementar_Stock_En_Cache
 )
-from bot.memoria_conversacion import Obtener_Contexto, Actualizar_Contexto
-from bot.motor_dialogo import Obtener_Respuesta_Principal
+from bot.memoria_conversacion import Obtener_Contexto, Actualizar_Contexto  # Recuerda el estado de la charla con cada usuario
+from bot.motor_dialogo import Obtener_Respuesta_Principal  # Procesa el mensaje y decide qué responder
 
 
 # ─── Inicialización de Flask ─────────────────────────────────────────────────
@@ -416,10 +416,8 @@ def Generar_Boleta_PDF():
 
 if __name__ == '__main__':
     Puerto = int(os.getenv('SENATI_PORT', '5000'))
-    Debug = True
+    Debug = False
     print(f">>> Frontend listo en http://localhost:{Puerto}/")
-    print(f">>> Estado API en http://localhost:{Puerto}/status")
-    print(f">>> Chat API en http://localhost:{Puerto}/chat")
     print(f">>> Admin Panel en http://localhost:{Puerto}/admin")
     print(f">>> Debug: {Debug}")
     Aplicacion.run(port=Puerto, debug=Debug)
