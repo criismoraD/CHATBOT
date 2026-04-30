@@ -115,6 +115,12 @@
         background: var(--accent);
         color: #fff;
       }
+      .btn-primary:disabled {
+        background: var(--surface2);
+        color: var(--text2);
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
       .btn-success {
         background: var(--accent2);
         color: #111;
@@ -785,6 +791,7 @@
           <div class="form-group">
             <label>Precio (S/) *</label>
             <input type="number" id="prod-precio" step="0.01" min="0" />
+            <div id="prod-precio-error" style="color: var(--danger); font-size: 0.75rem; margin-top: 4px; display: none;"></div>
           </div>
           <div class="form-group">
             <label>Categoría *</label>
@@ -803,11 +810,29 @@
           </div>
           <div class="form-group">
             <label>Color</label>
-            <input type="text" id="prod-color" placeholder="Ej. Negro" />
+            <select id="prod-color">
+              <option value="">Sin especificar</option>
+              <option value="Negro">Negro</option>
+              <option value="Blanco">Blanco</option>
+              <option value="Gris">Gris</option>
+              <option value="Rojo">Rojo</option>
+              <option value="Azul">Azul</option>
+              <option value="Verde">Verde</option>
+              <option value="Amarillo">Amarillo</option>
+              <option value="Naranja">Naranja</option>
+              <option value="Rosa">Rosa</option>
+              <option value="Morado">Morado</option>
+              <option value="Celeste">Celeste</option>
+              <option value="Beige">Beige</option>
+              <option value="Marrón">Marrón</option>
+              <option value="Dorado">Dorado</option>
+              <option value="Plateado">Plateado</option>
+            </select>
           </div>
           <div class="form-group">
             <label>Stock</label>
             <input type="number" id="prod-stock" min="0" value="0" />
+            <div id="prod-stock-error" style="color: var(--danger); font-size: 0.75rem; margin-top: 4px; display: none;"></div>
           </div>
           <div class="form-group" style="grid-column: 1/-1">
             <label>Descripción</label>
@@ -816,7 +841,7 @@
           <div class="form-group" style="grid-column: 1/-1">
             <label>Imagen del producto</label>
             <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
-              <input type="url" id="prod-imagen" placeholder="https://... (URL)" style="flex:1" oninput="document.getElementById('prod-img-preview').src=this.value||'';" />
+              <input type="url" id="prod-imagen" placeholder="https://... (URL) - Opcional" style="flex:1" oninput="document.getElementById('prod-img-preview').src=this.value||'';" />
               <label class="btn btn-ghost btn-sm" style="cursor:pointer;white-space:nowrap;" title="Subir desde archivo">
                 📁 Subir
                 <input type="file" id="prod-imagen-file" accept="image/*" style="display:none" onchange="uploadImagenProducto(this)" />
@@ -836,7 +861,7 @@
           <button class="btn btn-ghost" onclick="cerrarModal('modal-producto')">
             Cancelar
           </button>
-          <button class="btn btn-primary" onclick="guardarProducto()">
+          <button class="btn btn-primary" id="btn-guardar-producto" onclick="guardarProducto()" disabled>
             💾 Guardar
           </button>
         </div>
@@ -861,31 +886,6 @@
             Cancelar
           </button>
           <button class="btn btn-primary" onclick="guardarCategoria()">
-            💾 Guardar
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Modal Stock ── -->
-    <div class="modal-overlay" id="modal-stock">
-      <div class="modal" style="width: 340px">
-        <h3>Actualizar Stock</h3>
-        <div id="modal-stock-msg" class="msg"></div>
-        <input type="hidden" id="stock-prod-id" />
-        <p
-          id="stock-prod-nombre"
-          style="color: var(--text2); margin-bottom: 16px; font-size: 0.9rem"
-        ></p>
-        <div class="form-group">
-          <label>Nuevo stock</label>
-          <input type="number" id="stock-nuevo" min="0" />
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-ghost" onclick="cerrarModal('modal-stock')">
-            Cancelar
-          </button>
-          <button class="btn btn-primary" onclick="guardarStock()">
             💾 Guardar
           </button>
         </div>
@@ -1119,7 +1119,6 @@
       <td>${badge}</td>
       <td><div class="actions">
         <button class="btn btn-ghost btn-sm" onclick="editarProducto(${p.id})">✏️</button>
-        <button class="btn btn-warn btn-sm" onclick="abrirModalStock(${p.id},'${p.nombre.replace(/'/g, "\\'")}',${p.stock})">📦</button>
         ${
           p.activo
             ? `<button class="btn btn-warn btn-sm" onclick="eliminarProducto(${p.id},'${p.nombre.replace(/'/g, "\\'")}')" title="Desactivar">🚫</button>`
@@ -1216,9 +1215,73 @@
         document.getElementById("modal-prod-msg").className = "msg";
         const prev = document.getElementById('prod-img-preview');
         prev.src = ''; prev.style.display = 'none';
+        
+        // Limpiar errores de validación
+        document.getElementById("prod-precio-error").style.display = "none";
+        document.getElementById("prod-stock-error").style.display = "none";
+        document.getElementById("prod-precio").style.borderColor = "";
+        document.getElementById("prod-stock").style.borderColor = "";
+        
         await cargarSelectCategorias("prod-categoria");
         abrirModal("modal-producto");
+        validarFormularioProducto();
       }
+
+      function validarFormularioProducto() {
+        const nombre = document.getElementById("prod-nombre").value.trim();
+        const precio = document.getElementById("prod-precio").value;
+        const categoria = document.getElementById("prod-categoria").value;
+        const btn = document.getElementById("btn-guardar-producto");
+        
+        const valido = nombre && precio && categoria;
+        btn.disabled = !valido;
+      }
+
+      // Validación en tiempo real para números negativos
+      function validarNumeroNegativo(inputId, errorId) {
+        const input = document.getElementById(inputId);
+        const error = document.getElementById(errorId);
+        if (input && error) {
+          if (input.value < 0) {
+            error.textContent = 'No se permiten valores negativos';
+            error.style.display = 'block';
+            input.style.borderColor = 'var(--danger)';
+          } else {
+            error.style.display = 'none';
+            input.style.borderColor = '';
+          }
+        }
+      }
+
+      // Agregar event listeners para validación en tiempo real
+      document.addEventListener('DOMContentLoaded', function() {
+        const campos = ['prod-nombre', 'prod-precio', 'prod-categoria'];
+        campos.forEach(id => {
+          const campo = document.getElementById(id);
+          if (campo) {
+            campo.addEventListener('input', validarFormularioProducto);
+            campo.addEventListener('change', validarFormularioProducto);
+          }
+        });
+
+        // Validación en tiempo real para precio y stock
+        const precioInput = document.getElementById('prod-precio');
+        const stockInput = document.getElementById('prod-stock');
+        
+        if (precioInput) {
+          precioInput.addEventListener('input', function() {
+            validarNumeroNegativo('prod-precio', 'prod-precio-error');
+            validarFormularioProducto();
+          });
+        }
+        
+        if (stockInput) {
+          stockInput.addEventListener('input', function() {
+            validarNumeroNegativo('prod-stock', 'prod-stock-error');
+            validarFormularioProducto();
+          });
+        }
+      });
 
       async function editarProducto(id) {
         try {
@@ -1237,8 +1300,16 @@
           document.getElementById("modal-prod-titulo").textContent =
             `Editar: ${p.nombre.substring(0, 30)}…`;
           document.getElementById("modal-prod-msg").className = "msg";
+          
+          // Limpiar errores de validación
+          document.getElementById("prod-precio-error").style.display = "none";
+          document.getElementById("prod-stock-error").style.display = "none";
+          document.getElementById("prod-precio").style.borderColor = "";
+          document.getElementById("prod-stock").style.borderColor = "";
+          
           await cargarSelectCategorias("prod-categoria", p.categoria_id);
           abrirModal("modal-producto");
+          validarFormularioProducto();
         } catch (e) {
           toast(e.message, "err");
         }
@@ -1443,7 +1514,7 @@
         try {
           const data = await api(url);
           let html = `<table><thead><tr>
-      <th>ID</th><th>Producto</th><th>Categoría</th><th>Stock</th><th>Nivel</th><th>Acción</th>
+      <th>ID</th><th>Producto</th><th>Categoría</th><th>Stock</th><th>Nivel</th>
     </tr></thead><tbody>`;
           const maxStock = Math.max(...data.stock.map((s) => s.stock), 1);
           for (const p of data.stock) {
@@ -1464,7 +1535,7 @@
             <div class="stock-bar" style="width:${pct}%;background:${clr}"></div>
           </div>
         </td>
-        <td><button class="btn btn-ghost btn-sm" onclick="abrirModalStock(${p.id},'${p.nombre.replace(/'/g, "\\'")}',${p.stock})">✏️ Editar</button></td>
+        
       </tr>`;
           }
           html += `</tbody></table>`;
@@ -1474,33 +1545,6 @@
               '<div class="empty-state">✅ Sin resultados.</div>';
         } catch (e) {
           wrap.innerHTML = `<div class="empty-state">❌ ${e.message}</div>`;
-        }
-      }
-
-      function abrirModalStock(id, nombre, stockActual) {
-        document.getElementById("stock-prod-id").value = id;
-        document.getElementById("stock-prod-nombre").textContent = nombre;
-        document.getElementById("stock-nuevo").value = stockActual;
-        document.getElementById("modal-stock-msg").className = "msg";
-        abrirModal("modal-stock");
-      }
-
-      async function guardarStock() {
-        const id = document.getElementById("stock-prod-id").value;
-        const stock = parseInt(document.getElementById("stock-nuevo").value);
-        const msgEl = document.getElementById("modal-stock-msg");
-        msgEl.className = "msg";
-        try {
-          const res = await api(`/admin/stock/${id}`, {
-            method: "PATCH",
-            body: JSON.stringify({ stock }),
-          });
-          cerrarModal("modal-stock");
-          toast(res.mensaje, "ok");
-          cargarStock(false);
-        } catch (e) {
-          msgEl.textContent = e.message;
-          msgEl.className = "msg err";
         }
       }
 

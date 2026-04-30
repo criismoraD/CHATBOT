@@ -273,6 +273,11 @@ def Admin_Crear_Producto():
     except (TypeError, ValueError):
         return jsonify({"error": "Precio o stock con formato incorrecto."}), 400
 
+    if precio < 0:
+        return jsonify({"error": "El precio no puede ser negativo."}), 400
+    if stock < 0:
+        return jsonify({"error": "El stock no puede ser negativo."}), 400
+
     nuevo_id = Ejecutar_Escritura(
         """
         INSERT INTO productos
@@ -323,6 +328,10 @@ def Admin_Actualizar_Producto(producto_id):
                 val = tipo(val) if val is not None else None
             except (TypeError, ValueError):
                 return jsonify({"error": f"Valor inválido para '{clave}'."}), 400
+            if clave == "precio" and val is not None and val < 0:
+                return jsonify({"error": "El precio no puede ser negativo."}), 400
+            if clave == "stock" and val is not None and val < 0:
+                return jsonify({"error": "El stock no puede ser negativo."}), 400
             campos.append(f"{col} = %s")
             valores.append(val)
 
