@@ -1,10 +1,9 @@
 """
-bot/inteligencia_artificial.py · Modelo de IA (LSTM + Whisper)
+bot/inteligencia_artificial.py · Modelo de IA (LSTM)
 ═════════════════════════════════════════════════════════════
 
-Carga y ejecuta dos modelos de IA:
-  1. PyTorch LSTM → predice la intención (tag) de un mensaje de texto
-  2. Whisper → transcribe audio del usuario a texto
+Carga y ejecuta el modelo PyTorch LSTM para predecir la intención (tag)
+de un mensaje de texto.
 
 FLUJO DE PREDICCIÓN (Predecir_Tag):
   1. Recibe texto del usuario (ej: "quiero zapatillas negras")
@@ -16,10 +15,6 @@ FLUJO DE PREDICCIÓN (Predecir_Tag):
      - confianza: probabilidad del tag más probable (0-1)
      - margen: diferencia con el segundo más probable
 
-FLUJO DE VOZ (Obtener_Modelo_Voz):
-  - Carga Whisper "base" bajo demanda (thread-safe con lock)
-  - Se usa en app.py para transcribir audios del frontend
-
 ARCHIVOS QUE USA:
   - data/modelo_lstm.pth → pesos del modelo LSTM entrenado
   - data/intenciones_chatbot.json → tags, patterns y responses
@@ -27,7 +22,6 @@ ARCHIVOS QUE USA:
 
 import os
 import json
-import threading
 import torch
 import numpy as np
 from entrenar_modelo_lstm import NeuralNet
@@ -39,29 +33,9 @@ from core.procesamiento_lenguaje import Tokenizar_Y_Lematizar
 
 _Dispositivo = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 Modelo_IA = None
-Modelo_Voz = None
 Todas_Las_Palabras = []
 Etiquetas_De_Intencion = []
 Longitud_Maxima_Secuencia = 10
-_Candado_De_Modelo_Voz = threading.Lock()
-
-
-# ─── Modelo de Voz (Whisper) ─────────────────────────────────────────────────
-
-def Obtener_Modelo_Voz():
-    """Carga el modelo Whisper bajo demanda (thread-safe)."""
-    global Modelo_Voz
-    if Modelo_Voz is None:
-        with _Candado_De_Modelo_Voz:
-            if Modelo_Voz is None:
-                from faster_whisper import WhisperModel
-                Modelo_Voz = WhisperModel(
-                    "base",
-                    device="cuda" if torch.cuda.is_available() else "cpu",
-                    compute_type="int8"
-                )
-                print("[OK] Modelo Whisper cargado bajo demanda.")
-    return Modelo_Voz
 
 
 # ─── Carga del Modelo PyTorch ────────────────────────────────────────────────

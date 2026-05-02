@@ -419,6 +419,7 @@
         display: flex;
       }
       .modal {
+        position: relative;
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 14px;
@@ -433,6 +434,63 @@
         font-size: 1.15rem;
         margin-bottom: 20px;
       }
+      .modal-close {
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        background: transparent;
+        border: none;
+        color: var(--text2);
+        font-size: 1.3rem;
+        cursor: pointer;
+        line-height: 1;
+      }
+      .modal-close:hover {
+        color: var(--text);
+      }
+
+      /* ─── Switch toggle ─────────────────────────────────────── */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 22px;
+        flex-shrink: 0;
+      }
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background: var(--surface2);
+        border-radius: 22px;
+        transition: 0.25s;
+        border: 1px solid var(--border);
+      }
+      .slider::before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background: var(--text);
+        border-radius: 50%;
+        transition: 0.25s;
+      }
+      .switch input:checked + .slider {
+        background: var(--accent2);
+        border-color: var(--accent2);
+      }
+      .switch input:checked + .slider::before {
+        transform: translateX(18px);
+        background: #fff;
+      }
+
       .modal-footer {
         display: flex;
         justify-content: flex-end;
@@ -776,6 +834,7 @@
     <!-- ── Modal Producto ── -->
     <div class="modal-overlay" id="modal-producto">
       <div class="modal">
+        <button class="modal-close" onclick="cerrarModal('modal-producto')" title="Cerrar">✕</button>
         <h3 id="modal-prod-titulo">Nuevo Producto</h3>
         <div id="modal-prod-msg" class="msg"></div>
         <input type="hidden" id="prod-id" />
@@ -835,7 +894,7 @@
             <div id="prod-stock-error" style="color: var(--danger); font-size: 0.75rem; margin-top: 4px; display: none;"></div>
           </div>
           <div class="form-group" style="grid-column: 1/-1">
-            <label>Descripción</label>
+            <label>Descripción (opcional)</label>
             <textarea id="prod-descripcion" rows="3"></textarea>
           </div>
           <div class="form-group" style="grid-column: 1/-1">
@@ -849,16 +908,9 @@
             </div>
             <img id="prod-img-preview" src="" alt="" style="max-height:80px;border-radius:8px;border:1px solid var(--border);display:none;" onerror="this.style.display='none'" onload="this.style.display=this.src?'block':'none'" />
           </div>
-          <div class="form-group">
-            <label>Estado</label>
-            <select id="prod-activo">
-              <option value="1">Activo</option>
-              <option value="0">Inactivo</option>
-            </select>
-          </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-ghost" onclick="cerrarModal('modal-producto')">
+          <button class="btn btn-danger" onclick="cerrarModal('modal-producto')">
             Cancelar
           </button>
           <button class="btn btn-primary" id="btn-guardar-producto" onclick="guardarProducto()" disabled>
@@ -871,6 +923,7 @@
     <!-- ── Modal Categoría ── -->
     <div class="modal-overlay" id="modal-categoria">
       <div class="modal" style="width: 360px">
+        <button class="modal-close" onclick="cerrarModal('modal-categoria')" title="Cerrar">✕</button>
         <h3 id="modal-cat-titulo">Nueva Categoría</h3>
         <div id="modal-cat-msg" class="msg"></div>
         <input type="hidden" id="cat-id" />
@@ -880,7 +933,7 @@
         </div>
         <div class="modal-footer">
           <button
-            class="btn btn-ghost"
+            class="btn btn-danger"
             onclick="cerrarModal('modal-categoria')"
           >
             Cancelar
@@ -1101,9 +1154,9 @@
   </tr></thead><tbody>`;
 
         for (const p of data.productos) {
-          const badge = p.activo
-            ? '<span class="badge badge-ok">Activo</span>'
-            : '<span class="badge badge-off">Inactivo</span>';
+          const estaActivo = p.activo == 1;
+          const estadoTexto = estaActivo ? 'ACTIVO' : 'INACTIVO';
+          const estadoClass = estaActivo ? 'badge-ok' : 'badge-off';
           const stockColor =
             p.stock <= 5
               ? "var(--danger)"
@@ -1116,15 +1169,14 @@
       <td>${p.categoria}</td>
       <td>S/ ${fmt(p.precio)}</td>
       <td><span style="color:${stockColor};font-weight:600">${p.stock}</span></td>
-      <td>${badge}</td>
+      <td><span class="badge ${estadoClass}">${estadoTexto}</span></td>
       <td><div class="actions">
         <button class="btn btn-ghost btn-sm" onclick="editarProducto(${p.id})">✏️</button>
-        ${
-          p.activo
-            ? `<button class="btn btn-warn btn-sm" onclick="eliminarProducto(${p.id},'${p.nombre.replace(/'/g, "\\'")}')" title="Desactivar">🚫</button>`
-            : `<button class="btn btn-success btn-sm" onclick="restaurarProducto(${p.id})" title="Restaurar">♻️</button>`
-        }
         <button class="btn btn-danger btn-sm" onclick="eliminarPermanente(${p.id},'${p.nombre.replace(/'/g, "\\'")}')" title="Eliminar Permanentemente">🗑️</button>
+        <label class="switch" title="${estaActivo ? 'Desactivar' : 'Activar'}">
+          <input type="checkbox" ${estaActivo ? 'checked' : ''} onchange="cambiarEstadoProducto(${p.id}, this.checked ? 1 : 0)">
+          <span class="slider"></span>
+        </label>
       </div></td>
     </tr>`;
         }
@@ -1211,7 +1263,6 @@
         document.getElementById("prod-stock").value = "0";
 
         document.getElementById("prod-genero").value = "";
-        document.getElementById("prod-activo").value = "1";
         document.getElementById("modal-prod-msg").className = "msg";
         const prev = document.getElementById('prod-img-preview');
         prev.src = ''; prev.style.display = 'none';
@@ -1296,7 +1347,6 @@
             p.descripcion || "";
           document.getElementById("prod-imagen").value = p.imagen_url || "";
           document.getElementById("prod-genero").value = p.genero || "";
-          document.getElementById("prod-activo").value = p.activo;
           document.getElementById("modal-prod-titulo").textContent =
             `Editar: ${p.nombre.substring(0, 30)}…`;
           document.getElementById("modal-prod-msg").className = "msg";
@@ -1316,6 +1366,9 @@
       }
 
       async function guardarProducto() {
+        if (window._guardandoProducto) return;
+        window._guardandoProducto = true;
+
         const id = document.getElementById("prod-id").value;
         const msgEl = document.getElementById("modal-prod-msg");
         msgEl.className = "msg";
@@ -1332,7 +1385,7 @@
 
           descripcion: document.getElementById("prod-descripcion").value.trim(),
           imagen_url: document.getElementById("prod-imagen").value.trim(),
-          activo: parseInt(document.getElementById("prod-activo").value),
+          activo: (parseInt(document.getElementById("prod-stock").value) || 0) > 0 ? 1 : 0,
         };
 
         try {
@@ -1355,6 +1408,8 @@
         } catch (e) {
           msgEl.textContent = e.message;
           msgEl.className = "msg err";
+        } finally {
+          window._guardandoProducto = false;
         }
       }
 
@@ -1396,6 +1451,20 @@
           cargarProductos();
         } catch (e) {
           toast(e.message, "err");
+        }
+      }
+
+      async function cambiarEstadoProducto(id, nuevoActivo) {
+        try {
+          const res = await api(`/admin/productos/${id}/estado`, {
+            method: "PATCH",
+            body: JSON.stringify({ activo: nuevoActivo }),
+          });
+          toast(res.mensaje, "ok");
+          cargarProductos();
+        } catch (e) {
+          toast(e.message, "err");
+          cargarProductos();
         }
       }
 
@@ -1465,6 +1534,9 @@
       }
 
       async function guardarCategoria() {
+        if (window._guardandoCategoria) return;
+        window._guardandoCategoria = true;
+
         const id = document.getElementById("cat-id").value;
         const nombre = document.getElementById("cat-nombre").value.trim();
         const msgEl = document.getElementById("modal-cat-msg");
@@ -1488,6 +1560,8 @@
         } catch (e) {
           msgEl.textContent = e.message;
           msgEl.className = "msg err";
+        } finally {
+          window._guardandoCategoria = false;
         }
       }
 
@@ -1811,15 +1885,6 @@
           toast(e.message, "err");
         }
       }
-
-      /* ═══════════════════════════════════════════════════════════
-   CERRAR MODAL AL CLICK FUERA
-═══════════════════════════════════════════════════════════ */
-      document.querySelectorAll(".modal-overlay").forEach((overlay) => {
-        overlay.addEventListener("click", (e) => {
-          if (e.target === overlay) overlay.classList.remove("open");
-        });
-      });
 
       /* ═══════════════════════════════════════════════════════════
    AUTO-CHECK SESIÓN AL CARGAR

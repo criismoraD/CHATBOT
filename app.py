@@ -29,8 +29,7 @@ MÓDULOS QUE USA:
   - core.configuracion      → constantes del sistema
 """
 
-import os 
-import tempfile  
+import os
 from flask import Flask, request, jsonify, send_from_directory, send_file  
 from flask_cors import CORS  
 import datetime  
@@ -40,7 +39,7 @@ from reportlab.pdfgen import canvas
 from admin import Inicializar_Admin  # Configura el panel de administración web
 from core import configuracion  # Carga las constantes y ajustes globales del sistema
 from core.base_datos import Ejecutar_Escritura  # Permite guardar datos en la base de datos MySQL
-from bot.inteligencia_artificial import Modelo_IA, Etiquetas_De_Intencion, Obtener_Modelo_Voz  # Cerebro de IA y voz
+from bot.inteligencia_artificial import Modelo_IA, Etiquetas_De_Intencion  # Cerebro de IA
 from bot.catalogo_productos import (  # Gestión de búsqueda y stock de los productos
     Obtener_Catalogo_Actual, Catalogos_De_Productos, Fuente_Activa_De_Catalogo,
     Cambiar_Fuente_De_Catalogo, Buscar_Productos, Obtener_Producto_Por_Id,
@@ -282,33 +281,6 @@ def Buscar():
         Genero=Genero, Palabras_Clave=Keywords, Limite=Limite,
     )
     return jsonify({"products": Resultados, "count": len(Resultados), "source": Fuente})
-
-
-# ─── Transcripción de Voz ────────────────────────────────────────────────────
-
-@Aplicacion.route('/transcribe', methods=['POST'])
-def Transcribir_Voz():
-    if 'audio' not in request.files:
-        return jsonify({"error": "No audio file provided"}), 400
-
-    Archivo = request.files['audio']
-    Ruta_Temporal = None
-
-    try:
-        with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as Temp:
-            Ruta_Temporal = Temp.name
-            Archivo.save(Ruta_Temporal)
-
-        Modelo_Voz = Obtener_Modelo_Voz()
-        Segmentos, _ = Modelo_Voz.transcribe(Ruta_Temporal, beam_size=5)
-        Texto = " ".join([Seg.text for Seg in Segmentos])
-        return jsonify({"text": Texto.strip()})
-    except Exception as Error:
-        print(f"[ERROR] Transcripcion de voz: {Error}")
-        return jsonify({"error": "No se pudo procesar el audio"}), 500
-    finally:
-        if Ruta_Temporal and os.path.exists(Ruta_Temporal):
-            os.remove(Ruta_Temporal)
 
 
 # ─── Generación de Boleta PDF ────────────────────────────────────────────────

@@ -75,7 +75,7 @@
             <li><strong><code>bot/</code> (El Cerebro del Chatbot):</strong>
                 <ul>
                     <li><code>motor_dialogo.py</code>: Decide qué responder basado en lo que el usuario dice.</li>
-                    <li><code>inteligencia_artificial.py</code>: Carga el modelo matemático entrenado (Red Neuronal LSTM) para clasificar textos y el modelo de voz (Whisper) para escuchar los audios.</li>
+                    <li><code>inteligencia_artificial.py</code>: Carga el modelo matemático entrenado (Red Neuronal LSTM) para clasificar textos.</li>
                     <li><code>catalogo_productos.py</code>: Se encarga de buscar productos, filtrar por precio/color y administrar el stock visible.</li>
                     <li><code>memoria_conversacion.py</code>: Permite que el bot "recuerde" de qué estaban hablando. (Ej. Si preguntas "precio" luego de ver una zapatilla, sabe que hablas de esa zapatilla).</li>
                 </ul>
@@ -121,11 +121,9 @@
         <h2>4. Flujo de Transcripción de Voz: ¿Cómo funciona el audio?</h2>
         <p>Cuando el usuario no quiere escribir y decide enviar un mensaje de voz presionando el botón del micrófono:</p>
         <ul>
-            <li>El navegador graba el audio y se lo envía "en crudo" a la ruta <code>/transcribe</code> de <code>app.py</code>.</li>
-            <li>Python recibe el archivo, lo guarda momentáneamente en una carpeta temporal con terminación <code>.webm</code>.</li>
-            <li>El modelo de IA Auditiva (Whisper) "escucha" el archivo temporal y adivina cuáles son las palabras.</li>
-            <li>Python une las palabras formando una frase (ej. <em>"cuánto cuesta el balón"</em>), elimina el archivo de audio para no llenar la memoria del computador, y devuelve el texto al navegador.</li>
-            <li>El navegador recibe el texto y lo inserta automáticamente en la caja de chat como si el usuario lo hubiera tecleado.</li>
+            <li>El navegador utiliza la API nativa de reconocimiento de voz (<code>SpeechRecognition</code> o <code>webkitSpeechRecognition</code>) para transcribir el audio directamente en el cliente.</li>
+            <li>El texto reconocido se inserta automáticamente en la caja de chat como si el usuario lo hubiera tecleado.</li>
+            <li>Si el navegador no soporta reconocimiento de voz, se muestra un mensaje indicando que debe escribir el mensaje manualmente.</li>
         </ul>
     </div>
 

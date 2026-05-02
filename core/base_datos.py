@@ -19,11 +19,10 @@ CONFIGURACIÓN:
 
 USO:
   from core.base_datos import Ejecutar_Consulta, Ejecutar_Escritura
-  productos = Ejecutar_Consulta("SELECT * FROM productos WHERE activo = 1")
+  productos = Ejecutar_Consulta("SELECT * FROM productos")
 """
 
 import os
-import mysql.connector
 from mysql.connector import pooling, Error
 from core import configuracion
 

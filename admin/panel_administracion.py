@@ -257,7 +257,7 @@ def Admin_Crear_Producto():
 
     descripcion  = d.get("descripcion", "")
     imagen_url   = d.get("imagen_url", "")
-    activo       = int(d.get("activo", 1))
+    activo       = 1 if stock > 0 else 0
 
     if not nombre:
         return jsonify({"error": "El nombre del producto es requerido."}), 400
@@ -315,10 +315,8 @@ def Admin_Actualizar_Producto(producto_id):
         "genero":       ("genero",       str),
         "color":        ("color",        str),
         "stock":        ("stock",        int),
-
         "descripcion":  ("descripcion",  str),
         "imagen_url":   ("imagen_url",   str),
-        "activo":       ("activo",       int),
     }
 
     for clave, (col, tipo) in mapeo.items():
@@ -334,6 +332,16 @@ def Admin_Actualizar_Producto(producto_id):
                 return jsonify({"error": "El stock no puede ser negativo."}), 400
             campos.append(f"{col} = %s")
             valores.append(val)
+
+    # Derivar estado activo automáticamente desde el stock
+    if "stock" in d:
+        stock_val = d["stock"]
+        try:
+            stock_int = int(stock_val) if stock_val is not None else 0
+        except (TypeError, ValueError):
+            return jsonify({"error": "Valor inválido para 'stock'."}), 400
+        campos.append("activo = %s")
+        valores.append(1 if stock_int > 0 else 0)
 
     if not campos:
         return jsonify({"error": "No se enviaron campos para actualizar."}), 400
@@ -391,6 +399,25 @@ def Admin_Restaurar_Producto(producto_id):
     Ejecutar_Escritura("UPDATE productos SET activo = 1 WHERE id = %s", (producto_id,))
     Recargar_Catalogo()  # Actualizar catálogo del chatbot
     return jsonify({"ok": True, "mensaje": f"Producto '{existente[0]['nombre']}' reactivado."})
+
+
+@Admin_Blueprint.route("/admin/productos/<int:producto_id>/estado", methods=["PATCH"])
+@login_requerido
+def Admin_Cambiar_Estado_Producto(producto_id):
+    """Cambia únicamente el estado activo/inactivo de un producto."""
+    existente = Ejecutar_Consulta("SELECT id, nombre FROM productos WHERE id = %s", (producto_id,))
+    if not existente:
+        return jsonify({"error": "Producto no encontrado."}), 404
+
+    d = request.get_json(silent=True) or {}
+    activo = d.get("activo")
+    if activo not in (0, 1, True, False):
+        return jsonify({"error": "Valor de 'activo' inválido. Use 0 o 1."}), 400
+
+    Ejecutar_Escritura("UPDATE productos SET activo = %s WHERE id = %s", (1 if activo else 0, producto_id))
+    Recargar_Catalogo()
+    estado_texto = "activado" if activo else "desactivado"
+    return jsonify({"ok": True, "mensaje": f"Producto '{existente[0]['nombre']}' {estado_texto}."})
 
 
 # ─── CRUD Categorías ──────────────────────────────────────────────────────────
