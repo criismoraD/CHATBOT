@@ -4,13 +4,9 @@ numpy>=1.26.0
 torch>=2.2.0
 requests>=2.32.0
 beautifulsoup4>=4.12.0
-faster-whisper
 scikit-learn
 spacy
 thefuzz
-PyQt5>=5.15.0
-sounddevice>=0.5.0
-soundfile>=0.13.0
 reportlab
 Werkzeug>=2.3.0
 mysql-connector-python>=8.0.0

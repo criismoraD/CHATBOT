@@ -7,3 +7,5 @@ data/chat_memory*
 .vscode/
 boleta_compra.pdf
 *.pdf
+venv/
+venv_old/

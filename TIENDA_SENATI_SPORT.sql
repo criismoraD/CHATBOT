@@ -20,8 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `chatbot_tienda`
 --
-CREATE DATABASE IF NOT EXISTS `chatbot_tienda`;
-USE `chatbot_tienda`;
+CREATE DATABASE IF NOT EXISTS `TIENDA_SENATI_SPORT`;
+USE `TIENDA_SENATI_SPORT`;
 
 DELIMITER $$
 --
